@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.hiredue.com
+
+# Sitemaps
+Sitemap: https://www.hiredue.com/sitemap.xml
