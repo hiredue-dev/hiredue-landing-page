@@ -16,7 +16,7 @@ function TimeLineCardHorizontal({
   return (
     <section
       className={cn(
-        "w-full mt-4 flex justify-center pt-20 overflow-visible",
+        "w-full mt-4 flex justify-center pt-20 md:px-25 overflow-visible",
         className
       )}
     >

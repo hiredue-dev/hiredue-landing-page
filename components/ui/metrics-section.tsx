@@ -32,7 +32,7 @@ export function MetricsSection() {
   },
 ]
   return (
-    <section className="relative mx-auto w-full max-w-7xl px-6 py-16 md:py-24 lg:px-8">
+    <section className="relative md:mx-25 w-full max-w-7xl px-6 py-16 md:py-24 lg:px-8">
       <div className="grid items-start gap-12 md:grid-cols-2 md:gap-16">
         {/* Left copy */}
         <div>

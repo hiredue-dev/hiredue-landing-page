@@ -22,24 +22,23 @@ function DimmedCard({
     <Card
       className={cn(
         className,
-        "flex flex-col opacity-100 card-anim bg-muted",
+        "flex flex-col opacity-100 card-anim bg-muted ",
+        "lg:h-[200px]",
         cardClass
       )}
     >
       <CardContent className="p-2 lg:p-auto">
-        <div className="p-1 lg:px-2 lg:mr-3 slg:gap-2 text-lg sm:text-xl font-bold flex items-center">
+        <div className="py-auto lg:px-2 lg:mr-3 text-base sm:text-lg lg:text-xl font-bold flex items-center">
           {heading}
-
           <Image
             src={imageSrc}
             width={45}
             height={35}
             alt="logo"
-			className = "w-8 h-6 lg:w-9 lg:h-8 ml-3 sm:ml-4 lg:ml-2"
+            className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 ml-2 sm:ml-3 lg:ml-2 flex-shrink-0"
           />
         </div>
-
-        <CardDescription className="py-1 lg:pl-2 mt-0 text-muted-foreground max-w-lg">
+        <CardDescription className="pt-2 pb-1 lg:pl-2 mt-0 text-muted-foreground max-w-lg">
           {description}
         </CardDescription>
       </CardContent>
