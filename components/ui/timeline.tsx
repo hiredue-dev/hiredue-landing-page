@@ -31,8 +31,8 @@ export function Timeline({ data }: { data: TimelineEntry[] }) {
     offset: ["start 75%", "end 25%"],
   });
 
-  const dashOffset = useTransform(scrollYProgress, [0, 0.6], [pathLength, 0]);
-  const timelineProgress = useTransform(scrollYProgress, [0, 0.6], [0, 1], {
+  const dashOffset = useTransform(scrollYProgress, [0, 0.36], [pathLength, 0]);
+  const timelineProgress = useTransform(scrollYProgress, [0, 0.36], [0, 1], {
     clamp: true,
   });
 
