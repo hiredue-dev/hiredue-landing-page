@@ -44,10 +44,6 @@ export const metadata: Metadata = {
     images: [siteConfig.ogImage],
     creator: "@name",
   },
-  icons: {
-    icon: "/favicon.ico",
-    apple: "/favicon.ico",
-  },
 };
 export default function RootLayout({
   children,
