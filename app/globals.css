@@ -159,8 +159,8 @@
 
 .dark {
   /* Accent colors */
-  --brand: oklch(83.6% 0.1177 66.87);
-  --brand-foreground: oklch(75.77% 0.159 55.91);
+  --brand: oklch(74.106% 0.12364 252.759);
+  --brand-foreground: oklch(52.501% 0.2577 270.489);
 
   /* Customized shadcn/ui colors */
   --background: oklch(0.141 0.005 285.823);
