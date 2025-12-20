@@ -31,7 +31,7 @@ export default function Bento() {
 
         {/* <div className="flex h-full w-full items-center justify-center p-10"> */}
         {/* ml-2 sm:mx-auto sm:mt-4 object-[center_2rem] transition-[object-position] delay-150 duration-300 ease-in-out hover:object-center */}
-            <div className="grid h-full w-full gap-4 p-3 grid-cols-1 lg:grid-cols-10 rounded-lg shadow-md px-5 sm:px-15 py-10">
+            <div className="grid h-full w-full gap-4 p-3 grid-cols-1 lg:grid-cols-10 rounded-lg shadow-md px-2 md:px-26 py-10">
                 <div className={cn("lg:col-span-4 col-span-1 px-4", cardClass)}>
                     <h2 className="pl-4 text-xl font-bold">{whatIsHiredueHeading1}</h2>
                     <div className="pl-4 mt-3 text-muted-foreground max-w-xs">{whatIsHiredueDescription1}</div>

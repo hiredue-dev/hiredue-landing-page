@@ -123,7 +123,7 @@ export default function Hero({
     <Section
       className={cn("fade-bottom overflow-hidden mt-10 md:mt-0", className)}
     >
-      <div className="max-w-container mx-auto flex flex-col gap-12 sm:gap-24">
+      <div className="max-w-container mx-auto md:mx-25 flex flex-col gap-12 sm:gap-24">
         <div
           className={`flex flex-col 
 					items-${textAlignment === "left" ? "start" : "center"} gap-6 
