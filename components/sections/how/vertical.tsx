@@ -31,7 +31,7 @@ function TimeLineCardVertical({
     });
     tl.to(prefixRef.current, {
       opacity: 1,
-      color: "rgba(253, 186, 114)",
+      color: "var(--brand)",
       duration: animationDuration,
       ease: "power1.inOut",
     });
@@ -52,7 +52,7 @@ function TimeLineCardVertical({
     tl.to(suffixRef.current, {
       opacity: 1,
       duration: animationDuration,
-      color: "rgba(253, 186, 114)",
+      color: "var(--brand)",
       ease: "power1.inOut",
     });
   }, []);
@@ -71,7 +71,7 @@ function TimeLineCardVertical({
             From
           </div>
           <div
-            className="w-fit text-center text-md h-fit
+            className="w-fit text-brand text-center text-md h-fit
 			font-semibold sm:text-2xl"
             ref={prefixRef}
           >
@@ -97,13 +97,13 @@ function TimeLineCardVertical({
 
         <div className="flex flex-col justify-start items-start w-fit gap-3 ml-3">
           <div
-            className="w-fit text-center text-md h-fit 
+            className="w-fit text-brand text-center text-md h-fit 
 			font-semibold text-white sm:text-2xl opacity-40"
           >
             To
           </div>
           <div
-            className="w-fit text-center text-md h-fit
+            className="w-fit text-center text-md h-fit text-brand
 		font-semibold sm:text-2xl"
             ref={suffixRef}
           >

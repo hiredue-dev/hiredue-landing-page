@@ -28,7 +28,7 @@ function DimmedCard({
       )}
     >
       <CardContent className="p-2 lg:p-auto">
-        <div className="py-auto lg:px-2 lg:mr-3 text-base sm:text-lg lg:text-xl font-bold flex items-center">
+        <div className="py-auto lg:px-2 lg:mr-3 text-base sm:text-lg lg:text-lg font-bold flex items-center">
           {heading}
           <Image
             src={imageSrc}
@@ -38,7 +38,7 @@ function DimmedCard({
             className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 ml-2 sm:ml-3 lg:ml-2 flex-shrink-0"
           />
         </div>
-        <CardDescription className="pt-2 pb-1 lg:pl-2 mt-0 text-muted-foreground max-w-lg">
+        <CardDescription className="pt-2  pb-1 lg:pl-2 mt-0 text-muted-foreground max-w-lg">
           {description}
         </CardDescription>
       </CardContent>

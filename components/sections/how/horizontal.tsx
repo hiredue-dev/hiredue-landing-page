@@ -20,7 +20,7 @@ function TimeLineCardHorizontal({
         className
       )}
     >
-      <div className="  w-full flex items-center gap-4 h-auto relative">
+      <div className="  w-full flex items-center  h-auto relative">
         <div className="flex flex-col items-end  ">
           <span className="text-sm text-muted-foreground  ">From</span>
           <span className="text-2xl text-brand font-semibold opacity-80">HireDue</span>
