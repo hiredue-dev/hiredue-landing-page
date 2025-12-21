@@ -169,7 +169,7 @@ export default function Hero({
           >
             <Input
               type="email"
-              placeholder="Enter your email for early access and offers"
+              placeholder="Enter your email for beta access and offers"
               className="w-fit md:min-w-85 h-10 px-4 py-2 glass-3 placeholder:truncate"
 			  value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -178,7 +178,7 @@ export default function Hero({
 
             <Button type="submit" variant="default" size="lg">
               <span className="hidden md:flex items-center">
-                Get Early Access
+                Get Beta Access
               </span>
               <ArrowRight className="md:ml-2 h-4 w-4" />
             </Button>

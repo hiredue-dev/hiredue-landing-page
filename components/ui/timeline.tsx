@@ -64,7 +64,7 @@ export function Timeline({ data }: { data: TimelineEntry[] }) {
         <svg viewBox="0 0 1200 200" className="w-full h-[220px]">
           <path
             d={wavePath}
-            stroke="rgba(148,163,184,0.25)"
+            stroke="var(--muted)"
             strokeWidth="3"
             fill="none"
           />
@@ -163,8 +163,8 @@ export function Timeline({ data }: { data: TimelineEntry[] }) {
               <motion.div
                 key={i}
                 style={{
-                  left: `${(x / (SVG_WIDTH)) * 107}%`,
-                  top: `${(y / 200) * 100}%`,
+                  left: `${(x / (SVG_WIDTH)) * 110}%`,
+                  top: `${(y / 200) * 90}%`,
                   opacity: useTransform(
                     timelineProgress,
                     [progressStart, progressEnd],
@@ -176,7 +176,7 @@ export function Timeline({ data }: { data: TimelineEntry[] }) {
                     [0.94, 1]
                   ),
                 }}
-                className="absolute -translate-x-1/2 -translate-y-1/2 w-[265px]"
+                className="absolute -translate-x-[100%] -translate-y-1/2 w-[220px]"
               >
                 {item.content}
               </motion.div>

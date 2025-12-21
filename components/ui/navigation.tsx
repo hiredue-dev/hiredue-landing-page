@@ -56,6 +56,11 @@ export default function Navigation({
       title: "About Us",
       isLink: true,
       href: siteConfig.onSiteUrl.aboutUs,
+    },
+    {
+      title: "Support",
+      isLink: true,
+      href: siteConfig.onSiteUrl.support,
     }
   ],
   components = [
