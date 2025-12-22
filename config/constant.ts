@@ -1,4 +1,4 @@
-export const HeroSubTitle = "Version 1.0 Launch Coming Soon -"
+export const HeroSubTitle = "Version 1 Launch Coming Soon -"
 export const HeroSubTrigger = "Stay Tuned!"
 export const HeroTitle = "Your Job Hunt, Fully Automated"
 export const HeroTitlDescription = "HireDue applies, tracks, and connects - all for you. From applications to referrals, let automation do the heavy lifting while you focus on getting hired."
@@ -17,13 +17,13 @@ export const howWeDoItHeading2 = "Smart Preference Matching"
 export const howWeDoItDescription2 =
   "Only roles that match your skills, location, and goals make the cut."
 
-export const howWeDoItHeading3 = "Recruiter Outreach"
+export const howWeDoItHeading3 = "Recruiter Outreach Feature"
 export const howWeDoItDescription3 =
   "We send personalised messages to recruiters along with your resume."
 
-export const howWeDoItHeading4 = "Email Applications"
+export const howWeDoItHeading4 = "Direct Email Applications"
 export const howWeDoItDescription4 =
-  "Your resume is emailed to hiring teams where direct outreach is accepted."
+  "Your resume is directly emailed to relevant hiring teams where direct outreach is accepted."
 
 export const howWeDoItHeading5 = "One Unified Dashboard"
 export const howWeDoItDescription5 =
