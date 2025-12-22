@@ -169,7 +169,7 @@ export default function Hero({
           >
             <Input
               type="email"
-              placeholder="Enter your email for beta access and offers"
+              placeholder="Enter your email for beta access "
               className="w-fit md:min-w-85 h-10 px-4 py-2 glass-3 placeholder:truncate"
 			  value={email}
               onChange={(e) => setEmail(e.target.value)}
