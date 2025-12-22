@@ -131,10 +131,10 @@ export default function Hero({
         >
           <Badge variant="outline" className="animate-appear">
             <span className="text-muted-foreground">{HeroSubTitle}</span>
-            <a href={siteConfig.url} className="flex items-center gap-1">
+            <div  className="flex items-center gap-1">
               {HeroSubTrigger}
               <ArrowRightIcon className="size-3" />
-            </a>
+            </div>
           </Badge>
 
           <h1 className="animate-appear from-foreground to-foreground dark:to-muted-foreground inline-block max-w-[840px] bg-linear-to-r bg-clip-text text-4xl leading-tight font-semibold text-balance text-transparent drop-shadow-2xl sm:text-5xl sm:leading-tight lg:text-6xl lg:leading-tight">
@@ -169,7 +169,7 @@ export default function Hero({
           >
             <Input
               type="email"
-              placeholder="Enter your email for early access and offers"
+              placeholder="Enter your email for beta access "
               className="w-fit md:min-w-85 h-10 px-4 py-2 glass-3 placeholder:truncate"
 			  value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -178,7 +178,7 @@ export default function Hero({
 
             <Button type="submit" variant="default" size="lg">
               <span className="hidden md:flex items-center">
-                Get Early Access
+                Get Beta Access
               </span>
               <ArrowRight className="md:ml-2 h-4 w-4" />
             </Button>

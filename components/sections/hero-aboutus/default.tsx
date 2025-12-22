@@ -1,9 +1,8 @@
+"use client";
 import { ArrowRightIcon } from "lucide-react";
 import { ReactNode } from "react";
-
 import { siteConfig } from "@/config/site";
 import { cn } from "@/lib/utils";
-
 import Github from "@/public/logos/github";
 import { Badge } from "../../ui/badge";
 import { Button, type ButtonProps } from "../../ui/button";
@@ -46,10 +45,10 @@ export default function Hero({
   badge = (
     <Badge variant="outline" className="animate-appear">
       <span className="text-muted-foreground">
-        New version of HireDue is out!
+        Beta version of HireDue is out!
       </span>
-      <a href={siteConfig.getStartedUrl} className="flex items-center gap-1">
-        Get started
+      <a href="#cta" className="flex items-center gap-1">
+        Register Now
         <ArrowRightIcon className="size-3" />
       </a>
     </Badge>
@@ -57,7 +56,7 @@ export default function Hero({
   buttons = [
     {
       href: siteConfig.getStartedUrl,
-      text: "Get Started",
+      text: "Register Now",
       variant: "default",
     },
     {
@@ -68,7 +67,8 @@ export default function Hero({
     },
   ],
   className,
-}: HeroProps) {
+}: HeroProps) { 
+ 
   return (
     <Section
       className={cn(

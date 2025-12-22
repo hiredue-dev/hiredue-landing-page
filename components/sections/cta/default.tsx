@@ -26,12 +26,12 @@ interface CTAProps {
 }
 
 export default function CTA({
-  title = "Get Early Access",
+  title = "Get Beta Access",
   description = "Be among the first to experience the future of job applications. Join thousands of professionals already on our waitlist.",
   buttons = [
     {
       href: siteConfig.getStartedUrl,
-      text: "Get Early Access",
+      text: "Get Beta Access",
       variant: "default",
       iconRight: <ArrowRight className="ml-2 h-4 w-4" />,
     },
@@ -79,7 +79,7 @@ export default function CTA({
   };
 
   return (
-    <Section className={cn("group relative overflow-hidden", className)}>
+    <Section   id="cta" className={cn("group relative overflow-hidden", className)}>
       <div className="max-w-container relative z-10 mx-auto flex flex-col items-center gap-6 text-center sm:gap-8">
         <h2 className="max-w-[640px] text-3xl leading-tight font-semibold sm:text-5xl sm:leading-tight">
           {title}
@@ -89,7 +89,7 @@ export default function CTA({
           <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row justify-center gap-4">
             <Input
               type="email"
-              placeholder="Enter your email for early access and offers"
+              placeholder="Enter your email for beta access"
               className="min-w-85 h-10 px-4 py-2 glass-3"
               value={email}
               onChange={(e) => setEmail(e.target.value)}

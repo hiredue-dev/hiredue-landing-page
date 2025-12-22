@@ -13,7 +13,8 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full overflow-hidden bg-background text-foreground">
       {/* <Navbar /> */}
-      <Hero className="md:py-24"/>
+      <Hero className="mt-15 md:mt-0 md:py-24"/>
+      <CTA />
       <Footer />
     </main>
   );
