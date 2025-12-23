@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.getStartedUrl),
   description: siteConfig.description,
   keywords: [
-    "about-us",
+    "support",
   ],
   authors: [
     {

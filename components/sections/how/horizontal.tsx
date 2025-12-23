@@ -1,94 +1,52 @@
 "use client";
-import { useEffect, useRef } from "react";
-import gsap from "gsap";
 
+import { Timeline } from "@/components/ui/timeline";
 import { HowWeDoItSection } from "./defualt";
+import { Card } from "@/components/ui/card";
 import DimmedCard from "./dimmedCard";
+import { cn } from "@/lib/utils";
 
-function TimeLineCardHorizontal({ events}: { events: HowWeDoItSection[] }) {
-  const containerRef = useRef<HTMLOListElement|null>(null);
-	const prefixRef = useRef<HTMLDivElement|null>(null);
-	const suffixRef = useRef<HTMLDivElement|null>(null);
-
-  useEffect(() => {
-    if (!containerRef || !containerRef.current) return;
-		if (!prefixRef || !prefixRef.current)return 
-		if (!suffixRef || !suffixRef.current)return 
-
-    const items = containerRef.current.querySelectorAll("li");
-
-    const tl = gsap.timeline({ repeatDelay: 0.5 });
-		const animationDuration = 0.6
-		tl.set([prefixRef.current,suffixRef.current],{opacity:0.3, color:"white"})
-		tl.to(prefixRef.current,{
-        opacity: 1,
-				color:"rgba(253, 186, 114)",
-        duration:animationDuration,
-        ease: "power1.inOut",
-		})
-		items.forEach((item) => {
-      const dot = item.querySelector("span");
-      const card = item.querySelector(".card-anim");
-
-      tl.to([dot, card], {
-        opacity: 1,
-        duration:animationDuration,
-        ease: "power1.inOut",
-      }).to([dot, card], {
-        opacity: 1,
-        duration: 0.6,
-        ease: "power1.inOut",
-      });
-    });
-		tl.to(suffixRef.current,{
-        opacity: 1,
-        duration:animationDuration,
-				color:"rgba(253, 186, 114)",
-        ease: "power1.inOut",
-		})  
-	}, []);
-
+function TimeLineCardHorizontal({
+  events,
+  className,
+}: {
+  className?: string;
+  events: HowWeDoItSection[];
+}) {
   return (
-		<div className="hidden md:flex justify-center translate-y-full h-[200%] items-start mb-60 w-full">
-
-		<div className="flex flex-col items-end w-fit gap-3 translate-y-[-50%] mr-3 ">
-		<div className="w-fit text-center text-md h-fit 
-		font-semibold sm:text-2xl opacity-30" >From</div>
-		<div className="w-fit text-center text-md h-fit 
-		font-semibold sm:text-2xl opacity-30" ref={prefixRef}>Hire Due</div>
-		</div>
-
-    <ol
-		ref={containerRef}
-      className="relative flex gap-8 before:absolute before:-mt-px before:h-0.5 before:w-full before:rounded-full before:bg-gray-200 dark:before:bg-gray-700"
+    <section
+      className={cn(
+        "w-full mt-4 flex justify-center pt-20 md:px-25 overflow-visible",
+        className
+      )}
     >
-        {events.map((event, index) => (
-					index % 2==0 ? 
+      <div className="  w-full flex items-center  h-auto relative">
+        <div className="flex flex-col items-end  ">
+          <span className="text-sm text-muted-foreground  ">From</span>
+          <span className="text-2xl text-brand font-semibold opacity-80">HireDue</span>
+        </div>
 
-          <li key={index} className="relative -mt-1.5">
-          <span className="block w-3 h-3 rounded-full bg-brand/70 opacity-30"></span>
-					<DimmedCard heading={event.heading} description={event.description} className="mt-4"/>
-          </li>
+        <div className="flex-1 h-auto">
+          <Timeline
+            data={events.map((event,index) => ({
+              title: event.heading,
+              content: (
+                <DimmedCard
+                  heading={event.heading}
+                  description={event.description}
+                  image={`/image-${index+1}.png`}
+                />
+              ),
+            }))}
+          />
+        </div>
 
-						:
-
-          <li key={index} className="relative translate-y-[-100%] h-fit card-anim ">
-					<DimmedCard heading={event.heading} description={event.description} className="mb-4"/>
-          <span className="block w-3 h-3 rounded-full bg-brand/70 opacity-30 -mb-1.5"></span>
-          </li>
-
-
-        ))}
-      </ol>
-
-		<div className="flex flex-col items-start w-fit gap-3 ml-3 translate-y-[-50%]">
-			<div className="w-fit text-center text-md h-fit 
-			font-semibold text-white sm:text-2xl opacity-30" >To</div>
-			<div className="w-fit text-center text-md h-fit 
-			font-semibold sm:text-2xl opacity-30" ref={suffixRef}>Hired You</div>
-		</div>
-
-		</div>
+        <div className="flex flex-col items-start w-fit ">
+          <span className="text-sm text-muted-foreground">To</span>
+          <span className="text-2xl font-semibold text-brand opacity-80">Hired You</span>
+        </div>
+      </div>
+    </section>
   );
 }
 

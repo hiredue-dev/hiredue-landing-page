@@ -29,10 +29,10 @@ interface PlatformsProps {
 }
 
 export default function Platforms({
-  title = "Supported Platforms",
+  title = "Targeted Platforms",
   badge = (
-    <Badge variant="outline" className="border-brand/30 text-brand">
-      Last updated: {"5th Oct 2025"}
+    <Badge variant="outline" className="border-brand/70 text-brand">
+      Last updated: {"21st Dec 2025"}
     </Badge>
   ),
   logos = [

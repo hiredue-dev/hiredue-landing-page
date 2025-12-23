@@ -19,7 +19,7 @@ export default function Home() {
       <Metrics />
 			<How/>
       <FAQ />
-      <CTA />
+      <CTA/>
       <Footer />
     </main>
   );
