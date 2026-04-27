@@ -1,4 +1,4 @@
-import CareersPage from "@/pages/Careers/CareersPage.jsx";
+import CareersPage from "@/views/Careers/CareersPage.jsx";
 
 export default function Page() {
   return <CareersPage />;

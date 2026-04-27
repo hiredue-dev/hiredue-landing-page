@@ -1,4 +1,4 @@
-import HomePage from "@/pages/Home/HomePage.jsx";
+import HomePage from "@/views/Home/HomePage.jsx";
 
 export default function Page() {
   return <HomePage />;

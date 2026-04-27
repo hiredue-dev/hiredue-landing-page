@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-import styles from "@/pages/NotFound/NotFoundPage.module.css";
+import styles from "@/views/NotFound/NotFoundPage.module.css";
 
 export default function NotFound() {
   const pathname = usePathname();
