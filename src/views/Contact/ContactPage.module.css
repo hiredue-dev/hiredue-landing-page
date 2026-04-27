@@ -1,0 +1,269 @@
+.section {
+  padding: 176px 0 152px;
+  background: transparent;
+}
+
+.container {
+  width: min(1180px, calc(100% - (var(--page-padding) * 2)));
+  margin: 0 auto;
+}
+
+.hero {
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-foreground);
+}
+
+.heading {
+  margin-top: 12px;
+  font-size: clamp(2.85rem, 4.8vw, 4.6rem);
+  line-height: 1.06;
+  font-weight: 700;
+  color: #111827;
+}
+
+.lead {
+  margin: 28px auto 0;
+  max-width: 700px;
+  font-size: clamp(1.06rem, 1.5vw, 1.65rem);
+  color: var(--color-muted-foreground);
+  line-height: 1.5;
+}
+
+.layout {
+  margin-top: 124px;
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: start;
+}
+
+.formColumn,
+.infoColumn {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.formColumn {
+  display: grid;
+  gap: 0;
+}
+
+.form {
+  display: grid;
+  gap: 26px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #334155;
+}
+
+.button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.altContact {
+  margin-top: 64px;
+  display: grid;
+  gap: 20px;
+}
+
+.altContactHeading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.altContactRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.altContactItem {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  color: #0f172a;
+  background: transparent;
+}
+
+.altIconWrap {
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid #dbe2ea;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+  background: #ffffff;
+}
+
+.infoTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #0f172a;
+  line-height: 1.12;
+  margin: 0 0 28px;
+}
+
+.benefitsList {
+  list-style: none;
+  display: grid;
+  gap: 28px;
+  margin: 0;
+  padding: 0;
+}
+
+.benefitItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: #334155;
+  font-size: 0.98rem;
+  line-height: 1.5;
+}
+
+.benefitItem svg {
+  margin-top: 2px;
+  flex-shrink: 0;
+  color: #1d4ed8;
+}
+
+.offices {
+  margin-top: 72px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  max-width: 360px;
+}
+
+.officeCard {
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+}
+
+.officeHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #0f172a;
+}
+
+.officeHeader h3 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+.officeLines {
+  margin-top: 16px;
+  display: grid;
+  gap: 10px;
+}
+
+.officeLines p {
+  margin: 0;
+  font-size: 1.05rem;
+  line-height: 1.4;
+  color: #475569;
+}
+
+.error,
+.errorMessage {
+  color: #dc2626;
+  font-size: 0.8125rem;
+}
+
+.success {
+  color: #15803d;
+  font-size: 0.875rem;
+}
+
+@media (max-width: 1024px) {
+  .section {
+    padding: 144px 0 118px;
+  }
+
+  .layout {
+    grid-template-columns: 1fr;
+    margin-top: 88px;
+    gap: 44px;
+  }
+
+  .infoTitle {
+    font-size: 1.7rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 124px 0 96px;
+  }
+
+  .formColumn,
+  .infoColumn {
+    padding: 0;
+  }
+
+  .lead {
+    font-size: 1rem;
+    line-height: 1.6;
+    max-width: 520px;
+  }
+
+  .heading {
+    margin-top: 12px;
+  }
+
+  .layout {
+    margin-top: 68px;
+  }
+
+  .altContactHeading {
+    font-size: 1.5rem;
+  }
+
+  .altContact {
+    margin-top: 48px;
+  }
+
+  .officeHeader h3 {
+    font-size: 1.35rem;
+  }
+
+  .officeLines p {
+    font-size: 0.96rem;
+  }
+
+  .altIconWrap {
+    width: 40px;
+    height: 40px;
+  }
+}

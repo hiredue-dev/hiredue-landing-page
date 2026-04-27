@@ -1,0 +1,22 @@
+:root {
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --container-width: 1200px;
+  --page-padding: 20px;
+  --section-padding-y: 88px;
+}
+
+@media (max-width: 1024px) {
+  :root {
+    --section-padding-y: 72px;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --section-padding-y: 56px;
+    --page-padding: 16px;
+  }
+}

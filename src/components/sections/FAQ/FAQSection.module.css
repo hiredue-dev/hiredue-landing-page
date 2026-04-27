@@ -1,0 +1,117 @@
+.section {
+  background: transparent;
+}
+
+.list {
+  display: grid;
+  gap: 48px;
+  margin-top: 56px;
+}
+
+.item {
+  position: relative;
+  padding: 0 0 0 22px;
+  transition: color 260ms ease;
+}
+
+.item::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: #94a3b8;
+  transition: width 320ms ease-in-out, background-color 320ms ease-in-out;
+}
+
+.itemOpen {
+  color: var(--color-foreground);
+}
+
+.itemOpen::before {
+  width: 2px;
+  background: #2563eb;
+}
+
+.trigger {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  text-align: left;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.symbol {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  transform: rotate(45deg);
+  transition: transform 280ms ease-in-out;
+}
+
+.symbol::before,
+.symbol::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: #64748b;
+  border-radius: 999px;
+  transform: translate(-50%, -50%);
+  transition: background-color 280ms ease;
+}
+
+.symbol::before {
+  width: 14px;
+  height: 1px;
+}
+
+.symbol::after {
+  width: 1px;
+  height: 14px;
+}
+
+.symbolOpen {
+  transform: rotate(0deg);
+}
+
+.symbolOpen::before,
+.symbolOpen::after {
+  background: #2563eb;
+}
+
+.contentWrap {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 320ms ease-in-out;
+}
+
+.contentWrapOpen {
+  grid-template-rows: 1fr;
+}
+
+.content {
+  overflow: hidden;
+  padding-bottom: 0;
+  margin-top: 0;
+  color: #64748b;
+  font-family: var(--font-body);
+  font-size: 0.98rem;
+  font-weight: 300;
+  line-height: 1.75;
+}
+
+.contentWrapOpen .content {
+  margin-top: 12px;
+  padding-bottom: 0;
+}

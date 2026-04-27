@@ -1,9 +1,14 @@
-# *
-User-agent: *
+User-agent: Googlebot
 Allow: /
 
-# Host
-Host: https://www.hiredue.com
+User-agent: Bingbot
+Allow: /
 
-# Sitemaps
-Sitemap: https://www.hiredue.com/sitemap.xml
+User-agent: Twitterbot
+Allow: /
+
+User-agent: facebookexternalhit
+Allow: /
+
+User-agent: *
+Allow: /

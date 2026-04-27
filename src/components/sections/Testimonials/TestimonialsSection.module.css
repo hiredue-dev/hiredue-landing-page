@@ -1,0 +1,207 @@
+.content {
+  margin: 56px auto 0;
+  max-width: 1180px;
+}
+
+.marqueeWrap {
+  position: relative;
+  height: 430px;
+  overflow: hidden;
+  padding: 8px 0;
+}
+
+.marqueeWrap::before,
+.marqueeWrap::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  width: 120px;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.marqueeWrap::before {
+  left: 0;
+  background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.marqueeWrap::after {
+  right: 0;
+  background: linear-gradient(270deg, #ffffff 0%, rgba(255, 255, 255, 0) 100%);
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+.rowTrack {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  gap: 20px;
+  align-items: stretch;
+  animation-name: riseColumn;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-play-state: paused;
+  will-change: transform;
+}
+
+.play {
+  animation-play-state: running;
+}
+
+.toLeft {
+  animation-name: marqueeLeft;
+  animation-duration: 42s;
+}
+
+.toRight {
+  animation-name: marqueeRight;
+  animation-duration: 38s;
+}
+
+.marqueeWrap:hover .rowTrack {
+  animation-play-state: paused;
+}
+
+.card {
+  min-width: 360px;
+  max-width: 360px;
+  padding: 24px 22px;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  background: rgba(255, 255, 255, 0.96);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.quote {
+  margin: 0;
+  color: #111827;
+  font-size: 1.05rem;
+  line-height: 1.62;
+}
+
+.author {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(180deg, rgba(191, 219, 254, 0.64), rgba(147, 197, 253, 0.4));
+  color: #1d4ed8;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.name {
+  margin: 0;
+  color: #111827;
+  font-family: var(--font-heading);
+  font-size: 1.04rem;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.marqueeWrap:hover .name {
+  color: #2563eb;
+}
+
+.role {
+  margin: 2px 0 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+@keyframes marqueeLeft {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-33.3333%);
+  }
+}
+
+@keyframes marqueeRight {
+  0% {
+    transform: translateX(-33.3333%);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@media (max-width: 1180px) {
+  .marqueeWrap {
+    height: 400px;
+  }
+
+  .card {
+    min-width: 320px;
+    max-width: 320px;
+  }
+}
+
+@media (max-width: 700px) {
+  .content {
+    margin-top: 40px;
+  }
+
+  .marqueeWrap {
+    height: auto;
+    overflow: visible;
+    padding: 0;
+  }
+
+  .marqueeWrap::before,
+  .marqueeWrap::after {
+    display: none;
+  }
+
+  .rows {
+    gap: 16px;
+  }
+
+  .rowTrack {
+    animation: none;
+    width: 100%;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .rows .rowTrack:last-child {
+    display: none;
+  }
+
+  .card {
+    min-width: 0;
+    max-width: none;
+    padding: 22px 18px;
+  }
+
+  .quote {
+    font-size: 0.98rem;
+  }
+
+  .name {
+    font-size: 0.95rem;
+  }
+
+  .role {
+    font-size: 0.84rem;
+  }
+}
