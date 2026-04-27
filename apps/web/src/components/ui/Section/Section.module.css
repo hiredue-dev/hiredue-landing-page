@@ -1,0 +1,11 @@
+.section {
+  padding: var(--section-padding-y) 0;
+}
+
+.muted {
+  background: transparent;
+}
+
+.default {
+  background: transparent;
+}

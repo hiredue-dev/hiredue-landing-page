@@ -1,0 +1,50 @@
+.panel {
+  position: relative;
+  overflow: hidden;
+  padding: 80px;
+  border-radius: 1.5rem;
+  text-align: center;
+  background: var(--gradient-primary);
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(37, 99, 235, 0), rgba(37, 99, 235, 0), rgba(255, 255, 255, 0.1));
+  pointer-events: none;
+}
+
+.heading,
+.text,
+.button {
+  position: relative;
+  z-index: 1;
+}
+
+.heading {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  color: var(--color-primary-foreground);
+}
+
+.text {
+  margin-top: 16px;
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.button {
+  margin-top: 32px;
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.button:hover {
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.14);
+}
+
+@media (max-width: 768px) {
+  .panel {
+    padding: 48px 24px;
+  }
+}

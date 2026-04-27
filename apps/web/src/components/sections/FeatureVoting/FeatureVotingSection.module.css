@@ -1,0 +1,333 @@
+.section {
+  background: transparent;
+}
+
+.board {
+  margin-top: 38px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.headingWrap {
+  margin-bottom: 0;
+}
+
+.heading {
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+}
+
+.column {
+  min-width: 0;
+}
+
+.columnHeader {
+  margin: 0 0 10px;
+  color: #111827;
+  font-size: 0.69rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.filterBar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.filterTag {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(255, 255, 255, 0.9);
+  color: #475569;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 6px 11px;
+  transition: all 180ms ease;
+}
+
+.filterTag:hover {
+  border-color: rgba(37, 99, 235, 0.45);
+  color: #1d4ed8;
+}
+
+.filterTagActive {
+  color: #ffffff;
+  border-color: #2563eb;
+  background: #2563eb;
+}
+
+.columnBody {
+  max-height: 540px;
+  overflow-y: auto;
+  padding-right: 4px;
+  display: grid;
+  gap: 12px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.65) transparent;
+  align-content: start;
+}
+
+.columnBody::-webkit-scrollbar {
+  width: 8px;
+}
+
+.columnBody::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.65);
+  border-radius: 999px;
+}
+
+.buildCard,
+.voteCard,
+.backlogCard {
+  position: relative;
+  border-radius: 0.875rem;
+  border: 1px solid rgba(203, 213, 225, 0.82);
+  background: #ffffff;
+  padding: 18px;
+}
+
+.buildCard {
+  box-shadow: 0 3px 10px rgba(15, 23, 42, 0.035);
+}
+
+.buildCardActive {
+  border-color: rgba(59, 130, 246, 0.55);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.2),
+    0 7px 16px rgba(37, 99, 235, 0.08);
+}
+
+.statusBadge {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(59, 130, 246, 0.45);
+  background: rgba(239, 246, 255, 0.85);
+  color: #1e40af;
+  font-size: 0.63rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 3px 8px;
+}
+
+.statusDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2563eb;
+  animation: pulseDot 1.2s ease-in-out infinite;
+}
+
+.cardTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.iconWrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 0.675rem;
+  border: 1px solid rgba(148, 163, 184, 0.36);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(248, 250, 252, 0.95);
+  flex-shrink: 0;
+}
+
+.icon {
+  color: #2563eb;
+}
+
+.cardTitle {
+  margin: 0;
+  color: #111827;
+  font-size: 0.98rem;
+  line-height: 1.28;
+  letter-spacing: -0.01em;
+}
+
+.cardText {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 0.88rem;
+  line-height: 1.42;
+}
+
+.progressMeta {
+  margin-top: 12px;
+  display: flex;
+  justify-content: space-between;
+  color: #334155;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.progressTrack {
+  margin-top: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(203, 213, 225, 0.65);
+  overflow: hidden;
+}
+
+.progressFill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #2563eb 0%, #3b82f6 100%);
+}
+
+.subfeatures {
+  margin: 12px 0 0;
+  padding-left: 16px;
+  color: #475569;
+  font-size: 0.81rem;
+  line-height: 1.42;
+}
+
+.subfeatures li + li {
+  margin-top: 4px;
+}
+
+.voteCard {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+  cursor: pointer;
+}
+
+.voteCard:hover {
+  border-color: rgba(59, 130, 246, 0.45);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.055);
+}
+
+.voteMainRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.voteCount {
+  margin: 2px 0 0;
+  color: #64748b;
+  font-size: 0.8rem;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+.voteActions {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.voteButton {
+  border: 1px solid rgba(59, 130, 246, 0.42);
+  background: #ffffff;
+  color: #1d4ed8;
+  border-radius: 0.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.71rem;
+  font-weight: 700;
+  padding: 6px 9px;
+  transition: all 180ms ease;
+}
+
+.voteButton:hover {
+  background: rgba(239, 246, 255, 0.8);
+}
+
+.voteButtonDone {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.expandIcon {
+  color: #64748b;
+  transition: transform 180ms ease;
+}
+
+.expandIconOpen {
+  transform: rotate(180deg);
+}
+
+.expandPanel {
+  overflow: hidden;
+}
+
+.expandPanel p {
+  margin: 10px 0 0;
+  color: #475569;
+  font-size: 0.84rem;
+  line-height: 1.42;
+}
+
+.backlogCard {
+  opacity: 0.84;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 14px;
+  padding-bottom: 14px;
+}
+
+.voteCard .cardTitle,
+.backlogCard .cardTitle {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@keyframes pulseDot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.55;
+    transform: scale(0.7);
+  }
+}
+
+@media (max-width: 1120px) {
+  .board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+  }
+}
+
+@media (max-width: 860px) {
+  .board {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .columnBody {
+    max-height: none;
+    overflow: visible;
+    padding-right: 0;
+  }
+
+  .buildCard,
+  .voteCard,
+  .backlogCard {
+    padding: 16px;
+  }
+
+  .cardTitle {
+    font-size: 0.94rem;
+  }
+}

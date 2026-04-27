@@ -1,0 +1,39 @@
+body {
+  position: relative;
+  background: #f8faff;
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 12%, rgba(37, 99, 235, 0.14), rgba(37, 99, 235, 0.04) 38%, rgba(37, 99, 235, 0) 68%),
+    linear-gradient(180deg, #f8faff 0%, #f8faff 36%, #ffffff 100%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
+  font-family: var(--font-heading);
+}
+
+p {
+  margin: 0;
+}
+
+#root {
+  min-height: 100vh;
+  position: relative;
+  z-index: 0;
+}

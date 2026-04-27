@@ -1,0 +1,315 @@
+.section {
+  position: relative;
+  overflow: hidden;
+  padding: 132px 0 72px;
+}
+
+.background {
+  position: absolute;
+  inset: 0;
+  background: transparent;
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  width: min(var(--container-width), calc(100% - (var(--page-padding) * 2)));
+  margin: 0 auto;
+  z-index: 2;
+}
+
+.grid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.grid > div {
+  width: min(780px, 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.announcementPill {
+  width: fit-content;
+  max-width: 100%;
+  min-height: 34px;
+  padding: 3px 6px;
+  border-radius: 999px;
+  border: 1px solid rgba(37, 99, 235, 0.24);
+  background: rgba(255, 255, 255, 0.9);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  backdrop-filter: blur(8px);
+}
+
+.announcementTag {
+  min-height: 22px;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: rgba(37, 99, 235, 0.12);
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: clamp(0.72rem, 0.72vw, 0.84rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.announcementDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--color-primary);
+  box-shadow: none;
+  animation: announcement-dot-blink 1.2s steps(1, end) infinite;
+}
+
+.announcementText {
+  color: #58627a;
+  font-size: clamp(0.78rem, 0.9vw, 0.98rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+}
+
+.heading {
+  margin-top: 18px;
+  max-width: 760px;
+  font-size: clamp(2.9rem, 6.2vw, 3.9rem);
+  line-height: 1.1;
+  font-weight: 700;
+}
+
+.gradientText {
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.description {
+  margin-top: 18px;
+  max-width: 640px;
+  font-size: 1.02rem;
+  line-height: 1.56;
+  color: var(--color-muted-foreground);
+}
+
+.microTrust {
+  margin-top: 12px;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: #848da1;
+}
+
+.waitlistInline {
+  margin-top: 14px;
+  width: min(640px, 100%);
+  display: flex;
+  gap: 8px;
+}
+
+.waitlistInput {
+  flex: 1;
+  min-height: 50px;
+}
+
+.waitlistInlineButton {
+  min-height: 50px;
+  border-radius: 0.85rem;
+  padding-inline: 18px;
+  white-space: nowrap;
+}
+
+.trustBadge {
+  margin-top: 14px;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.trustBadgeAvatars {
+  display: flex;
+  align-items: center;
+}
+
+.trustBadgeAvatarWrap {
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  border: 2px solid #ffffff;
+  overflow: hidden;
+  background: #dbe5fb;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+}
+
+.trustBadgeAvatarWrap + .trustBadgeAvatarWrap {
+  margin-left: -8px;
+}
+
+.trustBadgeAvatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.trustBadgeText {
+  margin: 0;
+  color: #5f697f;
+  font-size: 0.88rem;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+  white-space: nowrap;
+}
+
+.trustBadgeText strong {
+  color: #101727;
+  font-weight: 700;
+}
+
+@media (max-width: 1024px) {
+  .section {
+    padding-top: 124px;
+    padding-bottom: 40px;
+  }
+
+  .grid > div {
+    width: min(720px, 100%);
+  }
+
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding: 114px 0 32px;
+  }
+
+  .announcementPill {
+    min-height: 30px;
+    padding: 2px 5px;
+    gap: 4px;
+  }
+
+  .announcementTag {
+    min-height: 20px;
+    padding: 0 6px;
+    font-size: 0.68rem;
+  }
+
+  .announcementDot {
+    width: 4px;
+    height: 4px;
+  }
+
+  .announcementText {
+    font-size: 0.68rem;
+  }
+
+  .heading {
+    font-size: clamp(2.6rem, 12vw, 3.4rem);
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .microTrust {
+    font-size: 0.8rem;
+  }
+
+  .waitlistInline {
+    margin-top: 10px;
+    flex-direction: column;
+  }
+
+  .waitlistInlineButton {
+    width: 100%;
+  }
+
+  .trustBadge {
+    margin-top: 12px;
+    min-height: 0;
+    padding: 0;
+    gap: 8px;
+  }
+
+  .trustBadgeAvatarWrap {
+    width: 26px;
+    height: 26px;
+  }
+
+  .trustBadgeAvatarWrap + .trustBadgeAvatarWrap {
+    margin-left: -7px;
+  }
+
+  .trustBadgeText {
+    font-size: 0.8rem;
+    white-space: normal;
+  }
+
+  .visualWrap {
+    min-height: 276px;
+    margin-top: 2px;
+    justify-content: center;
+  }
+
+  .visualWrap::after {
+    width: 168px;
+    height: 52px;
+    bottom: 18px;
+  }
+
+  .sphereWrap {
+    width: 248px;
+    height: 248px;
+    transform: translateY(-2px);
+  }
+
+  .splinePlayer {
+    width: 214px;
+    height: 214px;
+  }
+
+  .sphereShadow {
+    bottom: 54px;
+    width: 72px;
+    height: 16px;
+  }
+
+  .visualBaseGlow {
+    bottom: 56px;
+    width: 118px;
+    height: 34px;
+  }
+
+  .rippleSvg {
+    left: 50%;
+    width: 312px;
+    height: 120px;
+    transform: translateX(-50%);
+  }
+
+}
+
+@keyframes announcement-dot-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
