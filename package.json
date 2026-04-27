@@ -1,49 +1,34 @@
 {
   "name": "hiredue-landing-page",
-  "version": "0.1.0",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "postbuild": "next-sitemap",
+    "dev": "next dev --port 8080",
+    "build": "next build",
     "start": "next start",
-    "lint": "biome check",
-    "format": "biome format --write"
+    "lint": "next lint",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
   },
   "dependencies": {
-    "@biomejs/biome": "^2.2.5",
-    "@radix-ui/react-accordion": "^1.2.0",
-    "@radix-ui/react-avatar": "^1.1.0",
-    "@radix-ui/react-dialog": "^1.1.1",
-    "@radix-ui/react-dropdown-menu": "^2.1.1",
-    "@radix-ui/react-icons": "^1.3.2",
-    "@radix-ui/react-navigation-menu": "^1.2.0",
-    "@radix-ui/react-slot": "^1.2.3",
-    "class-variance-authority": "^0.7.0",
-    "clsx": "^2.1.1",
-    "gsap": "^3.13.0",
-    "lucide-react": "^0.441.0",
-    "motion": "^12.23.26",
-    "next": "^15.4.10",
-    "next-sitemap": "^4.2.3",
-    "next-themes": "^0.4.6",
-    "react": "19.1.1",
-    "react-dom": "19.1.1",
-    "react-icons": "^5.5.0",
-    "tailwind-merge": "^2.5.3",
-    "tw-animate-css": "^1.0.7"
+    "@dotlottie/react-player": "^1.6.19",
+    "@lottiefiles/dotlottie-react": "^0.18.7",
+    "@splinetool/react-spline": "^4.1.0",
+    "@splinetool/runtime": "^1.12.69",
+    "framer-motion": "^12.36.0",
+    "lucide-react": "^0.462.0",
+    "next": "^15.3.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4.0.12",
-    "@types/node": "^20",
-    "@types/react": "19.1.1",
-    "@types/react-dom": "19.1.1",
-    "postcss": "^8",
-    "tailwindcss": "^4.0.12",
-    "typescript": "^5"
-  },
-  "overrides": {
-    "@types/react": "19.1.1",
-    "@types/react-dom": "19.1.1"
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "eslint-config-next": "^15.3.1",
+    "eslint-plugin-react-hooks": "^5.2.0",
+    "globals": "^15.15.0",
+    "prettier": "^3.6.2"
   }
 }

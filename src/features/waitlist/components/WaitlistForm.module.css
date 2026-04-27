@@ -1,0 +1,29 @@
+.form {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.submit {
+  width: 100%;
+}
+
+.error,
+.errorMessage {
+  color: #dc2626;
+  font-size: 0.8125rem;
+}
+
+.success {
+  color: #15803d;
+  font-size: 0.875rem;
+}

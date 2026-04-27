@@ -1,0 +1,7 @@
+@import "./tokens/colors.css";
+@import "./tokens/spacing.css";
+@import "./tokens/typography.css";
+@import "./tokens/motion.css";
+@import "./foundations/reset.css";
+@import "./foundations/globals.css";
+@import "./motion/animations.css";
