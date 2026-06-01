@@ -21,6 +21,35 @@ export const testimonialsContent = {
       role: "Data Analyst",
       quote: "Privacy-first approach gave me confidence. I always felt in control of my data while HireDue did the heavy lifting.",
     },
+    {
+      name: "Sneha Reddy",
+      role: "Marketing Associate",
+      quote: "No more messy spreadsheets. HireDue tracks every application and follow-up so nothing slips through the cracks.",
+    },
+    {
+      name: "Arjun Nair",
+      role: "Backend Developer",
+      quote: "It tailors each application to the role, so they actually feel personal. My interview calls nearly doubled in two weeks.",
+    },
+    {
+      name: "Megha Joshi",
+      role: "UX Researcher",
+      quote: "Per-role resume tuning was the feature I never knew I needed. My response rate jumped almost overnight.",
+    },
+    {
+      name: "Vikram Iyer",
+      role: "DevOps Engineer",
+      quote: "Setup took five minutes and HireDue handled the rest while I focused on prepping for interviews.",
+    },
+    {
+      name: "Fatima Khan",
+      role: "Business Analyst",
+      quote: "As a career switcher, the role matching surfaced openings I would never have thought to search for myself.",
+    },
+    {
+      name: "Aditya Verma",
+      role: "Recent Graduate",
+      quote: "I landed my first full-time offer within a month. HireDue made the whole job hunt feel far less overwhelming.",
+    },
   ],
 };
-

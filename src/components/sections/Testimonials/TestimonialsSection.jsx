@@ -16,7 +16,7 @@ const TestimonialsSection = () => {
   const rows = useMemo(() => {
     const base = testimonialsContent.items;
     const primary = [...base, ...base, ...base];
-    const secondaryBase = rotateFrom(base, 2 % base.length);
+    const secondaryBase = rotateFrom(base, Math.floor(base.length / 2));
     const secondary = [...secondaryBase, ...secondaryBase, ...secondaryBase];
     return [primary, secondary];
   }, []);

@@ -29,8 +29,6 @@ export const careersPageContent = {
       team: "Founder's Office",
       location: "Hybrid (Bengaluru)",
       type: "Internship",
-      summary:
-        "Own brand storytelling, content experiments, and UI/UX improvements across web and launch surfaces in close collaboration with founders.",
     },
     {
       id: "founders-office-management-outreach-intern",
@@ -38,8 +36,6 @@ export const careersPageContent = {
       team: "Founder's Office",
       location: "Hybrid (Bengaluru)",
       type: "Internship",
-      summary:
-        "Support strategic operations, partnerships, and outreach initiatives to drive hiring, growth, and execution velocity across teams.",
     },
     {
       id: "sde-intern",
@@ -47,8 +43,6 @@ export const careersPageContent = {
       team: "Engineering",
       location: "Hybrid (Bengaluru)",
       type: "Internship",
-      summary:
-        "Build and ship product features, improve frontend reliability, and contribute to core workflows that power automated job applications.",
     },
   ],
 };

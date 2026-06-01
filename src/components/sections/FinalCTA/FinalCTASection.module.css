@@ -17,7 +17,7 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(40% 60% at 90% 10%, rgba(124, 58, 237, 0.35), transparent 60%),
+    radial-gradient(40% 60% at 90% 10%, rgba(59, 130, 246, 0.35), transparent 60%),
     radial-gradient(50% 70% at 10% 90%, rgba(37, 99, 235, 0.35), transparent 60%),
     linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
   box-shadow:

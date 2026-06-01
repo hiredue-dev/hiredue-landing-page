@@ -102,7 +102,6 @@ const CareersPage = () => {
                   <p className={styles.openingMeta}>
                     {opening.team} · {opening.location} · {opening.type}
                   </p>
-                  <p className={styles.openingSummary}>{opening.summary}</p>
                 </article>
               ))}
             </div>

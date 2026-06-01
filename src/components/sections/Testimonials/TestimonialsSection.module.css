@@ -5,7 +5,6 @@
 
 .marqueeWrap {
   position: relative;
-  height: 430px;
   overflow: hidden;
   padding: 8px 0;
 }
@@ -15,8 +14,8 @@
   content: "";
   position: absolute;
   top: 0;
+  bottom: 0;
   width: 120px;
-  height: 100%;
   z-index: 2;
   pointer-events: none;
 }
@@ -117,7 +116,7 @@
   transition: color 0.2s ease;
 }
 
-.marqueeWrap:hover .name {
+.card:hover .name {
   color: #2563eb;
 }
 
@@ -146,10 +145,6 @@
 }
 
 @media (max-width: 1180px) {
-  .marqueeWrap {
-    height: 400px;
-  }
-
   .card {
     min-width: 320px;
     max-width: 320px;
