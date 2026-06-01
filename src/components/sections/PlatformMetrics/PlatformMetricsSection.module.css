@@ -70,7 +70,12 @@
   left: 10%;
   right: 10%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.4), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(37, 99, 235, 0.4),
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -135,14 +140,18 @@
 }
 
 @media (max-width: 520px) {
-  .grid {
-    grid-template-columns: 1fr;
-  }
+  /* Keep the 2x2 grid on phones (columns + dividers inherited from the
+     <=900 rules) and center each metric inside its card. */
   .cell {
-    border-right: none;
-    border-bottom: 1px solid var(--pm-line-2);
+    padding: 40px 14px;
+    text-align: center;
   }
-  .cell:last-child {
-    border-bottom: none;
+
+  .cell::before {
+    display: none;
+  }
+
+  .num {
+    font-size: clamp(1.5rem, 6vw, 2rem);
   }
 }

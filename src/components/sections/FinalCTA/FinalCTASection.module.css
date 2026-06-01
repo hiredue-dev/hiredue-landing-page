@@ -17,8 +17,16 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(40% 60% at 90% 10%, rgba(59, 130, 246, 0.35), transparent 60%),
-    radial-gradient(50% 70% at 10% 90%, rgba(37, 99, 235, 0.35), transparent 60%),
+    radial-gradient(
+      40% 60% at 90% 10%,
+      rgba(59, 130, 246, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      50% 70% at 10% 90%,
+      rgba(37, 99, 235, 0.35),
+      transparent 60%
+    ),
     linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.04),
@@ -39,8 +47,12 @@
 }
 
 @keyframes ctaFloat {
-  0%   { transform: translate(0, 0); }
-  100% { transform: translate(-5%, 5%); }
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-5%, 5%);
+  }
 }
 
 .block::after {
@@ -52,7 +64,11 @@
     linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
   mask-image: radial-gradient(ellipse at 80% 0%, black, transparent 70%);
-  -webkit-mask-image: radial-gradient(ellipse at 80% 0%, black, transparent 70%);
+  -webkit-mask-image: radial-gradient(
+    ellipse at 80% 0%,
+    black,
+    transparent 70%
+  );
   z-index: -1;
 }
 
@@ -113,7 +129,10 @@
   color: #fff;
   outline: none;
   font-family: inherit;
-  transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .input::placeholder {
@@ -142,7 +161,11 @@
   cursor: pointer;
   font-family: inherit;
   white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .submit:hover {
@@ -172,6 +195,13 @@
 @media (max-width: 600px) {
   .form {
     flex-direction: column;
+  }
+  .input {
+    /* In the column layout flex:1 would collapse the height to flex-basis:0,
+       so opt out and let the input keep its own height (matching the button). */
+    flex: none;
+    width: 100%;
+    height: 48px;
   }
   .submit {
     width: 100%;

@@ -50,7 +50,7 @@ const FinalCTASection = () => {
         </form>
 
         <div className={styles.micro}>
-          300+ users already onboarded · cohort #4 closes Friday
+          300+ users already onboarded
         </div>
       </motion.div>
     </Section>

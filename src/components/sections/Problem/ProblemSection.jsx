@@ -1,25 +1,32 @@
-'use client';
+"use client";
 
 import { AnimatePresence, motion, useInView } from "framer-motion";
+import {
+  BellRing,
+  Clock,
+  Copy,
+  Gauge,
+  Inbox,
+  Radar,
+  Scroll,
+  Zap,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import Section from "@/components/ui/Section/Section.jsx";
 import SectionHeading from "@/components/ui/SectionHeading/SectionHeading.jsx";
 import { problemContent } from "@/content/home/problemContent.js";
 import styles from "./ProblemSection.module.css";
 
-const problemIcons = [
-  "/assets/Problem/1.png",
-  "/assets/Problem/2.png",
-  "/assets/Problem/3.png",
-  "/assets/Problem/4.png",
-];
-
-const solutionIcons = [
-  "/assets/Solutions/5.png",
-  "/assets/Solutions/6.png",
-  "/assets/Solutions/7.png",
-  "/assets/Solutions/8.png",
-];
+const iconMap = {
+  scrollPain: Scroll,
+  radarSolution: Radar,
+  copyPain: Copy,
+  boltSolution: Zap,
+  clockPain: Clock,
+  bellSolution: BellRing,
+  inboxPain: Inbox,
+  gaugeSolution: Gauge,
+};
 
 const ProblemSection = () => {
   const ref = useRef(null);
@@ -50,9 +57,11 @@ const ProblemSection = () => {
 
       <div className={styles.grid}>
         {problemContent.cards.map((card, index) => {
-          const isFlipped = supportsHover ? hoveredIndex === index : Boolean(tappedFlips[card.id]);
-          const frontIconSrc = problemIcons[index] || problemIcons[0];
-          const backIconSrc = solutionIcons[index] || solutionIcons[0];
+          const isFlipped = supportsHover
+            ? hoveredIndex === index
+            : Boolean(tappedFlips[card.id]);
+          const FrontIcon = iconMap[card.front.iconKey] || Scroll;
+          const BackIcon = iconMap[card.back.iconKey] || Radar;
           return (
             <motion.button
               key={card.id}
@@ -60,11 +69,20 @@ const ProblemSection = () => {
               className={styles.perspectiveCard}
               onHoverStart={() => supportsHover && setHoveredIndex(index)}
               onHoverEnd={() => supportsHover && setHoveredIndex(-1)}
-              onClick={() => !supportsHover && setTappedFlips((prev) => ({ ...prev, [card.id]: !prev[card.id] }))}
+              onClick={() =>
+                !supportsHover &&
+                setTappedFlips((prev) => ({
+                  ...prev,
+                  [card.id]: !prev[card.id],
+                }))
+              }
               onKeyDown={(event) => {
                 if (event.key === "Enter" || event.key === " ") {
                   event.preventDefault();
-                  setTappedFlips((prev) => ({ ...prev, [card.id]: !prev[card.id] }));
+                  setTappedFlips((prev) => ({
+                    ...prev,
+                    [card.id]: !prev[card.id],
+                  }));
                 }
               }}
               initial={{ opacity: 0, y: 22 }}
@@ -78,9 +96,11 @@ const ProblemSection = () => {
                 animate={{ rotateY: isFlipped ? 180 : 0 }}
                 transition={{ type: "spring", stiffness: 260, damping: 20 }}
               >
-                <div className={`${styles.cardFace} ${styles.cardFront}`.trim()}>
+                <div
+                  className={`${styles.cardFace} ${styles.cardFront}`.trim()}
+                >
                   <div className={styles.iconWrap} aria-hidden="true">
-                    <img src={frontIconSrc} alt="" className={styles.iconImage} loading="lazy" />
+                    <FrontIcon className={styles.icon} strokeWidth={1.8} />
                   </div>
                   <h3 className={styles.cardTitle}>{card.front.title}</h3>
                   <p className={styles.cardText}>{card.front.desc}</p>
@@ -88,7 +108,7 @@ const ProblemSection = () => {
 
                 <div className={`${styles.cardFace} ${styles.cardBack}`.trim()}>
                   <div className={styles.iconWrap} aria-hidden="true">
-                    <img src={backIconSrc} alt="" className={styles.iconImage} loading="lazy" />
+                    <BackIcon className={styles.icon} strokeWidth={1.8} />
                   </div>
                   <h3 className={styles.cardTitle}>{card.back.title}</h3>
                   <p className={styles.cardText}>{card.back.desc}</p>
