@@ -9,6 +9,7 @@ import PlatformMetricsSection from "@/components/sections/PlatformMetrics/Platfo
 import TestimonialsSection from "@/components/sections/Testimonials/TestimonialsSection.jsx";
 import FeatureVotingSection from "@/components/sections/FeatureVoting/FeatureVotingSection.jsx";
 import FAQSection from "@/components/sections/FAQ/FAQSection.jsx";
+import FinalCTASection from "@/components/sections/FinalCTA/FinalCTASection.jsx";
 
 const HomePage = () => (
   <div className={styles.page}>
@@ -22,6 +23,7 @@ const HomePage = () => (
     <FeatureVotingSection />
     <TestimonialsSection />
     <FAQSection />
+    <FinalCTASection />
   </div>
 );
 

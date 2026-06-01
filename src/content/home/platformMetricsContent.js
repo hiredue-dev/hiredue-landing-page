@@ -1,5 +1,6 @@
 export const platformMetricsContent = {
-  heading: "Momentum in numbers",
+  eyebrow: "Momentum in numbers",
+  heading: "Already shipping for real job seekers.",
   metrics: [
     { label: "Jobs Found", value: 20000, suffix: "+" },
     { label: "Applications Sent", value: 8000, suffix: "+" },
@@ -7,4 +8,3 @@ export const platformMetricsContent = {
     { label: "Beta Users", value: 1500, suffix: "+" },
   ],
 };
-
