@@ -14,17 +14,17 @@ export const featuresGridContent = {
   ],
   bottomRow: [
     {
-      visualKey: "collaboration",
+      visualKey: "outreach",
       title: "Recruiter Outreach",
       desc: "Sends personalized messages to recruiters.",
     },
     {
-      visualKey: "automation",
+      visualKey: "autoApply",
       title: "Auto Apply",
       desc: "Handles repetitive application workflows.",
     },
     {
-      visualKey: "security",
+      visualKey: "tracking",
       title: "Application Tracking",
       desc: "Monitor every job, message, and application in one place.",
     },
