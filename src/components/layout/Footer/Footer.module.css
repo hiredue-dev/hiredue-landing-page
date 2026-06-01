@@ -30,7 +30,6 @@
 }
 
 .description,
-.support,
 .link,
 .copyright {
   color: var(--color-muted-foreground);
@@ -42,13 +41,14 @@
   line-height: 1.7;
 }
 
-.support {
-  margin-top: 12px;
-  font-size: 0.8125rem;
+.ctaRow {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
 }
 
 .waitlistCta {
-  margin-top: 16px;
   width: fit-content;
 }
 

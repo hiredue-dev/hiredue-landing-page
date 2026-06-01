@@ -2,7 +2,7 @@
   width: 100%;
   max-width: 1140px;
   margin: 0 auto;
-  padding: 64px 24px 96px;
+  padding: 112px 24px 96px;
 }
 
 .header {
@@ -91,10 +91,10 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
+  align-items: center;
 }
 
 .card {
-  position: relative;
   border: 1px solid var(--color-border);
   background: var(--color-background);
   border-radius: 1.25rem;
@@ -110,24 +110,32 @@
   border-color: rgba(37, 99, 235, 0.5);
 }
 
-.featured {
-  border-color: var(--color-primary);
-  box-shadow: 0 18px 50px rgba(37, 99, 235, 0.16);
+.featuredWrapper {
+  display: flex;
+  flex-direction: column;
+  margin-block: -20px;
 }
 
-.featuredBadge {
-  position: absolute;
-  top: -10px;
-  left: 50%;
-  transform: translateX(-50%);
+.featuredHeader {
   background: var(--color-primary);
   color: #fff;
-  padding: 4px 12px;
-  border-radius: 999px;
-  font-size: 0.7rem;
+  text-align: center;
+  padding: 12px 24px;
+  border-radius: 1.25rem 1.25rem 0 0;
+  font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
+}
+
+.featured {
+  border: 2px solid var(--color-primary);
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  box-shadow: 0 18px 50px rgba(37, 99, 235, 0.18);
+  flex: 1;
+  padding-block: 32px;
 }
 
 .cardName {

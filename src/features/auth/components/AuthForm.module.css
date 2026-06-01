@@ -152,7 +152,6 @@
 }
 
 .footerLink {
-  margin-left: 6px;
   color: var(--color-foreground);
   font-weight: 600;
   text-decoration: none;

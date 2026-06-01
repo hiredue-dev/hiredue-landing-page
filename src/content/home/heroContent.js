@@ -16,9 +16,18 @@ export const heroContent = {
     highlight: "300+",
     suffix: "Beta users",
     avatars: [
-      { src: "/assets/AboutUs/RishabhBagaria.png", alt: "Community member 1" },
-      { src: "/assets/AboutUs/SanglapKundu.png", alt: "Community member 2" },
-      { src: "/assets/AboutUs/ShivamKasera.png", alt: "Community member 3" },
+      {
+        src: "https://ui-avatars.com/api/?name=Aarav+Sharma&background=6366f1&color=fff&bold=true&size=128",
+        alt: "Community member 1",
+      },
+      {
+        src: "https://ui-avatars.com/api/?name=Priya+Patel&background=ec4899&color=fff&bold=true&size=128",
+        alt: "Community member 2",
+      },
+      {
+        src: "https://ui-avatars.com/api/?name=Rohan+Mehta&background=10b981&color=fff&bold=true&size=128",
+        alt: "Community member 3",
+      },
     ],
   },
   emailPlaceholder: "Enter your email",

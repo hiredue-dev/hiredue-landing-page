@@ -159,6 +159,10 @@
   margin-bottom: 18px;
 }
 
+.highlight {
+  color: var(--blue);
+}
+
 .sectionTitle {
   margin: 0 0 26px;
   font-size: clamp(1.9rem, 3.4vw, 2.75rem);

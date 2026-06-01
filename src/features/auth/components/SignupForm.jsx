@@ -231,9 +231,9 @@ export default function SignupForm() {
             />
             <span>
               I agree to the{" "}
-              <Link href="/terms" className={styles.footerLink}>Terms</Link>
+              <Link href="/terms" className={styles.footerLink} target="_blank" rel="noopener noreferrer">Terms</Link>
               {" "}and{" "}
-              <Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link>.
+              <Link href="/privacy" className={styles.footerLink} target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
             </span>
           </label>
 

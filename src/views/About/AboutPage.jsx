@@ -6,6 +6,11 @@ import { ArrowUpRight, Linkedin } from "lucide-react";
 import styles from "./AboutPage.module.css";
 import { aboutPageContent } from "@/content/pages/aboutPageContent.js";
 
+const renderHighlighted = (text) =>
+  text.split(/\[([^\]]+)\]/).map((part, i) =>
+    i % 2 === 1 ? <span key={i} className={styles.highlight}>{part}</span> : part
+  );
+
 const fadeUp = {
   hidden: { opacity: 0, y: 18 },
   visible: (delay = 0) => ({
@@ -16,7 +21,7 @@ const fadeUp = {
 };
 
 const AboutPage = () => {
-  const { hero, origin, vision, principles, numbers, team, closing } = aboutPageContent;
+  const { hero, origin, vision, principles, team, closing } = aboutPageContent;
 
   return (
     <article className={styles.page}>
@@ -50,7 +55,7 @@ const AboutPage = () => {
             animate="visible"
             custom={0.12}
           >
-            {hero.heading}
+            {renderHighlighted(hero.heading)}
           </motion.h1>
 
           <motion.p
@@ -82,7 +87,7 @@ const AboutPage = () => {
         <section className={styles.section} aria-labelledby="origin-title">
           <span className={styles.sectionKicker}>{origin.kicker}</span>
           <h2 id="origin-title" className={styles.sectionTitle}>
-            {origin.title}
+            {renderHighlighted(origin.title)}
           </h2>
           <div className={styles.proseColumn}>
             {origin.body.map((para, i) => (
@@ -121,7 +126,7 @@ const AboutPage = () => {
         <section className={styles.section} aria-labelledby="principles-title">
           <span className={styles.sectionKicker}>{principles.kicker}</span>
           <h2 id="principles-title" className={styles.sectionTitle}>
-            {principles.title}
+            {renderHighlighted(principles.title)}
           </h2>
           <ul className={styles.principlesList}>
             {principles.items.map((item, i) => (
@@ -143,29 +148,10 @@ const AboutPage = () => {
           </ul>
         </section>
 
-        <section className={styles.numbersBand} aria-label="By the numbers">
-          <span className={styles.sectionKicker}>{numbers.kicker}</span>
-          <ul className={styles.numbersGrid}>
-            {numbers.items.map((n, i) => (
-              <motion.li
-                key={n.label}
-                className={styles.numberItem}
-                initial={{ opacity: 0, y: 14 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.55, delay: i * 0.07, ease: "easeOut" }}
-              >
-                <span className={styles.numberValue}>{n.value}</span>
-                <span className={styles.numberLabel}>{n.label}</span>
-              </motion.li>
-            ))}
-          </ul>
-        </section>
-
-        <section className={styles.section} aria-labelledby="team-title">
+<section className={styles.section} aria-labelledby="team-title">
           <span className={styles.sectionKicker}>{team.kicker}</span>
           <h2 id="team-title" className={styles.sectionTitle}>
-            {team.title}
+            {renderHighlighted(team.title)}
           </h2>
           <p className={styles.teamNote}>{team.note}</p>
 

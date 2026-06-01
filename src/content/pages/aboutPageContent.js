@@ -2,7 +2,7 @@ export const aboutPageContent = {
   hero: {
     pill: "Our Story",
     eyebrow: "About HireDue",
-    heading: "Building the future of the job search.",
+    heading: "Building the [future] of the job search.",
     subheading:
       "An AI-first workflow that removes the busywork of applying so candidates can focus on what matters — preparing, interviewing, and landing the role.",
     meta: [
@@ -13,7 +13,7 @@ export const aboutPageContent = {
   },
   origin: {
     kicker: "01 — Origin",
-    title: "Built by people who lost weekends to job boards.",
+    title: "Built by people who lost [weekends] to [job boards].",
     body: [
       "We watched friends rewrite the same resume thirty different ways for thirty different roles — copy-pasting cover letters, fighting form fields, second-guessing whether the role was even a fit.",
       "Hiring teams weren't the villains. Candidates weren't lazy. The workflow was just broken — stitched together by tools that never spoke to each other.",
@@ -46,7 +46,7 @@ export const aboutPageContent = {
   },
   principles: {
     kicker: "03 — Principles",
-    title: "Three commitments we won't negotiate on.",
+    title: "Three commitments we [won't negotiate] on.",
     items: [
       {
         number: "01",
@@ -82,7 +82,7 @@ export const aboutPageContent = {
   },
   team: {
     kicker: "04 — Builders",
-    title: "Three founders. One stubborn problem.",
+    title: "Three founders. One [stubborn] problem.",
     note: "Reach out — we read every message.",
     members: [
       {

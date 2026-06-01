@@ -7,7 +7,7 @@ export const careersPageContent = {
       "Help us build the AI layer for job seekers and ship thoughtful products at startup speed.",
   },
   quote: {
-    text: "I am proud to be part of a team creating a thoughtfully crafted product centered on real user outcomes.",
+    text: "We are proud to be part of a team creating a thoughtfully crafted product centered on real user outcomes.",
     author: "Beata",
     role: "Engineering",
   },
@@ -29,6 +29,7 @@ export const careersPageContent = {
       team: "Founder's Office",
       location: "Hybrid (Bengaluru)",
       type: "Internship",
+      jdUrl: "https://drive.google.com/file/d/15xifbyFZcdl_-nRUENCMjUqrJzsuAkrz/view?usp=sharing",
     },
     {
       id: "founders-office-management-outreach-intern",
@@ -36,6 +37,7 @@ export const careersPageContent = {
       team: "Founder's Office",
       location: "Hybrid (Bengaluru)",
       type: "Internship",
+      jdUrl: "https://drive.google.com/file/d/1FHu_9kPQB9FlngGlzwNkO6AAWi5hrusv/view?usp=sharing",
     },
     {
       id: "sde-intern",
@@ -43,6 +45,7 @@ export const careersPageContent = {
       team: "Engineering",
       location: "Hybrid (Bengaluru)",
       type: "Internship",
+      jdUrl: "https://drive.google.com/file/d/1NbEbOi_vlQUe35a12WDeAgNYdqedLOsq/view?usp=sharing",
     },
   ],
 };

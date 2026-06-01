@@ -45,6 +45,7 @@ export const contactConfig = {
         "36, Infantry Road",
         "Bengaluru, Karnataka 560001",
       ],
+      mapsUrl: "https://maps.google.com/maps?q=WeWork+Prestige+Central,+36+Infantry+Road,+Bengaluru,+Karnataka+560001",
     },
   ],
 };

@@ -30,25 +30,27 @@ function billingLabel(price) {
   return `/ ${count} ${interval.toLowerCase()}s`;
 }
 
+// {
+//   product.description && (
+//     <p className={styles.cardDescription}>
+//       {product.description.length > 140
+//         ? `${product.description.slice(0, 140)}…`
+//         : product.description}
+//     </p>
+//   );
+// }
+
 export default function PlanCard({ product, isFeatured, onSelect, loading, disabled }) {
   const { price } = product;
   const discountedMinor = price?.discount
     ? Math.round(price.price * (1 - price.discount / 100))
     : null;
 
-  return (
-    <article className={`${styles.card} ${isFeatured ? styles.featured : ""}`.trim()}>
-      {isFeatured && <span className={styles.featuredBadge}>Best Value</span>}
-
+  const cardBody = (
+    <>
       <div>
         <h3 className={styles.cardName}>{product.name}</h3>
-        {product.description && (
-          <p className={styles.cardDescription}>
-            {product.description.length > 140
-              ? `${product.description.slice(0, 140)}…`
-              : product.description}
-          </p>
-        )}
+        
       </div>
 
       {price && (
@@ -104,6 +106,23 @@ export default function PlanCard({ product, isFeatured, onSelect, loading, disab
           </>
         )}
       </Button>
+    </>
+  );
+
+  if (isFeatured) {
+    return (
+      <div className={styles.featuredWrapper}>
+        <div className={styles.featuredHeader}>Best Value</div>
+        <article className={`${styles.card} ${styles.featured}`}>
+          {cardBody}
+        </article>
+      </div>
+    );
+  }
+
+  return (
+    <article className={styles.card}>
+      {cardBody}
     </article>
   );
 }
