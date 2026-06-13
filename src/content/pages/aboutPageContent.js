@@ -87,7 +87,7 @@ export const aboutPageContent = {
     members: [
       {
         name: "Rishabh Bagaria",
-        role: "Founding Member",
+        role: "Cup Bearer",
         focus: "Product · Growth",
         initials: "RB",
         avatar: "/assets/AboutUs/RishabhBagaria.png",
@@ -96,14 +96,14 @@ export const aboutPageContent = {
       {
         name: "Sanglap Kundu",
         role: "Founding Member",
-        focus: "Engineering · AI",
+        focus: "Stewart",
         initials: "SK",
         avatar: "/assets/AboutUs/SanglapKundu.png",
         linkedin: "#",
       },
       {
         name: "Shivam Kasera",
-        role: "Founding Member",
+        role: "Engineering",
         focus: "Design · Frontend",
         initials: "SH",
         avatar: "/assets/AboutUs/ShivamKasera.png",
