@@ -1,21 +1,12 @@
 'use client';
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import Link from "next/link";
 import Button from "@/components/ui/Button/Button.jsx";
-import Input from "@/components/ui/Input/Input.jsx";
-import { useWaitlist } from "@/app/providers/waitlist-context.js";
 import { heroContent } from "@/content/home/heroContent.js";
 import styles from "./HeroSection.module.css";
 
 const HeroSection = () => {
-  const [email, setEmail] = useState("");
-  const { openWaitlist } = useWaitlist();
-
-  const openWaitlistModal = () => {
-    openWaitlist({ prefillEmail: email.trim() });
-  };
-
   return (
     <section className={styles.section}>
       <div className={styles.background} />
@@ -44,21 +35,16 @@ const HeroSection = () => {
             <p className={styles.microTrust}>{heroContent.microTrustLine}</p>
 
             <div className={styles.waitlistInline}>
-              <Input
-                type="email"
-                placeholder={heroContent.emailPlaceholder}
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter") {
-                    event.preventDefault();
-                    openWaitlistModal();
-                  }
-                }}
-                className={styles.waitlistInput}
-              />
-              <Button className={styles.waitlistInlineButton} onClick={openWaitlistModal}>
-                {heroContent.inlineCtaLabel}
+              <Button as={Link} href="/signup" className={styles.waitlistInlineButton}>
+                {heroContent.primaryCtaLabel}
+              </Button>
+              <Button
+                as={Link}
+                href="/login"
+                variant="secondary"
+                className={styles.waitlistInlineButton}
+              >
+                {heroContent.secondaryCtaLabel}
               </Button>
             </div>
 

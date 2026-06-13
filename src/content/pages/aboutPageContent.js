@@ -7,7 +7,7 @@ export const aboutPageContent = {
       "An AI-first workflow that removes the busywork of applying so candidates can focus on what matters — preparing, interviewing, and landing the role.",
     meta: [
       { label: "Founded", value: "2025" },
-      { label: "Stage", value: "Pre-launch" },
+      { label: "Stage", value: "Live" },
       { label: "Team", value: "3 builders" },
     ],
   },
@@ -114,7 +114,7 @@ export const aboutPageContent = {
   closing: {
     eyebrow: "Join us",
     line: "If this resonates, we'd love to build it with you.",
-    cta: { label: "Join the waitlist", href: "/#waitlist" },
+    cta: { label: "Get started", href: "/signup" },
     secondary: { label: "Read the changelog", href: "/changelog" },
   },
 };

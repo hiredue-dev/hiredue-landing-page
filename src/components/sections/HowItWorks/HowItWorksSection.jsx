@@ -2,6 +2,7 @@
 
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import Section from "@/components/ui/Section/Section.jsx";
 import { howItWorksContent } from "@/content/home/howItWorksContent.js";
@@ -202,10 +203,21 @@ const HowItWorksSection = () => {
             <h3 className={styles.stepTitle}>{current.title}</h3>
             <p className={styles.stepDesc}>{current.desc}</p>
             <div className={styles.actions}>
-              <button type="button" className={styles.btnPrimary}>
-                {active === steps.length - 1 ? "Get early access" : "Continue"}
-                <ArrowRight size={16} aria-hidden="true" />
-              </button>
+              {active === steps.length - 1 ? (
+                <Link href="/signup" className={styles.btnPrimary}>
+                  Get started
+                  <ArrowRight size={16} aria-hidden="true" />
+                </Link>
+              ) : (
+                <button
+                  type="button"
+                  className={styles.btnPrimary}
+                  onClick={() => setActive((active + 1) % steps.length)}
+                >
+                  Continue
+                  <ArrowRight size={16} aria-hidden="true" />
+                </button>
+              )}
               <button
                 type="button"
                 className={styles.btnGhost}

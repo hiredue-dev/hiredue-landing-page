@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronDown, LogOut, Menu, User, X } from "lucide-react";
+import { ChevronDown, Download, LogOut, Menu, User, X } from "lucide-react";
 
 import { siteContent } from "@/content/site/index.js";
 import Button from "@/components/ui/Button/Button.jsx";
@@ -106,8 +106,16 @@ const Navbar = () => {
           </div>
 
           <div className={styles.desktopActions}>
-            {isAuthenticated ? (
-              <div ref={userMenuRef} style={{ position: "relative" }}>
+            <Button
+              as={Link}
+              href="/download"
+              className={styles.waitlistButton}
+            >
+              <Download size={16} />
+              Download
+            </Button>
+            {isAuthenticated && (
+              <div ref={userMenuRef} style={{ position: "relative", marginLeft: 12 }}>
                 <button
                   type="button"
                   onClick={() => setUserMenuOpen((open) => !open)}
@@ -197,15 +205,6 @@ const Navbar = () => {
                   </div>
                 )}
               </div>
-            ) : (
-              <>
-                <Link href="/login" className={styles.navLink} style={{ marginRight: 4 }}>
-                  Log in
-                </Link>
-                <Button className={styles.waitlistButton} onClick={() => router.push("/signup")}>
-                  Sign up
-                </Button>
-              </>
             )}
           </div>
 
@@ -247,7 +246,16 @@ const Navbar = () => {
               >
                 Pricing
               </Link>
-              {isAuthenticated ? (
+              <Button
+                as={Link}
+                href="/download"
+                className={styles.mobileAction}
+                onClick={() => setMobileOpen(false)}
+              >
+                <Download size={16} />
+                Download
+              </Button>
+              {isAuthenticated && (
                 <>
                   <Link
                     href="/account"
@@ -265,25 +273,6 @@ const Navbar = () => {
                     }}
                   >
                     Log out
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <Link
-                    href="/login"
-                    className={styles.mobileLink}
-                    onClick={() => setMobileOpen(false)}
-                  >
-                    Log in
-                  </Link>
-                  <Button
-                    className={styles.mobileAction}
-                    onClick={() => {
-                      setMobileOpen(false);
-                      router.push("/signup");
-                    }}
-                  >
-                    Sign up
                   </Button>
                 </>
               )}

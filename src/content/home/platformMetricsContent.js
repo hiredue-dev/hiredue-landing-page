@@ -5,6 +5,6 @@ export const platformMetricsContent = {
     { label: "Jobs Found", value: 10000, suffix: "+" },
     { label: "Applications Sent", value: 2000, suffix: "+" },
     { label: "Recruiter Messages", value: 1256, suffix: "+" },
-    { label: "Beta Users", value: 450, suffix: "+" },
+    { label: "Active Users", value: 450, suffix: "+" },
   ],
 };

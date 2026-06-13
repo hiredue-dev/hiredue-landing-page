@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
 import styles from "./Modal.module.css";
 
-const Modal = ({ children, isOpen, onClose, title }) => {
+const Modal = ({ children, isOpen, onClose, title, eyebrow }) => {
   useBodyScrollLock(isOpen);
 
   if (!isOpen) {
@@ -17,7 +17,7 @@ const Modal = ({ children, isOpen, onClose, title }) => {
       <div className={styles.dialog} onClick={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
         <div className={styles.header}>
           <div>
-            <p className={styles.eyebrow}>Join the beta</p>
+            {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
             <h2 className={styles.title}>{title}</h2>
           </div>
           <button type="button" className={styles.closeButton} onClick={onClose} aria-label="Close modal">

@@ -1,21 +1,16 @@
 'use client';
 
 import { motion, useInView } from "framer-motion";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import Link from "next/link";
 import Section from "@/components/ui/Section/Section.jsx";
-import { useWaitlist } from "@/app/providers/waitlist-context.js";
+import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import styles from "./FinalCTASection.module.css";
 
 const FinalCTASection = () => {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-  const { openWaitlist } = useWaitlist();
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    openWaitlist({ prefillEmail: email });
-  };
+  const { isAuthenticated } = useAuth();
 
   return (
     <Section ref={ref} className={styles.section}>
@@ -25,33 +20,38 @@ const FinalCTASection = () => {
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6 }}
       >
-        <span className={styles.eyebrow}>Join the beta</span>
+        <span className={styles.eyebrow}>Now live</span>
         <h2 className={styles.heading}>
           Stop applying.
           <br />
           Start interviewing.
         </h2>
         <p className={styles.lede}>
-          Early access is open for the first beta cohort. We onboard new users every Friday.
+          HireDue is live. Create your account, install the desktop app, and let
+          it run your job search end to end.
         </p>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          <input
-            type="email"
-            className={styles.input}
-            placeholder="you@work.com"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            aria-label="Work email"
-          />
-          <button type="submit" className={styles.submit}>
-            Get early access
-          </button>
-        </form>
+        <div className={styles.ctaButtons}>
+          <Link href="/signup" className={styles.ctaPrimary}>
+            Get started free
+          </Link>
+          <Link href="/download" className={styles.ctaSecondary}>
+            Download the app
+          </Link>
+        </div>
 
         <div className={styles.micro}>
           300+ users already onboarded
         </div>
+
+        {!isAuthenticated && (
+          <p className={styles.signinLine}>
+            Already have an account?{" "}
+            <Link href="/login" className={styles.signinLink}>
+              Log in
+            </Link>
+          </p>
+        )}
       </motion.div>
     </Section>
   );
