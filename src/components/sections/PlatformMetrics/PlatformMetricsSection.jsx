@@ -3,33 +3,25 @@
 import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import Section from "@/components/ui/Section/Section.jsx";
-import SectionHeading from "@/components/ui/SectionHeading/SectionHeading.jsx";
 import { platformMetricsContent } from "@/content/home/platformMetricsContent.js";
 import styles from "./PlatformMetricsSection.module.css";
 
-const CountUp = ({ target, inView }) => {
+const CountUp = ({ target, inView, duration = 1600 }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!inView) {
-      return undefined;
-    }
-
-    let start = 0;
-    const duration = 2000;
-    const step = target / (duration / 16);
-    const interval = setInterval(() => {
-      start += step;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(interval);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-
-    return () => clearInterval(interval);
-  }, [inView, target]);
+    if (!inView) return undefined;
+    let raf;
+    const start = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      setCount(Math.floor(target * eased));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [inView, target, duration]);
 
   return <>{count.toLocaleString()}</>;
 };
@@ -39,28 +31,33 @@ const PlatformMetricsSection = () => {
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
   return (
-    <Section tone="muted" ref={ref}>
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={inView ? { opacity: 1, y: 0 } : {}} transition={{ duration: 0.5 }}>
-        <SectionHeading title={platformMetricsContent.heading} />
+    <Section ref={ref} className={styles.section}>
+      <motion.div
+        className={styles.head}
+        initial={{ opacity: 0, y: 20 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.5 }}
+      >
+        <span className={styles.eyebrow}>{platformMetricsContent.eyebrow}</span>
+        <h2 className={styles.title}>{platformMetricsContent.heading}</h2>
       </motion.div>
 
-      <div className={styles.grid}>
-        {platformMetricsContent.metrics.map((metric, index) => (
-          <motion.div
-            key={metric.label}
-            className={styles.item}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-          >
-            <div className={styles.value}>
+      <motion.div
+        className={styles.grid}
+        initial={{ opacity: 0, y: 24 }}
+        animate={inView ? { opacity: 1, y: 0 } : {}}
+        transition={{ duration: 0.6, delay: 0.1 }}
+      >
+        {platformMetricsContent.metrics.map((metric) => (
+          <div key={metric.label} className={styles.cell}>
+            <div className={styles.num}>
               <CountUp target={metric.value} inView={inView} />
-              {metric.suffix}
+              <span className={styles.suffix}>{metric.suffix}</span>
             </div>
-            <p className={styles.label}>{metric.label}</p>
-          </motion.div>
+            <div className={styles.label}>{metric.label}</div>
+          </div>
         ))}
-      </div>
+      </motion.div>
     </Section>
   );
 };

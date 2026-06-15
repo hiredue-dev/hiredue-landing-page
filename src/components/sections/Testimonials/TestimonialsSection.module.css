@@ -5,7 +5,6 @@
 
 .marqueeWrap {
   position: relative;
-  height: 430px;
   overflow: hidden;
   padding: 8px 0;
 }
@@ -15,8 +14,8 @@
   content: "";
   position: absolute;
   top: 0;
+  bottom: 0;
   width: 120px;
-  height: 100%;
   z-index: 2;
   pointer-events: none;
 }
@@ -100,7 +99,11 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: linear-gradient(180deg, rgba(191, 219, 254, 0.64), rgba(147, 197, 253, 0.4));
+  background: linear-gradient(
+    180deg,
+    rgba(191, 219, 254, 0.64),
+    rgba(147, 197, 253, 0.4)
+  );
   color: #1d4ed8;
   font-family: var(--font-heading);
   font-weight: 700;
@@ -117,7 +120,7 @@
   transition: color 0.2s ease;
 }
 
-.marqueeWrap:hover .name {
+.card:hover .name {
   color: #2563eb;
 }
 
@@ -146,10 +149,6 @@
 }
 
 @media (max-width: 1180px) {
-  .marqueeWrap {
-    height: 400px;
-  }
-
   .card {
     min-width: 320px;
     max-width: 320px;
@@ -161,47 +160,37 @@
     margin-top: 40px;
   }
 
-  .marqueeWrap {
-    height: auto;
-    overflow: visible;
-    padding: 0;
-  }
-
+  /* Keep both marquee rows scrolling in opposite directions on mobile,
+     just with smaller cards and tighter edge fades. */
   .marqueeWrap::before,
   .marqueeWrap::after {
-    display: none;
+    width: 40px;
   }
 
   .rows {
-    gap: 16px;
+    gap: 14px;
   }
 
   .rowTrack {
-    animation: none;
-    width: 100%;
-    flex-direction: column;
-    gap: 16px;
-  }
-
-  .rows .rowTrack:last-child {
-    display: none;
+    gap: 14px;
   }
 
   .card {
-    min-width: 0;
-    max-width: none;
-    padding: 22px 18px;
+    min-width: 264px;
+    max-width: 264px;
+    padding: 18px 16px;
   }
 
   .quote {
-    font-size: 0.98rem;
+    font-size: 0.92rem;
+    line-height: 1.55;
   }
 
   .name {
-    font-size: 0.95rem;
+    font-size: 0.92rem;
   }
 
   .role {
-    font-size: 0.84rem;
+    font-size: 0.82rem;
   }
 }

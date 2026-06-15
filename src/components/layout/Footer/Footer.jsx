@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Linkedin, Twitter } from "lucide-react";
+import { Linkedin, Instagram } from "lucide-react";
 import { siteContent } from "@/content/site/index.js";
 import Button from "@/components/ui/Button/Button.jsx";
 import styles from "./Footer.module.css";
@@ -14,17 +14,38 @@ const Footer = () => (
             {siteContent.siteConfig.description}
           </p>
           <div className={styles.socials}>
-            <a href="#" className={styles.socialLink} aria-label="Twitter">
-              <Twitter size={18} />
-            </a>
-            <a href="#" className={styles.socialLink} aria-label="LinkedIn">
+            <a
+              href="https://www.linkedin.com/company/hiredue/"
+              className={styles.socialLink}
+              aria-label="LinkedIn"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <Linkedin size={18} />
             </a>
+            <a
+              href="https://www.instagram.com/hiredue.ai/"
+              className={styles.socialLink}
+              aria-label="Instagram"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Instagram size={18} />
+            </a>
           </div>
-          <p className={styles.support}>Support: {siteContent.contactConfig.supportEmail}</p>
-          <Button as={Link} href="/contact" className={styles.waitlistCta}>
-            Contact Us
-          </Button>
+          <div className={styles.ctaRow}>
+            <Button
+              as="a"
+              href={`mailto:${siteContent.contactConfig.supportEmail}`}
+              className={styles.waitlistCta}
+              variant="secondary"
+            >
+              Mail Us
+            </Button>
+            <Button as={Link} href="/contact" className={styles.waitlistCta}>
+              Contact Us
+            </Button>
+          </div>
         </div>
 
         {siteContent.footerLinks.map((group) => (

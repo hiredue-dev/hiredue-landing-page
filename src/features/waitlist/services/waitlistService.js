@@ -4,12 +4,13 @@ const WAITLIST_APPS_SCRIPT_URL =
 
 const waitlistService = {
   submit: async (payload) => {
+    const phone = payload.phone ? `+91${payload.phone}` : payload.phone;
     const formBody = new URLSearchParams({
       email: payload.email,
       name: payload.name,
       fullName: payload.name,
-      phone: payload.phone,
-      contactNumber: payload.phone,
+      phone,
+      contactNumber: phone,
       source: payload.source || "waitlist",
       submittedAt: payload.submittedAt || new Date().toISOString(),
     });

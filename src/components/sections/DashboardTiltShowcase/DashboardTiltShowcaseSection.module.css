@@ -18,14 +18,34 @@
   will-change: transform, opacity;
 }
 
+/* Wrapper around the dashboard canvas. On desktop it is a transparent
+   passthrough; below the mobile breakpoint it becomes a clip box (height set
+   from the design ratio via aspect-ratio) that holds the full-size canvas
+   scaled down to fit (see media query below). Design dims are unitless so they
+   can feed both calc() widths and the aspect-ratio. Keep --dts-design-w in
+   sync with DESIGN_WIDTH in the component. */
+.deviceViewport {
+  width: 100%;
+  --dts-design-w: 1180;
+  --dts-design-h: 640;
+}
+
 .dashboardCanvas {
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(205, 216, 238, 0.46);
   border-radius: 1.5rem;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(249, 251, 255, 0.98)),
-    radial-gradient(circle at 78% 16%, rgba(37, 99, 235, 0.06), rgba(37, 99, 235, 0));
+    linear-gradient(
+      180deg,
+      rgba(255, 255, 255, 0.99),
+      rgba(249, 251, 255, 0.98)
+    ),
+    radial-gradient(
+      circle at 78% 16%,
+      rgba(37, 99, 235, 0.06),
+      rgba(37, 99, 235, 0)
+    );
   box-shadow:
     0 14px 24px rgba(37, 99, 235, 0.06),
     0 4px 10px rgba(10, 10, 11, 0.03),
@@ -38,7 +58,11 @@
 .sidebar {
   padding: 18px 12px 10px;
   border-right: 1px solid rgba(206, 217, 247, 0.52);
-  background: linear-gradient(180deg, rgba(252, 253, 255, 0.95), rgba(247, 250, 255, 0.9));
+  background: linear-gradient(
+    180deg,
+    rgba(252, 253, 255, 0.95),
+    rgba(247, 250, 255, 0.9)
+  );
   display: grid;
   grid-template-rows: auto 1fr auto;
   gap: 16px;
@@ -80,7 +104,10 @@
   align-items: center;
   gap: 9px;
   padding: 0 10px;
-  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .navItem:hover {
@@ -1490,105 +1517,68 @@
 }
 
 @media (max-width: 980px) {
+  /* Render the dashboard exactly as on desktop — same horizontal layout —
+     scaled down to fit the viewport width. --dts-scale and --dts-viewport-h
+     are measured at runtime; the canvas keeps its full design size and is
+     shrunk with a transform so nothing reflows into a vertical stack. */
+  .deviceViewport {
+    aspect-ratio: var(--dts-design-w) / var(--dts-design-h);
+    overflow: hidden;
+    border: 1px solid rgba(205, 216, 238, 0.46);
+    border-radius: 1.25rem;
+    background: #fff;
+    box-shadow:
+      0 14px 24px rgba(37, 99, 235, 0.06),
+      0 4px 10px rgba(10, 10, 11, 0.03);
+  }
+
   .dashboardCanvas {
-    grid-template-columns: 1fr;
-    height: auto;
-    min-height: 560px;
+    width: calc(var(--dts-design-w) * 1px);
+    height: calc(var(--dts-design-h) * 1px);
+    min-height: 0;
+    grid-template-columns: 220px minmax(0, 1fr);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    transform: scale(var(--dts-scale, 0.29));
+    transform-origin: top left;
   }
 
-  .sidebar {
-    border-right: 0;
-    border-bottom: 1px solid rgba(206, 217, 247, 0.52);
-    grid-template-rows: auto auto auto;
+  /* Keep the full desktop internal layout (undo the <=1200px tablet reflow). */
+  .metricsGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
-  .sidebarBottom {
-    align-content: start;
+  .metricCardWide {
+    grid-column: span 1;
   }
 
-  .applicationsFilters {
-    flex-wrap: wrap;
+  .atsGrid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
-  .salaryRange {
-    margin-left: 0;
-  }
-
-  .applicationRow {
-    grid-template-columns: 1fr;
-    gap: 6px;
-    text-align: left;
-  }
-
-  .applicationApplied {
-    text-align: left;
+  .atsColumn {
+    min-height: 432px;
   }
 
   .networkStatsGrid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(5, minmax(0, 1fr));
   }
 
-  .panelTransition {
-    height: auto;
-    overflow: visible;
-  }
-
-  .tabBodyWrap {
-    height: auto;
-    min-height: 0;
-    overflow: visible;
+  .settingsGrid {
+    grid-template-columns: 1.3fr 1fr;
   }
 }
 
 @media (max-width: 760px) {
+  /* The dashboard internals stay in their desktop arrangement (just scaled),
+     so only the outer section spacing and frame rounding are adjusted here. */
   .section {
     margin-top: 0;
     padding-bottom: 44px;
   }
 
-  .topbar {
-    height: auto;
-    padding: 10px;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .topbarContext {
-    font-size: 0.74rem;
-    white-space: normal;
-  }
-
-  .topbarMeta {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  .trendCard,
-  .tabBodyWrap,
-  .metricsGrid,
-  .dashboardFooter {
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-
-  .metricsGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .metricCardWide {
-    grid-column: auto;
-  }
-
-  .applicationsTitleRow h3 {
-    font-size: 1.5rem;
-  }
-
-  .applicationsTotal {
-    font-size: 0.76rem;
-    height: 24px;
-  }
-
-  .connectionGrid {
-    grid-template-columns: 1fr;
+  .deviceViewport {
+    border-radius: 1rem;
   }
 }

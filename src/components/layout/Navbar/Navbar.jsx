@@ -1,19 +1,24 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Download, LogOut, Menu, User, X } from "lucide-react";
+
 import { siteContent } from "@/content/site/index.js";
 import Button from "@/components/ui/Button/Button.jsx";
+import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import styles from "./Navbar.module.css";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef(null);
   const pathname = usePathname();
   const router = useRouter();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const desktopLinks = useMemo(() => siteContent.desktopPrimaryNav, []);
 
@@ -30,7 +35,19 @@ const Navbar = () => {
 
   useEffect(() => {
     setMobileOpen(false);
+    setUserMenuOpen(false);
   }, [pathname]);
+
+  useEffect(() => {
+    if (!userMenuOpen) return;
+    const handleClickOutside = (event) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
+        setUserMenuOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [userMenuOpen]);
 
   const handleBrandClick = (event) => {
     if (pathname === "/") {
@@ -38,6 +55,14 @@ const Navbar = () => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
+
+  const handleLogout = async () => {
+    await logout();
+    setUserMenuOpen(false);
+    router.replace("/");
+  };
+
+  const initials = (user?.email || "?").slice(0, 1).toUpperCase();
 
   return (
     <nav className={`${styles.nav} ${isScrolled ? styles.navScrolled : ""}`.trim()}>
@@ -69,15 +94,118 @@ const Navbar = () => {
                 href={link.href}
                 className={`${styles.navLink} ${pathname === link.href ? styles.navLinkActive : ""}`.trim()}
               >
-                  {link.label}
+                {link.label}
               </Link>
             ))}
+            <Link
+              href="/pricing"
+              className={`${styles.navLink} ${pathname === "/pricing" ? styles.navLinkActive : ""}`.trim()}
+            >
+              Pricing
+            </Link>
           </div>
 
           <div className={styles.desktopActions}>
-            <Button className={styles.waitlistButton} onClick={() => router.push("/contact")}>
-              Contact Us
+            <Button
+              as={Link}
+              href="/download"
+              className={styles.waitlistButton}
+            >
+              <Download size={16} />
+              Download
             </Button>
+            {isAuthenticated && (
+              <div ref={userMenuRef} style={{ position: "relative", marginLeft: 12 }}>
+                <button
+                  type="button"
+                  onClick={() => setUserMenuOpen((open) => !open)}
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 8,
+                    padding: "8px 14px",
+                    borderRadius: 999,
+                    border: "1px solid var(--color-border)",
+                    background: "var(--color-background)",
+                    cursor: "pointer",
+                    fontWeight: 600,
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      width: 26,
+                      height: 26,
+                      borderRadius: 999,
+                      background: "var(--color-primary)",
+                      color: "#fff",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "0.75rem",
+                    }}
+                  >
+                    {initials}
+                  </span>
+                  <ChevronDown size={14} />
+                </button>
+                {userMenuOpen && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "calc(100% + 8px)",
+                      right: 0,
+                      minWidth: 200,
+                      background: "var(--color-background)",
+                      border: "1px solid var(--color-border)",
+                      borderRadius: 14,
+                      boxShadow: "0 18px 40px rgba(10,10,11,0.12)",
+                      padding: 6,
+                      zIndex: 60,
+                    }}
+                  >
+                    <div style={{ padding: "10px 12px", fontSize: "0.75rem", color: "var(--color-muted-foreground)" }}>
+                      {user?.email}
+                    </div>
+                    <Link
+                      href="/account"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        color: "var(--color-foreground)",
+                        textDecoration: "none",
+                        fontSize: "0.875rem",
+                      }}
+                      onClick={() => setUserMenuOpen(false)}
+                    >
+                      <User size={16} /> Account
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={handleLogout}
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: 8,
+                        padding: "10px 12px",
+                        borderRadius: 10,
+                        background: "transparent",
+                        border: 0,
+                        color: "var(--color-foreground)",
+                        cursor: "pointer",
+                        fontSize: "0.875rem",
+                      }}
+                    >
+                      <LogOut size={16} /> Log out
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <button
@@ -111,15 +239,43 @@ const Navbar = () => {
                   {link.label}
                 </Link>
               ))}
-              <Button
-                className={styles.mobileAction}
-                onClick={() => {
-                  setMobileOpen(false);
-                  router.push("/contact");
-                }}
+              <Link
+                href="/pricing"
+                className={`${styles.mobileLink} ${pathname === "/pricing" ? styles.mobileLinkActive : ""}`.trim()}
+                onClick={() => setMobileOpen(false)}
               >
-                Contact Us
+                Pricing
+              </Link>
+              <Button
+                as={Link}
+                href="/download"
+                className={styles.mobileAction}
+                onClick={() => setMobileOpen(false)}
+              >
+                <Download size={16} />
+                Download
               </Button>
+              {isAuthenticated && (
+                <>
+                  <Link
+                    href="/account"
+                    className={styles.mobileLink}
+                    onClick={() => setMobileOpen(false)}
+                  >
+                    Account
+                  </Link>
+                  <Button
+                    className={styles.mobileAction}
+                    variant="secondary"
+                    onClick={() => {
+                      setMobileOpen(false);
+                      handleLogout();
+                    }}
+                  >
+                    Log out
+                  </Button>
+                </>
+              )}
             </div>
           </motion.div>
         )}

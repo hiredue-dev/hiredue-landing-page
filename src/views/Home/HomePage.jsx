@@ -7,8 +7,8 @@ import HowItWorksSection from "@/components/sections/HowItWorks/HowItWorksSectio
 import FeaturesGridSection from "@/components/sections/FeaturesGrid/FeaturesGridSection.jsx";
 import PlatformMetricsSection from "@/components/sections/PlatformMetrics/PlatformMetricsSection.jsx";
 import TestimonialsSection from "@/components/sections/Testimonials/TestimonialsSection.jsx";
-import FeatureVotingSection from "@/components/sections/FeatureVoting/FeatureVotingSection.jsx";
 import FAQSection from "@/components/sections/FAQ/FAQSection.jsx";
+import FinalCTASection from "@/components/sections/FinalCTA/FinalCTASection.jsx";
 
 const HomePage = () => (
   <div className={styles.page}>
@@ -19,9 +19,9 @@ const HomePage = () => (
     <FeaturesGridSection />
     <PlatformMetricsSection />
     <HowItWorksSection />
-    <FeatureVotingSection />
     <TestimonialsSection />
     <FAQSection />
+    <FinalCTASection />
   </div>
 );
 

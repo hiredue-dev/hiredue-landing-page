@@ -223,6 +223,37 @@
   line-height: 1.3;
 }
 
+.buttonGroup {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.jdButton {
+  height: 38px;
+  padding: 0 18px;
+  border-radius: 999px;
+  border: 1px solid #d8dfea;
+  background: #fff;
+  color: #111827;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+.jdButton:hover {
+  border-color: #111827;
+  background: #f7f9fc;
+}
+
+.jdButton:active {
+  transform: translateY(1px);
+}
+
 .applyButton {
   flex-shrink: 0;
   height: 38px;
@@ -248,17 +279,15 @@
   transform: translateY(1px);
 }
 
+.openingInfo {
+  min-width: 0;
+}
+
 .openingMeta {
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   color: #4f5b73;
   font-weight: 600;
   font-size: 0.94rem;
-}
-
-.openingSummary {
-  margin: 8px 0 0;
-  color: #647189;
-  line-height: 1.65;
 }
 
 .emptyState {
@@ -356,9 +385,10 @@
   .openingHeader {
     align-items: flex-start;
     flex-direction: column;
+    gap: 12px;
   }
 
-  .applyButton {
+  .buttonGroup {
     width: 100%;
   }
 

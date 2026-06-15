@@ -1,50 +1,291 @@
-.panel {
+.section {
+  --cta-ink: #0b1220;
+  --cta-accent: #2563eb;
+  --cta-accent-glow: rgba(37, 99, 235, 0.16);
+  --cta-ok: #10b981;
+  --cta-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
   position: relative;
-  overflow: hidden;
-  padding: 80px;
-  border-radius: 1.5rem;
-  text-align: center;
-  background: var(--gradient-primary);
+  background: transparent;
 }
 
-.overlay {
+.block {
+  position: relative;
+  border-radius: 24px;
+  padding: clamp(48px, 6vw, 80px);
+  color: #fff;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(
+      40% 60% at 90% 10%,
+      rgba(59, 130, 246, 0.35),
+      transparent 60%
+    ),
+    radial-gradient(
+      50% 70% at 10% 90%,
+      rgba(37, 99, 235, 0.35),
+      transparent 60%
+    ),
+    linear-gradient(135deg, #0b1220 0%, #1e293b 100%);
+  box-shadow:
+    0 1px 2px rgba(15, 23, 42, 0.04),
+    0 40px 80px -32px rgba(37, 99, 235, 0.35);
+}
+
+.block::before {
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto auto;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--cta-accent) 0%, transparent 60%);
+  opacity: 0.3;
+  z-index: -1;
+  animation: ctaFloat 12s ease-in-out infinite alternate;
+}
+
+@keyframes ctaFloat {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(-5%, 5%);
+  }
+}
+
+.block::after {
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, rgba(37, 99, 235, 0), rgba(37, 99, 235, 0), rgba(255, 255, 255, 0.1));
-  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: radial-gradient(ellipse at 80% 0%, black, transparent 70%);
+  -webkit-mask-image: radial-gradient(
+    ellipse at 80% 0%,
+    black,
+    transparent 70%
+  );
+  z-index: -1;
 }
 
-.heading,
-.text,
-.button {
-  position: relative;
-  z-index: 1;
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--cta-mono);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #7aa8ff;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #7aa8ff;
+  box-shadow: 0 0 0 4px rgba(122, 168, 255, 0.16);
 }
 
 .heading {
-  font-size: clamp(2rem, 4vw, 2.75rem);
-  font-weight: 700;
-  color: var(--color-primary-foreground);
+  margin: 16px 0 0;
+  font-size: clamp(2.25rem, 4.4vw, 3.5rem);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-weight: 600;
+  max-width: 18ch;
+  color: #fff;
 }
 
-.text {
-  margin-top: 16px;
+.lede {
+  margin: 16px 0 32px;
   font-size: 1.125rem;
-  color: rgba(255, 255, 255, 0.8);
+  line-height: 1.55;
+  max-width: 52ch;
+  color: rgba(255, 255, 255, 0.65);
 }
 
-.button {
-  margin-top: 32px;
-  background: var(--color-background);
-  color: var(--color-foreground);
+.form {
+  display: flex;
+  gap: 8px;
+  max-width: 460px;
+  flex-wrap: wrap;
 }
 
-.button:hover {
-  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.14);
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 48px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  outline: none;
+  font-family: inherit;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
-@media (max-width: 768px) {
-  .panel {
-    padding: 48px 24px;
+.input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.input:focus {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+}
+
+.submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cta-ink);
+  border: 1px solid #fff;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.submit:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.25);
+}
+
+.micro {
+  margin-top: 12px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.micro::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--cta-ok);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.ctaButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 10px;
+  background: #fff;
+  color: var(--cta-ink);
+  border: 1px solid #fff;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ctaPrimary:hover {
+  background: #f3f4f6;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.25);
+}
+
+.ctaSecondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  padding: 0 22px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.ctaSecondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+}
+
+.signinLine {
+  margin-top: 24px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.signinLink {
+  color: #fff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.signinLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 600px) {
+  .ctaButtons {
+    flex-direction: column;
+  }
+
+  .ctaPrimary,
+  .ctaSecondary {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .form {
+    flex-direction: column;
+  }
+  .input {
+    /* In the column layout flex:1 would collapse the height to flex-basis:0,
+       so opt out and let the input keep its own height (matching the button). */
+    flex: none;
+    width: 100%;
+    height: 48px;
+  }
+  .submit {
+    width: 100%;
+  }
+  .heading {
+    max-width: none;
   }
 }

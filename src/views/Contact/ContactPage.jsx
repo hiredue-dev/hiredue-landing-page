@@ -75,18 +75,18 @@ const ContactPage = () => {
             <div className={styles.altContact}>
               <p className={styles.altContactHeading}>{contactPageContent.alternateContactHeading}</p>
               <div className={styles.altContactRow}>
-                <div className={styles.altContactItem}>
+                <a className={styles.altContactItem} href={`mailto:${contactConfig.supportEmail}`}>
                   <span className={styles.altIconWrap}>
                     <Mail size={16} />
                   </span>
                   <span>{contactConfig.supportEmail}</span>
-                </div>
-                <div className={styles.altContactItem}>
+                </a>
+                <a className={styles.altContactItem} href={`tel:${contactConfig.phone.replace(/\s/g, "")}`}>
                   <span className={styles.altIconWrap}>
                     <Phone size={16} />
                   </span>
                   <span>{contactConfig.phone}</span>
-                </div>
+                </a>
               </div>
             </div>
           </div>
@@ -109,11 +109,16 @@ const ContactPage = () => {
                     <MapPin size={18} />
                     <h3>{office.country}</h3>
                   </div>
-                  <div className={styles.officeLines}>
+                  <a
+                    className={styles.officeLines}
+                    href={office.mapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     {office.lines.map((line) => (
                       <p key={`${office.country}-${line}`}>{line}</p>
                     ))}
-                  </div>
+                  </a>
                 </div>
               ))}
             </div>

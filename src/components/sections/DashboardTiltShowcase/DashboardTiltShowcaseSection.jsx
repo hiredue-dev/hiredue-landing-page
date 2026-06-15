@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
 import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Bell,
   Briefcase,
@@ -47,7 +47,8 @@ const tabMeta = {
   ats: {
     eyebrow: "ATS",
     title: "ATS",
-    subtitle: "Track and manage your candidate pipeline and matching status in real-time.",
+    subtitle:
+      "Track and manage your candidate pipeline and matching status in real-time.",
   },
   network: {
     eyebrow: "Network",
@@ -68,9 +69,24 @@ const metricCards = [
     icon: ChartColumnBig,
     iconTone: "primary",
     logs: [
-      { label: "LinkedIn Feed Scan", time: "2 mins ago", status: "Success", tone: "success" },
-      { label: "Indeed API Fetch", time: "14 mins ago", status: "Success", tone: "success" },
-      { label: "Naukri Query", time: "42 mins ago", status: "Partial", tone: "warn" },
+      {
+        label: "LinkedIn Feed Scan",
+        time: "2 mins ago",
+        status: "Success",
+        tone: "success",
+      },
+      {
+        label: "Indeed API Fetch",
+        time: "14 mins ago",
+        status: "Success",
+        tone: "success",
+      },
+      {
+        label: "Naukri Query",
+        time: "42 mins ago",
+        status: "Partial",
+        tone: "warn",
+      },
     ],
   },
   {
@@ -79,8 +95,18 @@ const metricCards = [
     icon: Target,
     iconTone: "blue",
     logs: [
-      { label: "Senior UI Designer", time: "5 mins ago", status: "Matched", tone: "info" },
-      { label: "Product Architect", time: "1h ago", status: "Matched", tone: "info" },
+      {
+        label: "Senior UI Designer",
+        time: "5 mins ago",
+        status: "Matched",
+        tone: "info",
+      },
+      {
+        label: "Product Architect",
+        time: "1h ago",
+        status: "Matched",
+        tone: "info",
+      },
     ],
   },
   {
@@ -89,8 +115,18 @@ const metricCards = [
     icon: Send,
     iconTone: "violet",
     logs: [
-      { label: "Stripe - UI Engineer", time: "12 mins ago", status: "Sent", tone: "success" },
-      { label: "Vercel - Lead Designer", time: "4h ago", status: "Sent", tone: "success" },
+      {
+        label: "Stripe - UI Engineer",
+        time: "12 mins ago",
+        status: "Sent",
+        tone: "success",
+      },
+      {
+        label: "Vercel - Lead Designer",
+        time: "4h ago",
+        status: "Sent",
+        tone: "success",
+      },
     ],
   },
   {
@@ -99,8 +135,18 @@ const metricCards = [
     icon: CalendarCheck2,
     iconTone: "green",
     logs: [
-      { label: "Meta - Intro Call", time: "Oct 24, 2:00 PM", status: "Confirmed", tone: "info" },
-      { label: "Ramp - Design Sync", time: "Oct 26, 11:00 AM", status: "Confirmed", tone: "info" },
+      {
+        label: "Meta - Intro Call",
+        time: "Oct 24, 2:00 PM",
+        status: "Confirmed",
+        tone: "info",
+      },
+      {
+        label: "Ramp - Design Sync",
+        time: "Oct 26, 11:00 AM",
+        status: "Confirmed",
+        tone: "info",
+      },
     ],
   },
   {
@@ -108,14 +154,28 @@ const metricCards = [
     value: "156",
     icon: Sparkles,
     iconTone: "orange",
-    logs: [{ label: "Stripe Variant V3", time: "15 mins ago", status: "Ready", tone: "success" }],
+    logs: [
+      {
+        label: "Stripe Variant V3",
+        time: "15 mins ago",
+        status: "Ready",
+        tone: "success",
+      },
+    ],
   },
   {
     title: "LinkedIn Outreach",
     value: "320",
     icon: MessageSquare,
     iconTone: "indigo",
-    logs: [{ label: "John Doe (Meta)", time: "8 mins ago", status: "Replied", tone: "violet" }],
+    logs: [
+      {
+        label: "John Doe (Meta)",
+        time: "8 mins ago",
+        status: "Replied",
+        tone: "violet",
+      },
+    ],
   },
 ];
 
@@ -216,9 +276,24 @@ const atsColumns = [
     count: 3,
     dotTone: "orange",
     cards: [
-      { company: "Google", match: "98% Match", role: "Senior Frontend Engineer", location: "Mountain View, CA" },
-      { company: "Meta", match: "94% Match", role: "Product Designer", location: "Menlo Park, CA" },
-      { company: "Amazon", match: "89% Match", role: "Software Development Manager", location: "Seattle, WA" },
+      {
+        company: "Google",
+        match: "98% Match",
+        role: "Senior Frontend Engineer",
+        location: "Mountain View, CA",
+      },
+      {
+        company: "Meta",
+        match: "94% Match",
+        role: "Product Designer",
+        location: "Menlo Park, CA",
+      },
+      {
+        company: "Amazon",
+        match: "89% Match",
+        role: "Software Development Manager",
+        location: "Seattle, WA",
+      },
     ],
   },
   {
@@ -226,8 +301,18 @@ const atsColumns = [
     count: 2,
     dotTone: "gold",
     cards: [
-      { company: "Microsoft", match: "91% Match", role: "Azure Solutions Architect", location: "Redmond, WA" },
-      { company: "Netflix", match: "87% Match", role: "Content Strategist", location: "Los Gatos, CA" },
+      {
+        company: "Microsoft",
+        match: "91% Match",
+        role: "Azure Solutions Architect",
+        location: "Redmond, WA",
+      },
+      {
+        company: "Netflix",
+        match: "87% Match",
+        role: "Content Strategist",
+        location: "Los Gatos, CA",
+      },
     ],
   },
   {
@@ -235,8 +320,18 @@ const atsColumns = [
     count: 2,
     dotTone: "violet",
     cards: [
-      { company: "Apple", match: "95% Match", role: "iOS Developer", location: "Cupertino, CA" },
-      { company: "Tesla", match: "90% Match", role: "Autopilot Engineer", location: "Palo Alto, CA" },
+      {
+        company: "Apple",
+        match: "95% Match",
+        role: "iOS Developer",
+        location: "Cupertino, CA",
+      },
+      {
+        company: "Tesla",
+        match: "90% Match",
+        role: "Autopilot Engineer",
+        location: "Palo Alto, CA",
+      },
     ],
   },
 ];
@@ -311,9 +406,18 @@ const statusClassMap = {
   "New Offer": "applicationStatusOffer",
 };
 
+// Fixed design width of the desktop dashboard. On narrow screens the whole
+// canvas is rendered at this width and proportionally scaled down to fit, so
+// the horizontal layout stays intact instead of reflowing into a stack.
+// Keep in sync with --dts-design-w in the CSS module (height is derived there
+// from --dts-design-h via aspect-ratio).
+const DESIGN_WIDTH = 1180;
+
 const DashboardTiltShowcaseSection = () => {
   const ref = useRef(null);
+  const viewportRef = useRef(null);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const [fitScale, setFitScale] = useState(null);
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ["start 92%", "start 12%"],
@@ -324,6 +428,44 @@ const DashboardTiltShowcaseSection = () => {
   const scale = useTransform(scrollYProgress, [0, 0.48, 1], [0.93, 1, 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.48, 1], [0.78, 1, 1]);
   const meta = tabMeta[activeTab] || tabMeta.dashboard;
+
+  // Measure the available width and shrink the fixed-size canvas to fit it. The
+  // factor is held in React state and rendered as the --dts-scale custom
+  // property (consumed by CSS only below the mobile breakpoint), so it survives
+  // re-renders/node swaps instead of being imperatively poked onto the DOM. The
+  // box height is derived in CSS via aspect-ratio. ResizeObserver fires after
+  // layout (so clientWidth is fresh) and load/resize cover orientation changes
+  // and late shifts (web fonts, the hero's WebGL scene). We deliberately avoid
+  // requestAnimationFrame here: a backgrounded tab throttles it and the scale
+  // would lock onto a stale reading. setFitScale bails out when the value is
+  // unchanged, so re-measuring on every event is cheap and loop-free.
+  useEffect(() => {
+    const el = viewportRef.current;
+    if (!el) return undefined;
+
+    const measure = () =>
+      setFitScale(Math.min(1, el.clientWidth / DESIGN_WIDTH));
+
+    measure();
+
+    const observer =
+      typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(measure)
+        : null;
+    if (observer) observer.observe(el);
+    window.addEventListener("resize", measure);
+    window.addEventListener("load", measure);
+    // A hidden tab suspends ResizeObserver/resize delivery, so re-measure when
+    // it becomes visible again in case the viewport changed in the background.
+    document.addEventListener("visibilitychange", measure);
+
+    return () => {
+      if (observer) observer.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("load", measure);
+      document.removeEventListener("visibilitychange", measure);
+    };
+  }, []);
 
   const renderDashboardContent = () => (
     <section className={styles.dashboardTabBody}>
@@ -341,14 +483,22 @@ const DashboardTiltShowcaseSection = () => {
           </div>
         </div>
         <div className={styles.chartArea}>
-          <svg className={styles.chartSvg} viewBox="0 0 1000 220" preserveAspectRatio="none" aria-hidden="true">
+          <svg
+            className={styles.chartSvg}
+            viewBox="0 0 1000 220"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
             <defs>
               <linearGradient id="activityArea" x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="#2563eb" stopOpacity="0.24" />
                 <stop offset="100%" stopColor="#2563eb" stopOpacity="0" />
               </linearGradient>
             </defs>
-            <path d="M0 172 Q 96 156, 184 162 T 396 92 T 612 126 T 812 56 T 1000 76 L 1000 220 L 0 220 Z" fill="url(#activityArea)" />
+            <path
+              d="M0 172 Q 96 156, 184 162 T 396 92 T 612 126 T 812 56 T 1000 76 L 1000 220 L 0 220 Z"
+              fill="url(#activityArea)"
+            />
             <path d="M0 172 Q 96 156, 184 162 T 396 92 T 612 126 T 812 56 T 1000 76" />
             <line x1="0" x2="1000" y1="52" y2="52" />
             <line x1="0" x2="1000" y1="112" y2="112" />
@@ -373,14 +523,20 @@ const DashboardTiltShowcaseSection = () => {
             className={styles.metricCard}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1], delay: 0.05 + index * 0.035 }}
+            transition={{
+              duration: 0.28,
+              ease: [0.22, 1, 0.36, 1],
+              delay: 0.05 + index * 0.035,
+            }}
           >
             <div className={styles.metricHead}>
               <div>
                 <p className={styles.metricTitle}>{card.title}</p>
                 <p className={styles.metricValue}>{card.value}</p>
               </div>
-              <span className={`${styles.metricIcon} ${styles[`tone${card.iconTone[0].toUpperCase()}${card.iconTone.slice(1)}`]}`.trim()}>
+              <span
+                className={`${styles.metricIcon} ${styles[`tone${card.iconTone[0].toUpperCase()}${card.iconTone.slice(1)}`]}`.trim()}
+              >
                 <card.icon size={15} />
               </span>
             </div>
@@ -393,7 +549,9 @@ const DashboardTiltShowcaseSection = () => {
                     <p>{log.label}</p>
                     <span>{log.time}</span>
                   </div>
-                  <em className={`${styles.logTone} ${styles[`logTone${log.tone[0].toUpperCase()}${log.tone.slice(1)}`]}`.trim()}>
+                  <em
+                    className={`${styles.logTone} ${styles[`logTone${log.tone[0].toUpperCase()}${log.tone.slice(1)}`]}`.trim()}
+                  >
                     {log.status}
                   </em>
                 </div>
@@ -426,7 +584,11 @@ const DashboardTiltShowcaseSection = () => {
                   <p>Logic Gate Check</p>
                   <span>Stable</span>
                 </div>
-                <em className={`${styles.logTone} ${styles.logToneSuccess}`.trim()}>Optimal</em>
+                <em
+                  className={`${styles.logTone} ${styles.logToneSuccess}`.trim()}
+                >
+                  Optimal
+                </em>
               </div>
             </div>
             <div className={styles.workloadCard}>
@@ -487,24 +649,38 @@ const DashboardTiltShowcaseSection = () => {
 
         <div className={styles.applicationsList}>
           {applicationsData.map((item) => (
-            <article key={`${item.company}-${item.role}`} className={styles.applicationRow}>
+            <article
+              key={`${item.company}-${item.role}`}
+              className={styles.applicationRow}
+            >
               <div className={styles.applicationIdentity}>
-                <span className={`${styles.applicationLogo} ${styles[`applicationLogo${item.logoTone[0].toUpperCase()}${item.logoTone.slice(1)}`]}`.trim()}>
+                <span
+                  className={`${styles.applicationLogo} ${styles[`applicationLogo${item.logoTone[0].toUpperCase()}${item.logoTone.slice(1)}`]}`.trim()}
+                >
                   {item.company[0]}
                 </span>
                 <div className={styles.applicationInfo}>
                   <h4>{item.role}</h4>
                   <p>
-                    <strong>{item.company}</strong> • {item.location} • <em className={styles.applicationMatch}>{item.match}</em>
+                    <strong>{item.company}</strong> • {item.location} •{" "}
+                    <em className={styles.applicationMatch}>{item.match}</em>
                   </p>
                 </div>
               </div>
 
-              <span className={`${styles.applicationStatus} ${styles[statusClassMap[item.status]]}`.trim()}>{item.status}</span>
+              <span
+                className={`${styles.applicationStatus} ${styles[statusClassMap[item.status]]}`.trim()}
+              >
+                {item.status}
+              </span>
 
               <div className={styles.applicationSalary}>
-                <strong className={styles.applicationSalaryValue}>{item.salary}</strong>
-                <span className={styles.applicationSalaryHint}>Expected Salary</span>
+                <strong className={styles.applicationSalaryValue}>
+                  {item.salary}
+                </strong>
+                <span className={styles.applicationSalaryHint}>
+                  Expected Salary
+                </span>
               </div>
 
               <div className={styles.applicationApplied}>
@@ -527,14 +703,19 @@ const DashboardTiltShowcaseSection = () => {
           <article key={column.title} className={styles.atsColumn}>
             <header className={styles.atsColumnHeader}>
               <div>
-                <span className={`${styles.atsDot} ${styles[`atsDot${column.dotTone[0].toUpperCase()}${column.dotTone.slice(1)}`]}`.trim()} />
+                <span
+                  className={`${styles.atsDot} ${styles[`atsDot${column.dotTone[0].toUpperCase()}${column.dotTone.slice(1)}`]}`.trim()}
+                />
                 <h4>{column.title}</h4>
               </div>
               <strong>{column.count}</strong>
             </header>
             <div className={styles.atsCards}>
               {column.cards.map((card) => (
-                <div key={`${column.title}-${card.company}`} className={styles.atsCard}>
+                <div
+                  key={`${column.title}-${card.company}`}
+                  className={styles.atsCard}
+                >
                   <div className={styles.atsCardHead}>
                     <h5>{card.company}</h5>
                     <span>{card.match}</span>
@@ -586,7 +767,9 @@ const DashboardTiltShowcaseSection = () => {
                 <p>{person.role}</p>
                 <div className={styles.networkMetaRow}>
                   <span>{person.dateLabel}</span>
-                  <em className={`${styles.networkStatus} ${styles[`networkStatus${person.tone[0].toUpperCase()}${person.tone.slice(1)}`]}`.trim()}>
+                  <em
+                    className={`${styles.networkStatus} ${styles[`networkStatus${person.tone[0].toUpperCase()}${person.tone.slice(1)}`]}`.trim()}
+                  >
                     {person.status}
                   </em>
                 </div>
@@ -623,7 +806,15 @@ const DashboardTiltShowcaseSection = () => {
                 </span>
                 <div>
                   <p>{connection.name}</p>
-                  <strong className={styles[`connection${connection.tone[0].toUpperCase()}${connection.tone.slice(1)}`]}>{connection.status}</strong>
+                  <strong
+                    className={
+                      styles[
+                        `connection${connection.tone[0].toUpperCase()}${connection.tone.slice(1)}`
+                      ]
+                    }
+                  >
+                    {connection.status}
+                  </strong>
                 </div>
                 <button type="button">Manage Connection</button>
               </div>
@@ -641,7 +832,9 @@ const DashboardTiltShowcaseSection = () => {
                   <h5>{flow.title}</h5>
                   <p>{flow.desc}</p>
                 </div>
-                <span className={`${styles.switchTrack} ${flow.enabled ? styles.switchTrackOn : ""}`.trim()} />
+                <span
+                  className={`${styles.switchTrack} ${flow.enabled ? styles.switchTrackOn : ""}`.trim()}
+                />
               </div>
             ))}
           </div>
@@ -653,7 +846,9 @@ const DashboardTiltShowcaseSection = () => {
             <p>Untitled Profile</p>
             <span>Type: N/A</span>
           </div>
-          <div className={styles.profileCardMuted}>Create another specialized profile</div>
+          <div className={styles.profileCardMuted}>
+            Create another specialized profile
+          </div>
           <div className={styles.subscriptionCard}>
             <h5>HireDue Pro</h5>
             <p>You have 14 days left on your billing cycle.</p>
@@ -662,7 +857,9 @@ const DashboardTiltShowcaseSection = () => {
           </div>
         </article>
 
-        <article className={`${styles.settingsPanel} ${styles.settingsPanelWide}`.trim()}>
+        <article
+          className={`${styles.settingsPanel} ${styles.settingsPanelWide}`.trim()}
+        >
           <div className={styles.profileTabs}>
             <span className={styles.profileTabActive}>Personal Info</span>
             <span>Education</span>
@@ -764,76 +961,88 @@ const DashboardTiltShowcaseSection = () => {
             transformPerspective: 1400,
           }}
         >
-          <div className={styles.dashboardCanvas}>
-            <aside className={styles.sidebar}>
-              <div className={styles.brandRow}>
-                <img src="/assets/HireDue_Text_Logo.png" alt="HireDue" className={styles.brandLogo} />
-              </div>
-              <nav className={styles.navList}>
-                {sidebarTabs
-                  .filter((tab) => tab.area === "main")
-                  .map((tab) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      className={`${styles.navItem} ${activeTab === tab.id ? styles.navItemActive : ""}`.trim()}
-                      aria-pressed={activeTab === tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                    >
-                      <tab.icon size={16} /> {tab.label}
-                    </button>
-                  ))}
-              </nav>
+          <div
+            className={styles.deviceViewport}
+            ref={viewportRef}
+            style={fitScale != null ? { "--dts-scale": fitScale } : undefined}
+          >
+            <div className={styles.dashboardCanvas}>
+              <aside className={styles.sidebar}>
+                <div className={styles.brandRow}>
+                  <img
+                    src="/assets/HireDue_Text_Logo.png"
+                    alt="HireDue"
+                    className={styles.brandLogo}
+                  />
+                </div>
+                <nav className={styles.navList}>
+                  {sidebarTabs
+                    .filter((tab) => tab.area === "main")
+                    .map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        className={`${styles.navItem} ${activeTab === tab.id ? styles.navItemActive : ""}`.trim()}
+                        aria-pressed={activeTab === tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                      >
+                        <tab.icon size={16} /> {tab.label}
+                      </button>
+                    ))}
+                </nav>
 
-              <div className={styles.sidebarBottom}>
-                {sidebarTabs
-                  .filter((tab) => tab.area === "bottom")
-                  .map((tab) => (
-                    <button
-                      key={tab.id}
-                      type="button"
-                      className={`${styles.navItem} ${activeTab === tab.id ? styles.navItemActive : ""}`.trim()}
-                      aria-pressed={activeTab === tab.id}
-                      onClick={() => setActiveTab(tab.id)}
-                    >
-                      <tab.icon size={16} /> {tab.label}
-                    </button>
-                  ))}
-                <span className={`${styles.navItem} ${styles.navItemStatic}`.trim()}>
-                  <HelpCircle size={16} /> Support
-                </span>
-                <div className={styles.userBox}>
-                  <span className={styles.avatar}>AM</span>
-                  <div>
-                    <p>Alex Morgan</p>
-                    <span>Pro Account</span>
+                <div className={styles.sidebarBottom}>
+                  {sidebarTabs
+                    .filter((tab) => tab.area === "bottom")
+                    .map((tab) => (
+                      <button
+                        key={tab.id}
+                        type="button"
+                        className={`${styles.navItem} ${activeTab === tab.id ? styles.navItemActive : ""}`.trim()}
+                        aria-pressed={activeTab === tab.id}
+                        onClick={() => setActiveTab(tab.id)}
+                      >
+                        <tab.icon size={16} /> {tab.label}
+                      </button>
+                    ))}
+                  <span
+                    className={`${styles.navItem} ${styles.navItemStatic}`.trim()}
+                  >
+                    <HelpCircle size={16} /> Support
+                  </span>
+                  <div className={styles.userBox}>
+                    <span className={styles.avatar}>AM</span>
+                    <div>
+                      <p>Alex Morgan</p>
+                      <span>Pro Account</span>
+                    </div>
                   </div>
                 </div>
+              </aside>
+
+              <div className={styles.mainPanel}>
+                <header className={styles.topbar}>
+                  <div className={styles.topbarCopy}>
+                    <h2>{meta.eyebrow}</h2>
+                    <p className={styles.topbarContext}>
+                      {activeTab === "dashboard"
+                        ? "Live performance view across active automation workflows."
+                        : meta.subtitle}
+                    </p>
+                  </div>
+                  {renderTopbarMeta()}
+                </header>
+
+                <motion.div
+                  key={activeTab}
+                  className={styles.panelTransition}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  {renderActivePanel()}
+                </motion.div>
               </div>
-            </aside>
-
-            <div className={styles.mainPanel}>
-              <header className={styles.topbar}>
-                <div className={styles.topbarCopy}>
-                  <h2>{meta.eyebrow}</h2>
-                  <p className={styles.topbarContext}>
-                    {activeTab === "dashboard"
-                      ? "Live performance view across active automation workflows."
-                      : meta.subtitle}
-                  </p>
-                </div>
-                {renderTopbarMeta()}
-              </header>
-
-              <motion.div
-                key={activeTab}
-                className={styles.panelTransition}
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {renderActivePanel()}
-              </motion.div>
             </div>
           </div>
         </motion.div>

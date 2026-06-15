@@ -8,9 +8,10 @@ const CareersPage = () => {
   const MOSAIC_ROWS = 6;
 
   const avatarIds = [
-    12, 17, 21, 24, 28, 31, 34, 37, 41, 44, 47, 50, 53, 56, 59, 62, 65, 68, 71, 74, 77, 80, 4, 7, 10, 13,
-    16, 19, 22, 25, 29, 32, 35, 38, 42, 45, 48, 51, 54, 57, 60, 63, 66, 69, 72, 75, 78, 6, 9, 14, 18, 23, 27,
-    30, 33, 36, 39, 43, 46, 49, 52, 55, 58, 61, 64, 67, 70, 73, 76, 79, 8, 11, 15, 20, 26, 40, 81, 82, 83, 84,
+    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
+    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40,
+    41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
+    61, 62, 63, 64, 65, 66, 67, 68, 69, 70,
   ];
 
   const rowMap = [
@@ -78,10 +79,7 @@ const CareersPage = () => {
           </div>
 
           <div className={styles.quoteStrip}>
-            <p className={styles.quoteText}>“{quote.text}”</p>
-            <p className={styles.quoteMeta}>
-              <span>{quote.author}</span> — {quote.role}
-            </p>
+            <p className={styles.quoteText}>”{quote.text}”</p>
           </div>
         </header>
 
@@ -94,15 +92,23 @@ const CareersPage = () => {
               {openings.map((opening) => (
                 <article key={opening.id} className={styles.openingCard}>
                   <div className={styles.openingHeader}>
-                    <h3>{opening.title}</h3>
-                    <a href={applyUrl} target="_blank" rel="noreferrer" className={styles.applyButton}>
-                      Apply
-                    </a>
+                    <div className={styles.openingInfo}>
+                      <h3>{opening.title}</h3>
+                      <p className={styles.openingMeta}>
+                        {opening.team} · {opening.location} · {opening.type}
+                      </p>
+                    </div>
+                    <div className={styles.buttonGroup}>
+                      {opening.jdUrl && (
+                        <a href={opening.jdUrl} target="_blank" rel="noreferrer" className={styles.jdButton}>
+                          View JD
+                        </a>
+                      )}
+                      <a href={applyUrl} target="_blank" rel="noreferrer" className={styles.applyButton}>
+                        Apply
+                      </a>
+                    </div>
                   </div>
-                  <p className={styles.openingMeta}>
-                    {opening.team} · {opening.location} · {opening.type}
-                  </p>
-                  <p className={styles.openingSummary}>{opening.summary}</p>
                 </article>
               ))}
             </div>
@@ -119,9 +125,6 @@ const CareersPage = () => {
         <section className={styles.guidanceSection}>
           <h2 className={styles.sectionTitle}>{applyGuidance.heading}</h2>
           <p className={styles.guidanceBody}>{applyGuidance.body}</p>
-          <p className={styles.fallbackEmail}>
-            Questions: <a href={`mailto:${applyGuidance.fallbackEmail}`}>{applyGuidance.fallbackEmail}</a>
-          </p>
         </section>
       </div>
     </section>

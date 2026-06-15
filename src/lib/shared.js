@@ -6,7 +6,7 @@ export const waitlistSchema = z.object({
   phone: z
     .string()
     .trim()
-    .regex(/^\+[1-9]\d{7,14}$/, "Enter phone in +country format (e.g. +919876543210)."),
+    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number."),
 });
 
 export const contactSchema = z.object({

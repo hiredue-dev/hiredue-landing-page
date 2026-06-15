@@ -50,7 +50,9 @@ const WaitlistForm = ({ form }) => {
           id="waitlist-phone"
           name="phone"
           type="tel"
-          placeholder="+919876543210"
+          inputMode="numeric"
+          maxLength={10}
+          placeholder="9876543210"
           value={form.values.phone}
           onChange={form.handleChange}
         />

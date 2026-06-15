@@ -109,6 +109,13 @@
   padding: 0;
   color: #0f172a;
   background: transparent;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.altContactItem:hover {
+  color: #1d4ed8;
 }
 
 .altIconWrap {
@@ -159,7 +166,6 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 24px;
-  max-width: 360px;
 }
 
 .officeCard {
@@ -186,6 +192,12 @@
   margin-top: 16px;
   display: grid;
   gap: 10px;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.officeLines:hover p {
+  color: #1d4ed8;
 }
 
 .officeLines p {
@@ -194,6 +206,7 @@
   line-height: 1.4;
   color: #475569;
 }
+
 
 .error,
 .errorMessage {

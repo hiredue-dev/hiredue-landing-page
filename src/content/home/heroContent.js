@@ -2,23 +2,33 @@ import { assetMap } from "@/content/site/assets.js";
 
 export const heroContent = {
   announcement: {
-    tag: "New",
-    text: " Version 1 Coming Soon... ",
+    tag: "Live",
+    text: " Version 1 is here — now live ",
   },
   headingPrefix: "Automate the",
   headingHighlight: "complete job hunt",
   description:
     "HireDue discovers relevant roles, tailors your resume, applies faster, and reaches recruiters automatically so you can focus on interviews.",
-  inlineCtaLabel: "Get Early Access",
-  microTrustLine: "Early access for the first beta cohort.",
+  primaryCtaLabel: "Sign up",
+  secondaryCtaLabel: "Log in",
+  microTrustLine: "Create your account and start applying in minutes.",
   trustBadge: {
     prefix: "Trusted by",
     highlight: "300+",
-    suffix: "Beta users",
+    suffix: "active users",
     avatars: [
-      { src: "/assets/AboutUs/RishabhBagaria.png", alt: "Community member 1" },
-      { src: "/assets/AboutUs/SanglapKundu.png", alt: "Community member 2" },
-      { src: "/assets/AboutUs/ShivamKasera.png", alt: "Community member 3" },
+      {
+        src: "https://ui-avatars.com/api/?name=Aarav+Sharma&background=6366f1&color=fff&bold=true&size=128",
+        alt: "Community member 1",
+      },
+      {
+        src: "https://ui-avatars.com/api/?name=Priya+Patel&background=ec4899&color=fff&bold=true&size=128",
+        alt: "Community member 2",
+      },
+      {
+        src: "https://ui-avatars.com/api/?name=Rohan+Mehta&background=10b981&color=fff&bold=true&size=128",
+        alt: "Community member 3",
+      },
     ],
   },
   emailPlaceholder: "Enter your email",

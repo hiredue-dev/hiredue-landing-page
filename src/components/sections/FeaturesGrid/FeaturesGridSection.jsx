@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
@@ -16,7 +16,11 @@ const IntegrationVisual = () => (
         </span>
       ))}
     </div>
-    <svg className={styles.integrationSvg} viewBox="0 0 320 180" aria-hidden="true">
+    <svg
+      className={styles.integrationSvg}
+      viewBox="0 0 320 180"
+      aria-hidden="true"
+    >
       <path d="M44 34C44 68 104 82 160 112" />
       <path d="M108 34C108 76 142 86 160 112" />
       <path d="M212 34C212 76 178 86 160 112" />
@@ -24,7 +28,9 @@ const IntegrationVisual = () => (
       <path d="M160 118V148" />
     </svg>
     <div className={styles.centerNode}>Connect</div>
-    <div className={styles.glassStrip}>Making lists of matching jobs in real time</div>
+    <div className={styles.glassStrip}>
+      Making lists of matching jobs in real time
+    </div>
   </div>
 );
 
@@ -94,148 +100,161 @@ const DashboardVisual = () => (
   </div>
 );
 
-const CollaborationVisual = () => (
+const cap = (value) => value.charAt(0).toUpperCase() + value.slice(1);
+
+const OutreachVisual = () => (
   <div className={styles.visualShell}>
     <div className={styles.outreachScene}>
-      <div className={styles.outreachTitle}>Recruiter Outreach</div>
-      <div className={styles.outreachCanvas}>
-        <div className={styles.outreachStack}>
-          <span className={styles.stackSheetA} aria-hidden="true" />
-          <span className={styles.stackSheetB} aria-hidden="true" />
-          <span className={styles.stackSheetC} aria-hidden="true" />
+      <div className={styles.outreachTo}>
+        <span className={styles.outreachToLabel}>Reaching out to</span>
+        <div className={styles.recruiterAvatars}>
+          <span className={`${styles.recruiterAvatar} ${styles.rAvatarA}`} />
+          <span className={`${styles.recruiterAvatar} ${styles.rAvatarB}`} />
+          <span className={`${styles.recruiterAvatar} ${styles.rAvatarC}`} />
+          <span className={styles.recruiterMore}>+6</span>
+        </div>
+      </div>
 
-          <div className={styles.outreachMainCard}>
-            <div className={styles.messageBlock}>
-              <div className={styles.messageHead}>Hello [Recruiter Name],</div>
-              <div className={styles.messageMeta}>
-                <span />
-                <span />
-              </div>
-              <span className={styles.messageEdit}>✎</span>
-            </div>
-
-            <div className={styles.messageArrow}>↓</div>
-
-            <div className={styles.replyBlock}>Re: Application for [Role at Company]</div>
-
-            <div className={styles.messageArrow}>↓</div>
-
-            <div className={styles.messageBlock}>
-              <div className={styles.messageHead}>[Customized message logic...]</div>
-              <button type="button" className={styles.outreachBtn}>
-                Launch Personalized Outreach Campaign
-              </button>
-            </div>
+      <div className={styles.outreachMessage}>
+        <div className={styles.outreachFrom}>
+          <span className={styles.outreachFromAvatar}>SC</span>
+          <div className={styles.outreachFromMeta}>
+            <span className={styles.outreachFromName}>Sarah Chen</span>
+            <span className={styles.outreachFromRole}>Recruiter · Stripe</span>
           </div>
+          <span className={styles.aiBadge}>✦ AI</span>
         </div>
 
-        <svg className={styles.outreachConnectors} viewBox="0 0 220 180" aria-hidden="true">
-          <path d="M8 90C54 92 62 42 124 36" />
-          <path d="M8 90C52 90 62 76 124 76" />
-          <path d="M8 90C52 90 62 114 124 114" />
-          <path d="M8 90C56 90 66 152 124 150" />
-        </svg>
-
-        <div className={styles.pipelineCards}>
-          <div className={`${styles.profileCard} ${styles.profileCardTop}`.trim()}>
-            <span className={styles.profileAvatar} />
-            <span className={styles.profileBadge}>in</span>
-            <span className={styles.profileLine} />
-            <span className={styles.profileLineShort} />
-            <div className={styles.profileMetaRow}>
-              <span />
-              <span />
-            </div>
-          </div>
-          <div className={`${styles.profileCard} ${styles.profileCardMidLeft}`.trim()}>
-            <span className={styles.profileAvatar} />
-            <span className={styles.profileLine} />
-            <span className={styles.profileLineShort} />
-            <div className={styles.profileMetaRow}>
-              <span />
-              <span />
-            </div>
-          </div>
-          <div className={`${styles.profileCard} ${styles.profileCardMidRight}`.trim()}>
-            <span className={styles.profileAvatar} />
-            <span className={styles.profileBadge}>in</span>
-            <span className={styles.profileLine} />
-            <span className={styles.profileLineShort} />
-            <div className={styles.profileMetaRow}>
-              <span />
-              <span />
-            </div>
-          </div>
-          <div className={`${styles.profileCard} ${styles.profileCardBottom}`.trim()}>
-            <span className={styles.profileAvatar} />
-            <span className={styles.profileLine} />
-            <span className={styles.profileLineShort} />
-            <div className={styles.profileMetaRow}>
-              <span />
-              <span />
-            </div>
-          </div>
-        </div>
-        <div className={styles.pipelineLabel}>Pipeline of Connections</div>
-      </div>
-    </div>
-  </div>
-);
-
-const AutomationVisual = () => (
-  <div className={styles.visualShell}>
-    <div className={styles.ruleScene}>
-      <div className={styles.ruleTitle}>Rule Builder</div>
-
-      <div className={styles.ruleTopIcons}>
-        <span>📍</span>
-        <span>💰</span>
-        <span>📶</span>
+        <p className={styles.outreachText}>
+          Hi Sarah, I saw you&rsquo;re hiring a{" "}
+          <span className={styles.personalToken}>Senior Designer</span>
+          <span className={styles.outreachCaret} aria-hidden="true" />
+        </p>
+        <span className={styles.outreachLine} />
+        <span className={styles.outreachLineShort} />
       </div>
 
-      <svg className={styles.ruleLines} viewBox="0 0 320 180" aria-hidden="true">
-        <path d="M20 54H96V92H170V62H300" />
-        <path d="M38 126H136V92" />
-        <path d="M188 146V92" />
-        <circle cx="40" cy="76" r="4.5" />
-        <circle cx="66" cy="96" r="4.5" />
-        <circle cx="94" cy="116" r="4.5" />
-        <circle cx="228" cy="76" r="4.5" />
-      </svg>
-
-      <div className={styles.ruleToggles}>
-        <span />
-        <span />
-        <span />
-      </div>
-
-      <div className={styles.automationTags}>
-        <span>Import</span>
-        <button type="button" className={styles.launchBtn}>
-          Launch Rule
-        </button>
-        <span>Track</span>
-      </div>
-    </div>
-  </div>
-);
-
-const SecurityVisual = () => (
-  <div className={styles.visualShell}>
-    <div className={styles.vaultScene}>
-      <div className={styles.vaultTitle}>Secure Vault</div>
-      <svg className={styles.vaultShield} viewBox="0 0 320 180" aria-hidden="true">
-        <path d="M160 22L238 56V106C238 136 212 158 160 174C108 158 82 136 82 106V56L160 22Z" />
-      </svg>
-      <div className={styles.vaultFolders}>
-        <span><i /></span>
-        <span><i /></span>
-        <span><i /></span>
-        <span><i /></span>
-      </div>
-      <button type="button" className={styles.vaultBtn}>
-        Archive &amp; Monitor
+      <button type="button" className={styles.outreachSend}>
+        <span className={styles.sendIcon} aria-hidden="true">
+          ➤
+        </span>
+        Send personalized intro
       </button>
+    </div>
+  </div>
+);
+
+const autoApplyJobs = [
+  {
+    logo: "S",
+    tone: "green",
+    role: "Product Designer",
+    company: "Stripe",
+    status: "Applied",
+    state: "done",
+  },
+  {
+    logo: "F",
+    tone: "violet",
+    role: "UX Engineer",
+    company: "Figma",
+    status: "Applying",
+    state: "active",
+  },
+  {
+    logo: "A",
+    tone: "navy",
+    role: "Design Lead",
+    company: "Airbnb",
+    status: "Queued",
+    state: "queued",
+  },
+];
+
+const AutoApplyVisual = () => (
+  <div className={styles.visualShell}>
+    <div className={styles.applyScene}>
+      <div className={styles.applyHeader}>
+        <span className={styles.applyTitle}>Auto-Apply</span>
+        <span className={styles.applyToggle} aria-hidden="true">
+          <i />
+        </span>
+      </div>
+
+      <div className={styles.applyQueue}>
+        {autoApplyJobs.map((job) => (
+          <div key={job.company} className={styles.applyRow}>
+            <span
+              className={`${styles.applyLogo} ${styles[`applyLogo${cap(job.tone)}`]}`.trim()}
+            >
+              {job.logo}
+            </span>
+            <div className={styles.applyInfo}>
+              <span className={styles.applyRole}>{job.role}</span>
+              <span className={styles.applyCompany}>{job.company}</span>
+            </div>
+            <span
+              className={`${styles.applyStatus} ${styles[`applyStatus${cap(job.state)}`]}`.trim()}
+            >
+              {job.state === "done" && (
+                <span className={styles.applyCheck}>✓</span>
+              )}
+              {job.state === "active" && (
+                <i className={styles.applyPulse} aria-hidden="true" />
+              )}
+              {job.status}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <div className={styles.applyProgress}>
+        <div className={styles.applyBar}>
+          <span />
+        </div>
+        <span className={styles.applyCount}>14 / 20 applied</span>
+      </div>
+    </div>
+  </div>
+);
+
+const trackColumns = [
+  { label: "Applied", tone: "blue", count: 48, cards: ["M", "N"] },
+  { label: "Interview", tone: "amber", count: 12, cards: ["S"] },
+  { label: "Offer", tone: "green", count: 3, cards: ["F"] },
+];
+
+const TrackingVisual = () => (
+  <div className={styles.visualShell}>
+    <div className={styles.trackScene}>
+      <div className={styles.trackHeader}>
+        <span className={styles.trackTitle}>Application Tracker</span>
+        <span className={styles.trackFilter}>This week ▾</span>
+      </div>
+
+      <div className={styles.trackBoard}>
+        {trackColumns.map((column) => (
+          <div key={column.label} className={styles.trackColumn}>
+            <div className={styles.trackColHead}>
+              <span
+                className={`${styles.trackDot} ${styles[`trackDot${cap(column.tone)}`]}`.trim()}
+              />
+              <span className={styles.trackColLabel}>{column.label}</span>
+              <span className={styles.trackColCount}>{column.count}</span>
+            </div>
+            {column.cards.map((initial, cardIndex) => (
+              <div
+                key={`${column.label}-${cardIndex}`}
+                className={styles.trackCard}
+              >
+                <span className={styles.trackCardAvatar}>{initial}</span>
+                <span className={styles.trackCardLine} />
+                <span className={styles.trackCardLineShort} />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 );
@@ -243,9 +262,9 @@ const SecurityVisual = () => (
 const visualMap = {
   integration: IntegrationVisual,
   dashboard: DashboardVisual,
-  collaboration: CollaborationVisual,
-  automation: AutomationVisual,
-  security: SecurityVisual,
+  outreach: OutreachVisual,
+  autoApply: AutoApplyVisual,
+  tracking: TrackingVisual,
 };
 
 const FeatureCard = ({ feature, index, inView, large = false }) => {
