@@ -9,7 +9,7 @@ const MAC_ARM_URL = process.env.NEXT_PUBLIC_DOWNLOAD_MAC_ARM || "";
 const MAC_INTEL_URL = process.env.NEXT_PUBLIC_DOWNLOAD_MAC_INTEL || "";
 const WINDOWS_URL = process.env.NEXT_PUBLIC_DOWNLOAD_WINDOWS || "";
 
-const APP_VERSION = "0.1.0";
+const APP_VERSION = "1.0.1";
 
 const AppleIcon = (props) => (
   <svg viewBox="0 0 384 512" aria-hidden="true" fill="currentColor" {...props}>

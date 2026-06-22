@@ -1,6 +1,7 @@
 export function validateContactNumber(value) {
   if (!value) return null;
-  if (!/^\d{10}$/.test(value)) return "Contact number must be exactly 10 digits.";
+  // Country-agnostic: national numbers run ~4–15 digits (E.164).
+  if (!/^\d{4,15}$/.test(value)) return "Please enter a valid phone number.";
   return null;
 }
 

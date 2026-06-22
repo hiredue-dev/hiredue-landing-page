@@ -14,12 +14,14 @@ import {
   validateSignupPassword,
 } from "../validators.js";
 import { friendlyAuthError } from "../errorMessages.js";
+import { COUNTRY_OPTIONS, COUNTRY_BY_ISO, detectDefaultCountry } from "../countries.js";
 import OtpModal from "./OtpModal.jsx";
 import styles from "./AuthForm.module.css";
 
 const EMPTY_FORM = {
   name: "",
   email: "",
+  countryCode: detectDefaultCountry(), // ISO code, e.g. "IN"
   contact: "",
   password: "",
   confirmPassword: "",
@@ -50,7 +52,7 @@ export default function SignupForm() {
     const { name, value } = event.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "contact" ? value.replace(/\D/g, "").slice(0, 10) : value,
+      [name]: name === "contact" ? value.replace(/\D/g, "").slice(0, 15) : value,
     }));
   };
 
@@ -107,11 +109,14 @@ export default function SignupForm() {
       throw new Error(confirm.error || "Verification failed.");
     }
 
+    // Send the phone in E.164 format (e.g. "+919876543210") so it's
+    // valid for any country and accepted by Cognito.
+    const dial = COUNTRY_BY_ISO[form.countryCode]?.dial || "";
     await completeSignup({
       id: userSub || "",
       email: form.email,
       fullName: form.name,
-      phoneNumber: form.contact,
+      phoneNumber: `+${dial}${form.contact}`,
       password: form.password,
     });
 
@@ -156,16 +161,32 @@ export default function SignupForm() {
 
           <div className={styles.field}>
             <label className={styles.label} htmlFor="contact">Contact number</label>
-            <Input
-              id="contact"
-              name="contact"
-              type="tel"
-              inputMode="numeric"
-              maxLength={10}
-              value={form.contact}
-              onChange={handleChange}
-              required
-            />
+            <div className={styles.phoneRow}>
+              <select
+                name="countryCode"
+                aria-label="Country"
+                className={styles.countrySelect}
+                value={form.countryCode}
+                onChange={handleChange}
+              >
+                {COUNTRY_OPTIONS.map((c) => (
+                  <option key={c.value} value={c.value}>
+                    {c.label}
+                  </option>
+                ))}
+              </select>
+              <Input
+                id="contact"
+                name="contact"
+                type="tel"
+                inputMode="numeric"
+                maxLength={15}
+                value={form.contact}
+                onChange={handleChange}
+                required
+                className={styles.phoneInput}
+              />
+            </div>
             {form.contact && fieldErrors.contact && (
               <span className={styles.fieldError}>{fieldErrors.contact}</span>
             )}
