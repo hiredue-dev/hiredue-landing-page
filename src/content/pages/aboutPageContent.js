@@ -91,7 +91,7 @@ export const aboutPageContent = {
         focus: "Product · Growth",
         initials: "RB",
         avatar: "/assets/AboutUs/RishabhBagaria.png",
-        linkedin: "#",
+        linkedin: "https://www.linkedin.com/in/rishabh-bagaria-160764204/",
       },
       {
         name: "Sanglap Kundu",
@@ -99,7 +99,7 @@ export const aboutPageContent = {
         focus: "Engineering · Growth",
         initials: "SK",
         avatar: "/assets/AboutUs/SanglapKundu.png",
-        linkedin: "#",
+        linkedin: "https://www.linkedin.com/in/sanglap-kundu-9790061ba/",
       },
       {
         name: "Shivam Kasera",
@@ -107,7 +107,7 @@ export const aboutPageContent = {
         focus: "Engineering · Growth",
         initials: "SH",
         avatar: "/assets/AboutUs/ShivamKasera.png",
-        linkedin: "#",
+        linkedin: "https://www.linkedin.com/in/shivam-kasera-578528202/",
       },
     ],
   },
