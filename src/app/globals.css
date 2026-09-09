@@ -1,0 +1,479 @@
+/* ------------------------------------------------------------------ */
+/*  Single global entry point for both design systems.                  */
+/*                                                                      */
+/*  Cascade order, weakest first:                                       */
+/*                                                                      */
+/*    theme          Tailwind's tokens                                  */
+/*    base           Tailwind preflight                                 */
+/*    legacy-compat  puts back the UA defaults preflight removes,       */
+/*                   but only inside the `.legacyPage` subtree          */
+/*    legacy         the pre-redesign design system                     */
+/*    components     the redesign's type presets (.t-h1, .blog-body, …) */
+/*    utilities      Tailwind utilities                                 */
+/*    (unlayered)    every CSS Module — always wins, so the old pages   */
+/*                   keep their exact styling                           */
+/* ------------------------------------------------------------------ */
+/* hoisted: once everything is bundled into one sheet, @import has to stay
+   at the top — this is the legacy Inter face the old pages use. */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+
+@layer theme, base, legacy-compat, legacy, components, utilities;
+
+@import "../design-system/index.css";
+@import "tailwindcss";
+
+/* explicit, so class detection never depends on cwd */
+@source "../";
+
+/* ------------------------------------------------------------------ */
+/*  legacy-compat                                                       */
+/*                                                                      */
+/*  Tailwind's preflight is a global reset, but only the redesigned     */
+/*  routes were written against it. Everything under `.legacyPage`      */
+/*  predates it and still expects browser defaults — bulleted lists,    */
+/*  heading sizes, form-control chrome. `revert` rolls each property    */
+/*  back to the user-agent value, and every selector is wrapped in      */
+/*  `:where()` so it carries zero specificity: any rule in the old      */
+/*  design system or in a CSS Module still overrides it.                */
+/* ------------------------------------------------------------------ */
+@layer legacy-compat {
+  :where(.legacyPage) :where(*, *::before, *::after) {
+    margin: revert;
+    padding: revert;
+    border-width: revert;
+    border-style: revert;
+  }
+
+  :where(.legacyPage) :where(ul, ol, menu) {
+    list-style: revert;
+  }
+
+  :where(.legacyPage) :where(h1, h2, h3, h4, h5, h6) {
+    font-size: revert;
+    font-weight: revert;
+  }
+
+  :where(.legacyPage) :where(button, input, optgroup, select, textarea) {
+    background-color: revert;
+    border-radius: revert;
+  }
+
+  :where(.legacyPage) :where(img, video) {
+    height: revert;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Design tokens — mirrored from the Framer template                   */
+/* ------------------------------------------------------------------ */
+@theme {
+  --color-ink: #1d1d1d;
+  --color-ink-50: #1d1d1d80;
+  --color-dim: #4d585f;
+  --color-surface: #edf1f4;
+  --color-line: #dde5ed;
+  --color-line-70: #dde5edb3;
+  --color-charcoal: #323232;
+  --color-grey: #bababa;
+  --color-brand: #406ae4;
+  --color-brand-light: #3b82f6;
+  --color-brand-lighter: #5290f4;
+  --color-success: #10b981;
+  --color-success-10: #10b9811a;
+  --color-success-20: #10b98133;
+  --color-danger: #f51c23;
+  --color-danger-05: #ff0d0d0d;
+  --color-ice: #e2f5ff;
+
+  --font-display: var(--font-bricolage), "Bricolage Grotesque", sans-serif;
+  --font-sans: var(--font-inter-display), "Inter Display", "Inter", sans-serif;
+
+  --radius-card: 20px;
+  --radius-shell: 30px;
+
+  --ease-framer: cubic-bezier(0.44, 0, 0.56, 1);
+}
+
+/* Immediate feedback while an uncached route segment is streaming in. */
+.route-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.route-loading > span {
+  position: fixed;
+  inset: 0 auto auto 0;
+  width: 35%;
+  height: 3px;
+  background: var(--color-brand);
+  box-shadow: 0 0 14px rgba(64, 106, 228, 0.55);
+  animation: route-progress 0.9s ease-in-out infinite;
+}
+
+@keyframes route-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(385%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-loading > span {
+    animation: none;
+    width: 100%;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                                */
+/* ------------------------------------------------------------------ */
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background: #fff;
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    overflow-x: clip;
+  }
+
+  /* clear the fixed navbar when jumping to an anchor */
+  section[id],
+  footer[id] {
+    scroll-margin-top: 118px;
+  }
+
+  ::selection {
+    background: var(--color-brand);
+    color: #fff;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Type presets (values measured from the original template)           */
+/* ------------------------------------------------------------------ */
+@layer components {
+  /* Hero headline — 100 / 68 / 44 */
+  .t-h1 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 100px;
+    line-height: 1;
+    letter-spacing: -1.4px;
+    color: var(--color-ink);
+  }
+
+  /* Section headline — 48 / 40 / 32 */
+  .t-h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: var(--color-ink);
+  }
+
+  /* Feature-page headline — 48 / 44 / 34.
+     The template gives this page its own ladder, a step above .t-h2. */
+  .t-h2-feature {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: var(--color-ink);
+  }
+
+  /* Ambassador headline — 68 / 54 / 40. Bigger than the feature ladder: this
+     route is a pitch, so the headline carries it. */
+  .t-h1-ambassador {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 68px;
+    line-height: 1.1;
+    letter-spacing: -1.4px;
+    color: var(--color-ink);
+  }
+
+  /* Large stat — 40 */
+  .t-h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 40px;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: var(--color-ink);
+  }
+
+  /* Card title — 28 */
+  .t-h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 28px;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+
+  /* Small card title — 24 */
+  .t-h5 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--color-ink);
+  }
+
+  .t-body-lg {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-dim);
+  }
+
+  /* Blog index headline — 72 / 54 / 44 */
+  .t-blog-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 72px;
+    line-height: 1.2;
+    letter-spacing: -1.4px;
+    color: var(--color-ink);
+  }
+
+  /*
+   * Blog post body. The article is generated from blocks rather than hand-
+   * written markup, so the rhythm lives here: 40px above every section
+   * heading, 10px above everything else.
+   */
+  .blog-body h2,
+  .blog-body h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 32px;
+    line-height: 1.2;
+    letter-spacing: -1px;
+    color: var(--color-ink);
+  }
+
+  .blog-body h3 {
+    margin-top: 40px;
+  }
+
+  .blog-body p,
+  .blog-body li {
+    font-size: 18px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-dim);
+  }
+
+  .blog-body p {
+    margin-top: 10px;
+  }
+
+  .blog-body ul {
+    margin-top: 10px;
+    padding-left: 22px;
+    list-style: disc;
+  }
+
+  .blog-body > :first-child {
+    margin-top: 0;
+  }
+
+  .t-body {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-dim);
+  }
+
+  .t-body-sm {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.3;
+    color: var(--color-dim);
+  }
+
+  @media (max-width: 1199.98px) {
+    .t-h1 {
+      font-size: 68px;
+      letter-spacing: -1.2px;
+    }
+    .t-h2 {
+      font-size: 40px;
+    }
+    .t-h2-feature {
+      font-size: 44px;
+    }
+    .t-h1-ambassador {
+      font-size: 54px;
+      letter-spacing: -1.2px;
+    }
+    .t-blog-title {
+      font-size: 54px;
+      letter-spacing: -1.2px;
+    }
+    .blog-body h2 {
+      font-size: 30px;
+    }
+    .blog-body h3 {
+      font-size: 28px;
+    }
+  }
+
+  @media (max-width: 809.98px) {
+    .t-h1 {
+      font-size: 44px;
+      letter-spacing: -0.8px;
+    }
+    .t-h2 {
+      font-size: 32px;
+      letter-spacing: -0.6px;
+    }
+    .t-h2-feature {
+      font-size: 34px;
+      letter-spacing: -0.6px;
+    }
+    .t-h1-ambassador {
+      font-size: 40px;
+      letter-spacing: -0.8px;
+    }
+    .t-blog-title {
+      font-size: 44px;
+      letter-spacing: -0.8px;
+    }
+    .blog-body h2 {
+      font-size: 26px;
+    }
+    .blog-body h3 {
+      font-size: 24px;
+    }
+    .t-h3 {
+      font-size: 32px;
+    }
+    .t-h4 {
+      font-size: 24px;
+    }
+    .t-h5 {
+      font-size: 20px;
+    }
+    .t-body-lg {
+      font-size: 16px;
+    }
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/*  Utilities                                                           */
+/* ------------------------------------------------------------------ */
+@utility container-page {
+  width: 100%;
+  max-width: 1260px;
+  margin-inline: auto;
+  padding-inline: 30px;
+}
+
+@utility section-pad {
+  padding-top: 200px;
+}
+
+/* Range input on a dark panel: the filled part is a background gradient so
+   the fill looks the same in every engine, not just the ones with ::-moz-range-progress. */
+@utility range-blue {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.15);
+  background-image: linear-gradient(90deg, #5290f4 0%, #406ae4 100%);
+  background-repeat: no-repeat;
+  cursor: pointer;
+  outline: none;
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    border: 5px solid var(--color-brand-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+
+  &::-moz-range-thumb {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #fff;
+    border: 5px solid var(--color-brand-light);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 3px rgba(82, 144, 244, 0.5);
+  }
+}
+
+/* Soft “neumorphic” inner light used on every filled button */
+@utility btn-emboss {
+  box-shadow:
+    inset 4px 4px 8px 0 rgba(255, 255, 255, 0.3),
+    inset -4px -4px 8px 0 rgba(255, 255, 255, 0.3),
+    0 4px 12px 0 rgba(29, 29, 29, 0.5);
+}
+
+/* Horizontal marquee */
+@keyframes marquee-x {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-x var(--marquee-duration, 40s) linear infinite;
+  animation-direction: var(--marquee-direction, normal);
+  will-change: transform;
+}
+
+.marquee-root:hover .marquee-track {
+  animation-play-state: var(--marquee-hover, running);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Digit roll used by the pricing number flow */
+@keyframes digit-in {
+  from {
+    transform: translateY(var(--digit-from, 100%));
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

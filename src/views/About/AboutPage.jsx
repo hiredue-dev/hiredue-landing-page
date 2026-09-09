@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowUpRight, Linkedin } from "lucide-react";
 import styles from "./AboutPage.module.css";
@@ -8,7 +9,13 @@ import { aboutPageContent } from "@/content/pages/aboutPageContent.js";
 
 const renderHighlighted = (text) =>
   text.split(/\[([^\]]+)\]/).map((part, i) =>
-    i % 2 === 1 ? <span key={i} className={styles.highlight}>{part}</span> : part
+    i % 2 === 1 ? (
+      <span key={i} className={styles.highlight}>
+        {part}
+      </span>
+    ) : (
+      part
+    ),
   );
 
 const fadeUp = {
@@ -113,7 +120,11 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.4 }}
-                transition={{ duration: 0.5, delay: 0.06 + i * 0.08, ease: "easeOut" }}
+                transition={{
+                  duration: 0.5,
+                  delay: 0.06 + i * 0.08,
+                  ease: "easeOut",
+                }}
               >
                 <span className={styles.pillarIndex}>{p.index}</span>
                 <h3 className={styles.pillarTitle}>{p.title}</h3>
@@ -136,7 +147,11 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 14 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.35 }}
-                transition={{ duration: 0.55, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                transition={{
+                  duration: 0.55,
+                  delay: i * 0.07,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
               >
                 <span className={styles.principleNum}>{item.number}</span>
                 <div className={styles.principleContent}>
@@ -148,7 +163,7 @@ const AboutPage = () => {
           </ul>
         </section>
 
-<section className={styles.section} aria-labelledby="team-title">
+        <section className={styles.section} aria-labelledby="team-title">
           <span className={styles.sectionKicker}>{team.kicker}</span>
           <h2 id="team-title" className={styles.sectionTitle}>
             {renderHighlighted(team.title)}
@@ -163,26 +178,35 @@ const AboutPage = () => {
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.3 }}
-                transition={{ duration: 0.55, delay: i * 0.08, ease: "easeOut" }}
+                transition={{
+                  duration: 0.55,
+                  delay: i * 0.08,
+                  ease: "easeOut",
+                }}
               >
                 <div className={styles.memberFrame}>
                   {member.avatar ? (
-                    <img
+                    <Image
                       src={member.avatar}
                       alt={member.name}
+                      width={248}
+                      height={344}
+                      sizes="(max-width: 760px) 100vw, 248px"
                       className={styles.memberImage}
-                      loading="lazy"
-                      decoding="async"
                     />
                   ) : (
-                    <span className={styles.memberInitials}>{member.initials}</span>
+                    <span className={styles.memberInitials}>
+                      {member.initials}
+                    </span>
                   )}
                 </div>
                 <div className={styles.memberMeta}>
                   <h3 className={styles.memberName}>{member.name}</h3>
                   <p className={styles.memberRole}>
                     <span>{member.role}</span>
-                    <span className={styles.memberDivider} aria-hidden="true">·</span>
+                    <span className={styles.memberDivider} aria-hidden="true">
+                      ·
+                    </span>
                     <span className={styles.memberFocus}>{member.focus}</span>
                   </p>
                   <a
@@ -210,7 +234,10 @@ const AboutPage = () => {
               {closing.cta.label}
               <ArrowUpRight size={17} strokeWidth={2.25} />
             </Link>
-            <Link href={closing.secondary.href} className={styles.closingSecondary}>
+            <Link
+              href={closing.secondary.href}
+              className={styles.closingSecondary}
+            >
               {closing.secondary.label}
             </Link>
           </div>
