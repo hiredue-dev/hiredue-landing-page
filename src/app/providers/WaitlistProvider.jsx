@@ -1,8 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useMemo, useState } from "react";
-import WaitlistModal from "@/features/waitlist/components/WaitlistModal.jsx";
 import WaitlistContext from "./waitlist-context.js";
+
+// Validation and modal code are only needed after someone opens the form.
+const WaitlistModal = dynamic(
+  () => import("@/features/waitlist/components/WaitlistModal.jsx"),
+  { ssr: false },
+);
 
 const WaitlistProvider = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -27,7 +33,7 @@ const WaitlistProvider = ({ children }) => {
   return (
     <WaitlistContext.Provider value={value}>
       {children}
-      <WaitlistModal />
+      {isOpen ? <WaitlistModal /> : null}
     </WaitlistContext.Provider>
   );
 };

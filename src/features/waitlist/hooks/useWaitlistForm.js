@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { waitlistSchema, formatZodErrors } from "@/lib/shared.js";
 import waitlistService from "../services/waitlistService.js";
 
@@ -22,20 +22,20 @@ const useWaitlistForm = ({ source = "waitlist", prefillEmail = "" } = {}) => {
     setErrors((current) => ({ ...current, [name]: [] }));
   };
 
-  const prefill = (nextEmail = "") => {
+  const prefill = useCallback((nextEmail = "") => {
     setValues((current) => ({
       ...current,
       email: nextEmail,
     }));
     setErrors((current) => ({ ...current, email: [] }));
-  };
+  }, []);
 
-  const reset = () => {
+  const reset = useCallback(() => {
     setValues(createInitialState(""));
     setStatus("idle");
     setMessage("");
     setErrors({});
-  };
+  }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -64,7 +64,9 @@ const useWaitlistForm = ({ source = "waitlist", prefillEmail = "" } = {}) => {
     } catch (error) {
       setStatus("error");
       setErrors(error.errors || {});
-      setMessage(error.message || "Could not join waitlist right now. Please try again.");
+      setMessage(
+        error.message || "Could not join waitlist right now. Please try again.",
+      );
     }
   };
 

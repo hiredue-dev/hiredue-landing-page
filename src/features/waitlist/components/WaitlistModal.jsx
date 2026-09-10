@@ -1,5 +1,4 @@
-'use client';
-
+"use client";
 
 import { useEffect } from "react";
 import Modal from "@/components/ui/Modal/Modal.jsx";
@@ -10,13 +9,14 @@ import WaitlistForm from "./WaitlistForm.jsx";
 const WaitlistModal = () => {
   const { isOpen, prefillEmail, closeWaitlist } = useWaitlist();
   const form = useWaitlistForm({ source: "waitlist_modal" });
+  const { prefill } = form;
 
   useEffect(() => {
     if (!isOpen) {
       return;
     }
-    form.prefill(prefillEmail || "");
-  }, [isOpen, prefillEmail]);
+    prefill(prefillEmail || "");
+  }, [isOpen, prefill, prefillEmail]);
 
   const handleClose = () => {
     closeWaitlist();
@@ -24,7 +24,11 @@ const WaitlistModal = () => {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleClose} title="Get early access to HireDue">
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Get early access to HireDue"
+    >
       <WaitlistForm form={form} />
     </Modal>
   );
