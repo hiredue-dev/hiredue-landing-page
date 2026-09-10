@@ -1,5 +1,4 @@
 import { getAccessToken, clearTokens } from "./tokenStore.js";
-import { refreshTokens } from "./authService.js";
 
 export const BACKEND_API_URL = process.env.NEXT_PUBLIC_BACKEND_API_URL || "";
 
@@ -50,6 +49,9 @@ async function request(path, options = {}, { withAuth = true } = {}) {
   let result = await doFetch(path, options, withAuth);
 
   if (result.status === 401 && withAuth) {
+    // Avoid pulling the entire Cognito SDK into every route through the root
+    // auth provider. Token refresh is the only request path that needs it.
+    const { refreshTokens } = await import("./authService.js");
     const refresh = await refreshTokens();
     if (refresh.success) {
       result = await doFetch(path, options, withAuth);

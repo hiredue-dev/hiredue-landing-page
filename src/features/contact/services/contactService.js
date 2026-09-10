@@ -11,6 +11,8 @@ const contactService = {
     const formBody = new URLSearchParams({
       name: payload.name,
       email: payload.email,
+      phone: payload.phone || "",
+      subject: payload.subject || "",
       message: payload.message,
       source: payload.source || "contact_page",
       submittedAt: payload.submittedAt || new Date().toISOString(),

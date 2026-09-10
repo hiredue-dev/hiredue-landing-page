@@ -8,6 +8,8 @@ import contactService from "../services/contactService.js";
 const initialState = {
   name: "",
   email: "",
+  phone: "",
+  subject: "",
   message: "",
 };
 

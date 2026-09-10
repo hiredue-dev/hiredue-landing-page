@@ -14,7 +14,12 @@ import {
   validateSignupPassword,
 } from "../validators.js";
 import { friendlyAuthError } from "../errorMessages.js";
-import { COUNTRY_OPTIONS, COUNTRY_BY_ISO, detectDefaultCountry } from "../countries.js";
+import {
+  COUNTRY_OPTIONS,
+  COUNTRY_BY_ISO,
+  detectDefaultCountry,
+} from "../countries.js";
+import AuthShell from "./AuthShell.jsx";
 import OtpModal from "./OtpModal.jsx";
 import styles from "./AuthForm.module.css";
 
@@ -28,7 +33,8 @@ const EMPTY_FORM = {
 };
 
 export default function SignupForm() {
-  const { signUp, confirmSignUp, resendConfirmationCode, completeSignup } = useAuth();
+  const { signUp, confirmSignUp, resendConfirmationCode, completeSignup } =
+    useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -52,7 +58,8 @@ export default function SignupForm() {
     const { name, value } = event.target;
     setForm((prev) => ({
       ...prev,
-      [name]: name === "contact" ? value.replace(/\D/g, "").slice(0, 15) : value,
+      [name]:
+        name === "contact" ? value.replace(/\D/g, "").slice(0, 15) : value,
     }));
   };
 
@@ -60,7 +67,13 @@ export default function SignupForm() {
     event.preventDefault();
     setError(null);
 
-    if (!form.name || !form.email || !form.contact || !form.password || !form.confirmPassword) {
+    if (
+      !form.name ||
+      !form.email ||
+      !form.contact ||
+      !form.password ||
+      !form.confirmPassword
+    ) {
       setError("Please fill the required fields.");
       return;
     }
@@ -90,14 +103,26 @@ export default function SignupForm() {
           setError("You have already registered. Please log in.");
           return;
         }
-        setError(friendlyAuthError(result.error, "signup", "Sign up failed. Please try again."));
+        setError(
+          friendlyAuthError(
+            result.error,
+            "signup",
+            "Sign up failed. Please try again.",
+          ),
+        );
         return;
       }
       setUserSub(result.data?.userSub || null);
       setReverify(false);
       setOtpOpen(true);
     } catch (err) {
-      setError(friendlyAuthError(err.message, "signup", "Sign up failed. Please try again."));
+      setError(
+        friendlyAuthError(
+          err.message,
+          "signup",
+          "Sign up failed. Please try again.",
+        ),
+      );
     } finally {
       setLoading(false);
     }
@@ -121,30 +146,50 @@ export default function SignupForm() {
     });
 
     setOtpOpen(false);
-    const redirect = searchParams.get("redirect") || "/pricing";
+    const redirect = searchParams.get("redirect") || "/#pricing";
     router.replace(redirect);
   };
 
   const handleOtpResend = async () => {
     const result = await resendConfirmationCode(form.email);
-    if (!result.success) throw new Error(result.error || "Failed to resend code.");
+    if (!result.success)
+      throw new Error(result.error || "Failed to resend code.");
   };
 
   return (
-    <div className={styles.shell}>
-      <div className={styles.card}>
+    <AuthShell mode="signup">
+      <div className={`${styles.card} ${styles.signupCard}`}>
         <p className={styles.eyebrow}>Get started</p>
         <h1 className={styles.title}>Create your account</h1>
-        <p className={styles.subtitle}>Join HireDue and start your 14-day free trial.</p>
+        <p className={styles.subtitle}>
+          Join HireDue and start your 2-days free trial. No credit card
+          required.
+        </p>
 
-        <form className={styles.form} onSubmit={handleSubmit} noValidate>
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="name">Name</label>
-            <Input id="name" name="name" value={form.name} onChange={handleChange} required />
+        <form
+          className={`${styles.form} ${styles.signupForm}`}
+          onSubmit={handleSubmit}
+          noValidate
+        >
+          <div className={`${styles.field} ${styles.fullField}`}>
+            <label className={styles.label} htmlFor="name">
+              Name
+            </label>
+            <Input
+              id="name"
+              name="name"
+              autoComplete="name"
+              value={form.name}
+              onChange={handleChange}
+              placeholder="Your full name"
+              required
+            />
           </div>
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="email">Email</label>
+          <div className={`${styles.field} ${styles.fullField}`}>
+            <label className={styles.label} htmlFor="email">
+              Email
+            </label>
             <Input
               id="email"
               name="email"
@@ -152,6 +197,7 @@ export default function SignupForm() {
               autoComplete="email"
               value={form.email}
               onChange={handleChange}
+              placeholder="you@example.com"
               required
             />
             {form.email && fieldErrors.email && (
@@ -159,8 +205,10 @@ export default function SignupForm() {
             )}
           </div>
 
-          <div className={styles.field}>
-            <label className={styles.label} htmlFor="contact">Contact number</label>
+          <div className={`${styles.field} ${styles.fullField}`}>
+            <label className={styles.label} htmlFor="contact">
+              Contact number
+            </label>
             <div className={styles.phoneRow}>
               <select
                 name="countryCode"
@@ -183,6 +231,7 @@ export default function SignupForm() {
                 maxLength={15}
                 value={form.contact}
                 onChange={handleChange}
+                placeholder="Phone number"
                 required
                 className={styles.phoneInput}
               />
@@ -193,7 +242,9 @@ export default function SignupForm() {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">Password</label>
+            <label className={styles.label} htmlFor="password">
+              Password
+            </label>
             <div className={styles.inputWrap}>
               <Input
                 id="password"
@@ -202,6 +253,7 @@ export default function SignupForm() {
                 autoComplete="new-password"
                 value={form.password}
                 onChange={handleChange}
+                placeholder="Create a password"
                 required
                 style={{ paddingRight: 44 }}
               />
@@ -220,7 +272,9 @@ export default function SignupForm() {
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="confirmPassword">Confirm password</label>
+            <label className={styles.label} htmlFor="confirmPassword">
+              Confirm password
+            </label>
             <div className={styles.inputWrap}>
               <Input
                 id="confirmPassword"
@@ -229,6 +283,7 @@ export default function SignupForm() {
                 autoComplete="new-password"
                 value={form.confirmPassword}
                 onChange={handleChange}
+                placeholder="Repeat your password"
                 required
                 style={{ paddingRight: 44 }}
               />
@@ -236,14 +291,16 @@ export default function SignupForm() {
                 type="button"
                 className={styles.toggleVisibility}
                 onClick={() => setShowConfirmPassword((s) => !s)}
-                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                aria-label={
+                  showConfirmPassword ? "Hide password" : "Show password"
+                }
               >
                 {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
               </button>
             </div>
           </div>
 
-          <label className={styles.checkboxRow}>
+          <label className={`${styles.checkboxRow} ${styles.fullField}`}>
             <input
               type="checkbox"
               checked={agreed}
@@ -252,18 +309,35 @@ export default function SignupForm() {
             />
             <span>
               I agree to the{" "}
-              <Link href="/terms" className={styles.footerLink} target="_blank" rel="noopener noreferrer">Terms</Link>
-              {" "}and{" "}
-              <Link href="/privacy" className={styles.footerLink} target="_blank" rel="noopener noreferrer">Privacy Policy</Link>.
+              <Link
+                href="/terms"
+                className={styles.footerLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Terms
+              </Link>{" "}
+              and{" "}
+              <Link
+                href="/privacy"
+                className={styles.footerLink}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Privacy Policy
+              </Link>
+              .
             </span>
           </label>
 
-          {error && <div className={styles.error}>{error}</div>}
+          {error && (
+            <div className={`${styles.error} ${styles.fullField}`}>{error}</div>
+          )}
 
           <Button
             type="submit"
             size="lg"
-            className={styles.submit}
+            className={`${styles.submit} ${styles.fullField}`}
             disabled={loading || !agreed}
           >
             {loading ? "Creating account…" : "Create account"}
@@ -271,8 +345,10 @@ export default function SignupForm() {
         </form>
 
         <p className={styles.footerText}>
-          Already have an account?
-          <Link href="/login" className={styles.footerLink}>Sign in</Link>
+          Already have an account?{" "}
+          <Link href="/login" className={styles.footerLink}>
+            Sign in
+          </Link>
         </p>
       </div>
 
@@ -283,6 +359,6 @@ export default function SignupForm() {
         onVerify={handleOtpVerify}
         onResend={handleOtpResend}
       />
-    </div>
+    </AuthShell>
   );
 }

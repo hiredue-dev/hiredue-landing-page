@@ -1,17 +1,16 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import {
-  confirmResetPassword as svcConfirmResetPassword,
-  confirmSignUp as svcConfirmSignUp,
-  forgotPassword as svcForgotPassword,
-  resendConfirmationCode as svcResendCode,
-  signIn as svcSignIn,
-  signOut as svcSignOut,
-  signUp as svcSignUp,
-} from "../services/authService.js";
-import {
+  clearTokens,
   decodeJwtPayload,
   getAccessToken,
   getIdToken,
@@ -22,6 +21,21 @@ import { createUserInCloud } from "../services/userService.js";
 import { getSubscription } from "@/features/subscription/services/subscriptionService.js";
 
 const AuthContext = createContext(null);
+
+// Cognito's browser SDK is sizeable. Keep it out of the persistent site
+// layout and download it only when the visitor performs an auth action.
+const runAuthOperation = async (operation, ...args) => {
+  const authService = await import("../services/authService.js");
+  return authService[operation](...args);
+};
+
+const signUp = (...args) => runAuthOperation("signUp", ...args);
+const confirmSignUp = (...args) => runAuthOperation("confirmSignUp", ...args);
+const resendConfirmationCode = (...args) =>
+  runAuthOperation("resendConfirmationCode", ...args);
+const forgotPassword = (...args) => runAuthOperation("forgotPassword", ...args);
+const confirmResetPassword = (...args) =>
+  runAuthOperation("confirmResetPassword", ...args);
 
 function deriveUserFromIdToken() {
   const idToken = getIdToken();
@@ -85,7 +99,7 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(
     async ({ email, password }) => {
-      const result = await svcSignIn(email, password);
+      const result = await runAuthOperation("signIn", email, password);
       if (!result.success) {
         throw new Error(result.error || "Sign in failed");
       }
@@ -101,11 +115,16 @@ export function AuthProvider({ children }) {
 
   const completeSignup = useCallback(
     async ({ id, email, fullName, phoneNumber, password }) => {
-      const signinResult = await svcSignIn(email, password);
+      const signinResult = await runAuthOperation("signIn", email, password);
       if (!signinResult.success) {
         throw new Error(signinResult.error || "Failed to sign in after signup");
       }
-      const userResp = await createUserInCloud({ id, email, fullName, phoneNumber });
+      const userResp = await createUserInCloud({
+        id,
+        email,
+        fullName,
+        phoneNumber,
+      });
       if (!userResp.success) {
         throw new Error(userResp.error || "Failed to create user record");
       }
@@ -120,7 +139,7 @@ export function AuthProvider({ children }) {
   );
 
   const logout = useCallback(async () => {
-    svcSignOut();
+    clearTokens();
     setUser(null);
     setIsAuthenticated(false);
     setSubscription(null);
@@ -137,11 +156,11 @@ export function AuthProvider({ children }) {
       logout,
       completeSignup,
       refreshSubscription: loadSubscription,
-      signUp: svcSignUp,
-      confirmSignUp: svcConfirmSignUp,
-      resendConfirmationCode: svcResendCode,
-      forgotPassword: svcForgotPassword,
-      confirmResetPassword: svcConfirmResetPassword,
+      signUp,
+      confirmSignUp,
+      resendConfirmationCode,
+      forgotPassword,
+      confirmResetPassword,
     }),
     [
       user,

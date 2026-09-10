@@ -1,8 +1,0 @@
-.container {
-  width: min(var(--container-width), calc(100% - (var(--page-padding) * 2)));
-  margin: 0 auto;
-}
-
-.narrow {
-  width: min(768px, calc(100% - (var(--page-padding) * 2)));
-}
