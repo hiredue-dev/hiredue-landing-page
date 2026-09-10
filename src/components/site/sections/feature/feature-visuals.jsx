@@ -8,33 +8,15 @@ import {
   useReducedMotion,
 } from "framer-motion";
 import clsx from "clsx";
+import { Mark } from "@/components/site/ui/Mark";
+import { marks } from "@/lib/assets";
 
-const workflowSteps = [
-  {
-    label: "Discovering roles",
-    detail: "38 matching jobs gathered",
-    icon: SearchIcon,
-  },
-  {
-    label: "Hiring manager found",
-    detail: "Maya Chen · Head of Talent",
-    icon: PersonIcon,
-  },
-  {
-    label: "LinkedIn message sent",
-    detail: "Connection accepted · personal note sent",
-    icon: SendIcon,
-  },
-  {
-    label: "Tailored email delivered",
-    detail: "Personalized intro + resume delivered",
-    icon: MailIcon,
-  },
-  {
-    label: "Autofilling application",
-    detail: "12 fields completed automatically",
-    icon: FormIcon,
-  },
+const outreachStatuses = [
+  "Researching the role",
+  "Tailoring LinkedIn message",
+  "LinkedIn message sent",
+  "Tailoring email",
+  "Email sent from your inbox",
 ];
 
 const resumeChanges = [
@@ -91,13 +73,17 @@ function useAnimatedPhase(length, delay) {
 }
 
 export function JobSearchWorkflowVisual() {
-  const { ref, phase } = useAnimatedPhase(workflowSteps.length, 1250);
+  const { ref, phase } = useAnimatedPhase(outreachStatuses.length, 1450);
+  const linkedInReady = phase >= 1;
+  const linkedInSent = phase >= 2;
+  const emailReady = phase >= 3;
+  const emailSent = phase >= 4;
 
   return (
     <div
       ref={ref}
       role="img"
-      aria-label="HireDue finding jobs, messaging a hiring manager on LinkedIn, emailing them, and automatically submitting an application"
+      aria-label="HireDue tailoring a LinkedIn message and email to a hiring manager, then sending both from the user's connected accounts"
       className="relative w-full overflow-hidden rounded-[20px] border border-white bg-white p-4 shadow-[0_16px_50px_rgba(29,29,29,0.10)] min-[810px]:p-5"
     >
       <div className="pointer-events-none absolute -top-20 -right-16 size-52 rounded-full bg-brand/10 blur-3xl" />
@@ -114,145 +100,167 @@ export function JobSearchWorkflowVisual() {
           </span>
           <div>
             <p className="text-[13px] leading-none font-semibold text-ink">
-              Job search agent
+              Personal outreach agent
             </p>
-            <p className="mt-1 text-[11px] leading-none font-medium text-dim">
-              Working in real time
-            </p>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.p
+                key={outreachStatuses[phase]}
+                initial={{ opacity: 0, y: 3 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -3 }}
+                className="mt-1 text-[10px] leading-none font-semibold text-brand min-[810px]:text-[11px]"
+              >
+                {outreachStatuses[phase]}
+              </motion.p>
+            </AnimatePresence>
           </div>
         </div>
         <span className="rounded-full bg-success-10 px-2.5 py-1.5 text-[10px] leading-none font-semibold text-success">
-          LIVE
+          IN YOUR VOICE
         </span>
       </div>
 
-      <div className="relative flex flex-col gap-2.5">
-        <span
-          className="absolute top-6 bottom-6 left-[17px] w-px bg-line"
-          aria-hidden
-        />
+      <div className="mb-3 flex items-center gap-2 rounded-[12px] bg-surface px-3 py-2.5">
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-ink text-[9px] font-bold text-white">
+          MC
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-[11px] font-semibold text-ink min-[810px]:text-[12px]">
+            Maya Chen · Hiring Manager
+          </p>
+          <p className="truncate text-[9px] font-medium text-dim min-[810px]:text-[10px]">
+            Senior Product Designer at Northstar
+          </p>
+        </div>
         <motion.span
-          className="absolute top-6 left-[17px] w-px origin-top bg-brand"
-          animate={{ height: `${(phase / (workflowSteps.length - 1)) * 82}%` }}
-          transition={{ duration: 0.55, ease: "easeInOut" }}
-          aria-hidden
-        />
+          animate={{ opacity: phase === 0 ? [0.45, 1, 0.45] : 1 }}
+          transition={{ duration: 1.1, repeat: phase === 0 ? Infinity : 0 }}
+          className="rounded-full bg-brand/10 px-2 py-1 text-[8px] font-bold text-brand"
+        >
+          PROFILE MATCHED
+        </motion.span>
+      </div>
 
-        {workflowSteps.map((step, index) => {
-          const complete = index < phase;
-          const active = index === phase;
-          const Icon = step.icon;
+      <div className="relative flex flex-col gap-2.5">
+        <OutreachCard
+          channel="LinkedIn"
+          account="Your LinkedIn · Riley Shah"
+          icon={marks.linkedin}
+          color="#0a66c2"
+          active={phase === 1}
+          sent={linkedInSent}
+          ready={linkedInReady}
+        >
+          Hi Maya — I loved Northstar&apos;s focus on{" "}
+          <Personalized active={linkedInReady}>
+            accessible design systems
+          </Personalized>
+          . I&apos;ve led similar work across 3 product teams and would love to
+          connect.
+        </OutreachCard>
 
-          return (
-            <motion.div
-              key={step.label}
-              animate={{
-                opacity: index <= phase ? 1 : 0.52,
-                y: active ? -2 : 0,
-                boxShadow: active
-                  ? "0 10px 28px rgba(64,106,228,0.13)"
-                  : "0 1px 0 rgba(29,29,29,0)",
-              }}
-              transition={{ duration: 0.35 }}
-              className={clsx(
-                "relative flex min-h-[64px] items-center gap-3 rounded-[14px] border p-3",
-                active
-                  ? "border-brand/25 bg-white"
-                  : "border-transparent bg-surface/60",
-              )}
-            >
-              <span
-                className={clsx(
-                  "relative z-10 grid size-9 shrink-0 place-items-center rounded-full border transition-colors duration-300",
-                  complete || active
-                    ? "border-brand bg-brand text-white"
-                    : "border-line bg-white text-dim",
-                )}
-              >
-                {complete ? <CheckIcon /> : <Icon />}
-              </span>
-
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-[12px] leading-[1.25] font-semibold text-ink min-[810px]:text-[13px]">
-                  {step.label}
-                </p>
-                <p className="mt-1 truncate text-[10px] leading-[1.25] font-medium text-dim min-[810px]:text-[11px]">
-                  {step.detail}
-                </p>
-              </div>
-
-              <StepActivity index={index} active={active} complete={complete} />
-            </motion.div>
-          );
-        })}
+        <OutreachCard
+          channel="Email"
+          account="From your inbox · riley@gmail.com"
+          icon={marks.gmail}
+          color="#ea4335"
+          active={phase === 3}
+          sent={emailSent}
+          ready={emailReady}
+          subject="Senior Product Designer — design systems experience"
+        >
+          Hi Maya, your opening calls for someone who can{" "}
+          <Personalized active={emailReady}>
+            scale accessible component libraries
+          </Personalized>
+          . At Acme, I increased design-to-dev velocity by 32% doing exactly
+          that.
+        </OutreachCard>
       </div>
     </div>
   );
 }
 
-function StepActivity({ index, active, complete }) {
-  if (complete) {
-    return <span className="text-[10px] font-semibold text-success">DONE</span>;
-  }
-
-  if (!active) {
-    return <span className="size-1.5 rounded-full bg-line" />;
-  }
-
-  if (index === 0) {
-    return (
-      <div className="flex -space-x-1.5">
-        {["in", "I", "W"].map((board, boardIndex) => (
-          <motion.span
-            key={board}
-            className="grid size-6 place-items-center rounded-full border-2 border-white bg-surface text-[8px] font-bold text-brand"
-            animate={{ y: [0, -3, 0] }}
-            transition={{
-              duration: 0.8,
-              delay: boardIndex * 0.16,
-              repeat: Infinity,
-            }}
-          >
-            {board}
-          </motion.span>
-        ))}
+function OutreachCard({
+  channel,
+  account,
+  icon,
+  color,
+  active,
+  sent,
+  ready,
+  subject,
+  children,
+}) {
+  return (
+    <motion.div
+      animate={{
+        borderColor: active ? color : sent ? "#8bbba4" : "#e5e9f2",
+        boxShadow: active
+          ? `0 10px 28px ${color}20`
+          : "0 1px 0 rgba(29,29,29,0)",
+        y: active ? -2 : 0,
+      }}
+      transition={{ duration: 0.35 }}
+      className="rounded-[14px] border bg-white p-3"
+    >
+      <div className="mb-2.5 flex items-center gap-2 border-b border-line pb-2.5">
+        <span className="grid size-7 shrink-0 place-items-center rounded-full bg-surface">
+          <Mark src={icon} color={color} className="size-3.5" />
+        </span>
+        <div className="min-w-0 flex-1">
+          <p className="text-[10px] leading-none font-bold text-ink min-[810px]:text-[11px]">
+            {channel}
+          </p>
+          <p className="mt-1 truncate text-[8px] leading-none font-medium text-dim min-[810px]:text-[9px]">
+            {account}
+          </p>
+        </div>
+        <span
+          className={clsx(
+            "rounded-full px-2 py-1 text-[8px] font-bold",
+            sent
+              ? "bg-success-10 text-success"
+              : active
+                ? "bg-brand/10 text-brand"
+                : "bg-surface text-dim",
+          )}
+        >
+          {sent ? "SENT" : active ? "CUSTOMIZING…" : "QUEUED"}
+        </span>
       </div>
-    );
-  }
 
-  if (index === 2 || index === 3) {
-    return (
-      <span
-        className={clsx(
-          "rounded-md px-1.5 py-1 text-[8px] font-bold",
-          index === 2
-            ? "bg-[#0a66c2]/10 text-[#0a66c2]"
-            : "bg-brand/10 text-brand",
-        )}
+      {subject && (
+        <p className="mb-1.5 truncate text-[8px] font-semibold text-ink min-[810px]:text-[9px]">
+          <span className="text-dim">Subject: </span>
+          {subject}
+        </p>
+      )}
+      <motion.p
+        animate={{ opacity: ready ? 1 : 0.38 }}
+        transition={{ duration: 0.45 }}
+        className="text-[9px] leading-[1.55] font-medium text-dim min-[810px]:text-[10px]"
       >
-        {index === 2 ? "in" : "@"}
-      </span>
-    );
-  }
+        {children}
+      </motion.p>
+    </motion.div>
+  );
+}
 
-  if (index === 4) {
-    return (
-      <span className="relative h-1.5 w-10 overflow-hidden rounded-full bg-line">
-        <motion.span
-          className="absolute inset-y-0 left-0 rounded-full bg-brand"
-          animate={{ width: ["12%", "100%"] }}
-          transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </span>
-    );
-  }
-
+function Personalized({ active, children }) {
   return (
     <motion.span
-      className="size-2 rounded-full bg-brand"
-      animate={{ scale: [0.75, 1.25, 0.75], opacity: [0.5, 1, 0.5] }}
-      transition={{ duration: 1, repeat: Infinity }}
-    />
+      animate={{
+        backgroundColor: active
+          ? "rgba(64,106,228,0.12)"
+          : "rgba(64,106,228,0)",
+        color: active ? "#406ae4" : "#4d585f",
+      }}
+      transition={{ duration: 0.4 }}
+      className="rounded px-0.5 font-semibold"
+    >
+      {children}
+    </motion.span>
   );
 }
 
@@ -496,71 +504,6 @@ export function ResumeTailoringVisual() {
   );
 }
 
-function SearchIcon() {
-  return (
-    <Icon
-      path={
-        <>
-          <circle cx="10.5" cy="10.5" r="5.5" />
-          <path d="m15 15 4 4" />
-        </>
-      }
-    />
-  );
-}
-
-function PersonIcon() {
-  return (
-    <Icon
-      path={
-        <>
-          <circle cx="12" cy="8" r="3.5" />
-          <path d="M5.5 19c.8-3.7 3-5.5 6.5-5.5s5.7 1.8 6.5 5.5" />
-        </>
-      }
-    />
-  );
-}
-
-function SendIcon() {
-  return (
-    <Icon
-      path={
-        <>
-          <path d="m4 5 16 7-16 7 2.8-7L4 5Z" />
-          <path d="M7 12h13" />
-        </>
-      }
-    />
-  );
-}
-
-function FormIcon() {
-  return (
-    <Icon
-      path={
-        <>
-          <rect x="5" y="3" width="14" height="18" rx="2" />
-          <path d="M8.5 8h7M8.5 12h7M8.5 16H12" />
-        </>
-      }
-    />
-  );
-}
-
-function MailIcon() {
-  return (
-    <Icon
-      path={
-        <>
-          <rect x="3" y="5" width="18" height="14" rx="2" />
-          <path d="m4 7 7 5a1.7 1.7 0 0 0 2 0l7-5" />
-        </>
-      }
-    />
-  );
-}
-
 function SparkIcon() {
   return (
     <Icon
@@ -572,10 +515,6 @@ function SparkIcon() {
       }
     />
   );
-}
-
-function CheckIcon() {
-  return <Icon path={<path d="m6.5 12.5 3.3 3.3 7.7-8" />} />;
 }
 
 function DocumentIcon() {

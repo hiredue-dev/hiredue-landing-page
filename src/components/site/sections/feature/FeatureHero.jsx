@@ -2,8 +2,9 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
+import { FeatureHeroVisual } from "@/components/site/sections/feature/FeatureHeroVisual";
 import { assets } from "@/lib/assets";
 import { featurePage } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -59,25 +60,25 @@ export function FeatureHero() {
               ))}
             </div>
 
-            <ArrowButton
-              label={hero.cta.label}
-              href={hero.cta.href}
-              tone="primary"
-            />
+            <div className="flex flex-wrap items-center gap-5">
+              <ArrowButton
+                label={hero.cta.label}
+                href={hero.cta.href}
+                tone="primary"
+              />
+              {hero.secondaryCta && (
+                <SlideButton
+                  label={hero.secondaryCta.label}
+                  href={hero.secondaryCta.href}
+                  tone="white"
+                />
+              )}
+            </div>
           </motion.div>
 
-          {/* product shot */}
+          {/* product visuals: discover → outreach → auto apply */}
           <motion.div {...appear(0.2)} className="w-full">
-            <Image
-              src={assets.hero.dashboard}
-              alt="HireDue dashboard"
-              width={1920}
-              height={1080}
-              priority
-              unoptimized
-              sizes="(max-width: 1200px) 100vw, 575px"
-              className="w-full rounded-[20px] object-cover"
-            />
+            <FeatureHeroVisual />
           </motion.div>
         </div>
       </div>

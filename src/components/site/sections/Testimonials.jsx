@@ -2,11 +2,12 @@
 
 import Image from "next/image";
 import { ArrowButton } from "@/components/site/ui/Button";
+import { Avatar } from "@/components/site/ui/Avatar";
 import { Marquee, Reveal } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
 import { testimonials } from "@/lib/content";
 
-export function Testimonials() {
+export function Testimonials({ items = testimonials.items }) {
   return (
     <section className="relative isolate overflow-hidden py-[120px] md:py-[200px]">
       <Image
@@ -48,7 +49,7 @@ export function Testimonials() {
 
         <Reveal y={30}>
           <Marquee duration={70} gap={50} className="w-full">
-            {testimonials.items.map((item) => (
+            {items.map((item) => (
               <figure
                 key={item.name}
                 className="flex h-[300px] w-[400px] shrink-0 flex-col justify-between overflow-hidden rounded-[30px] bg-white p-10"
@@ -57,20 +58,14 @@ export function Testimonials() {
                   <Image
                     src={assets.icons.stars5}
                     alt="5 out of 5"
-                    width={109}
-                    height={18}
-                    className="h-[18px] w-auto"
+                    width={137}
+                    height={27}
+                    className="h-[27px] w-auto"
                   />
                   <blockquote className="t-body-lg text-ink">{item.quote}</blockquote>
                 </div>
                 <figcaption className="flex items-center gap-4">
-                  <Image
-                    src={item.avatar}
-                    alt=""
-                    width={50}
-                    height={50}
-                    className="size-[50px] rounded-full object-cover"
-                  />
+                  <Avatar name={item.name} size={50} />
                   <span className="flex flex-col gap-0.5">
                     <span className="text-[20px] leading-[1.3] font-medium text-ink">
                       {item.name}

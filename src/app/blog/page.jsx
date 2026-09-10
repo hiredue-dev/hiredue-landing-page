@@ -1,15 +1,19 @@
 import { BlogHero } from "@/components/site/blog/BlogHero";
 import { BlogGrid } from "@/components/site/blog/BlogGrid";
 import { assets } from "@/lib/assets";
-import { blog, posts } from "@/lib/blog";
+import { blog, getPosts } from "@/lib/blog";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Blog — HireDue",
+export const metadata = createPageMetadata({
+  title: "AI Job Search, Resume & Career Guides",
   description:
     "Notes on running a modern job search: AI tooling, applicant tracking systems, tailoring applications, and getting to the interview faster.",
-};
+  path: "/blog",
+});
 
-export default function BlogIndexPage() {
+export default async function BlogIndexPage() {
+  const posts = await getPosts();
+
   return (
     <>
       <BlogHero

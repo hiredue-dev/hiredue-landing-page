@@ -3,42 +3,93 @@ import { notFound } from "next/navigation";
 import { BlogHero } from "@/components/site/blog/BlogHero";
 import { BlogCard } from "@/components/site/blog/BlogCard";
 import { PostBody } from "@/components/site/blog/PostBody";
+import { JsonLd } from "@/components/site/seo/JsonLd";
 import {
   Reveal,
   RevealGroup,
   RevealItem,
 } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
-import { blog, formatDate, otherPosts, posts, postBySlug } from "@/lib/blog";
+import {
+  blog,
+  formatDate,
+  getOtherPosts,
+  getPostBySlug,
+  getPostSlugs,
+} from "@/lib/blog";
+import { absoluteUrl, createPageMetadata, SITE_URL } from "@/lib/seo";
 
-export function generateStaticParams() {
-  return posts.map((post) => ({ slug: post.slug }));
+export async function generateStaticParams() {
+  const slugs = await getPostSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }) {
-  const post = postBySlug((await params).slug);
+  const { slug } = await params;
+  const post = await getPostBySlug(slug);
   if (!post) return {};
+
+  const title = post.seo?.title ?? post.title;
+  const description = post.seo?.description ?? post.description;
+  const image = post.seo?.image ?? post.cover;
+  const authorName = post.author?.name ?? "HireDue Editorial Team";
+  const metadata = createPageMetadata({
+    title,
+    description,
+    path: `/blog/${slug}`,
+    image,
+    imageAlt: post.seo?.imageAlt ?? post.coverAlt,
+    noIndex: post.seo?.noIndex,
+  });
+
   return {
-    title: `${post.title} — HireDue`,
-    description: post.description,
+    ...metadata,
+    authors: [{ name: authorName }],
     openGraph: {
-      title: post.title,
-      description: post.description,
-      images: [post.cover],
+      ...metadata.openGraph,
       type: "article",
       publishedTime: post.date,
+      modifiedTime: post.updatedAt,
+      authors: [authorName],
     },
   };
 }
 
 export default async function BlogPostPage({ params }) {
-  const post = postBySlug((await params).slug);
+  const post = await getPostBySlug((await params).slug);
   if (!post) notFound();
 
-  const others = otherPosts(post.slug);
+  const others = await getOtherPosts(post.slug);
+  const authorName = post.author?.name ?? "HireDue Editorial Team";
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${absoluteUrl(`/blog/${post.slug}`)}#article`,
+    headline: post.title,
+    description: post.seo?.description ?? post.description,
+    image: [post.seo?.image ?? post.cover],
+    datePublished: post.date,
+    dateModified: post.updatedAt ?? post.date,
+    articleSection: post.category,
+    inLanguage: "en",
+    mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
+    author: post.author
+      ? {
+          "@type": "Person",
+          name: authorName,
+          url: post.author.linkedInUrl,
+        }
+      : {
+          "@type": "Organization",
+          name: "HireDue",
+          url: SITE_URL,
+        },
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
 
   return (
     <>
+      <JsonLd data={articleJsonLd} />
       <BlogHero bg={assets.blog.postBg} className="pb-[50px]">
         <div className="flex items-center gap-2.5">
           <span className="inline-flex items-center rounded-full bg-surface px-3.5 pt-1 pb-1.5 text-[14px] leading-[1.3] font-medium text-ink">
@@ -57,7 +108,7 @@ export default async function BlogPostPage({ params }) {
           <Reveal y={30} className="w-full">
             <Image
               src={post.cover}
-              alt=""
+              alt={post.coverAlt ?? `${post.title} article cover`}
               width={1200}
               height={680}
               priority
@@ -67,7 +118,7 @@ export default async function BlogPostPage({ params }) {
           </Reveal>
 
           <Reveal className="flex w-full justify-center">
-            <PostBody blocks={post.body} />
+            <PostBody value={post.body} />
           </Reveal>
         </div>
       </article>

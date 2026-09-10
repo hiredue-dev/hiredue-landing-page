@@ -99,7 +99,13 @@ export function Integrations() {
 
           <Reveal className="relative z-10 flex max-w-[520px] flex-col items-center gap-[30px]">
             <span className="grid size-[130px] place-items-center rounded-full bg-[linear-gradient(135deg,#323232_0%,#000_100%)] btn-emboss">
-              <Image src={assets.integrations.hub} alt="" width={53} height={40} className="w-[53px]" />
+              <Image
+                src={assets.integrations.hub}
+                alt="HireDue"
+                width={232}
+                height={222}
+                className="h-[56px] w-auto"
+              />
             </span>
             <h3 className="t-h4 text-center">{integrations.footnote}</h3>
           </Reveal>

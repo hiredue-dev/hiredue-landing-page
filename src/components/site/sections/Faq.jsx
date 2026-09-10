@@ -10,7 +10,7 @@ import { assets } from "@/lib/assets";
 import { faq } from "@/lib/content";
 import { spring } from "@/lib/motion";
 
-export function Faq() {
+export function Faq({ items = faq.items }) {
   const [open, setOpen] = useState(0);
 
   return (
@@ -56,7 +56,7 @@ export function Faq() {
           </Reveal>
 
           <Reveal delay={0.1} className="flex flex-1 flex-col gap-5">
-            {faq.items.map((item, i) => {
+            {items.map((item, i) => {
               const isOpen = open === i;
               return (
                 <div

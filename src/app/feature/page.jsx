@@ -9,12 +9,14 @@ import {
   ResumeTailoringVisual,
 } from "@/components/site/sections/feature/feature-visuals";
 import { featurePage } from "@/lib/content";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Features — HireDue",
+export const metadata = createPageMetadata({
+  title: "Automate Job Discovery, Resume Tailoring & Outreach",
   description:
     "Every feature that runs your job search: smart match discovery, resume tailoring, recruiter outreach and auto-apply across every board you use.",
-};
+  path: "/feature",
+});
 
 export default function FeaturePage() {
   return (

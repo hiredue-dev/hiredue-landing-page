@@ -291,6 +291,60 @@
     margin-top: 0;
   }
 
+  /*
+   * Legal pages (privacy, terms). Same generated-from-blocks rhythm as
+   * `.blog-body`, but a smaller heading scale — these documents run to
+   * fifteen-odd numbered sections, so 32px headings would swamp the copy.
+   */
+  .legal-body h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.2;
+    color: var(--color-ink);
+    margin-top: 50px;
+  }
+
+  .legal-body h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.2;
+    color: var(--color-ink);
+    margin-top: 30px;
+  }
+
+  .legal-body p,
+  .legal-body li {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--color-dim);
+  }
+
+  .legal-body p {
+    margin-top: 12px;
+  }
+
+  .legal-body ul {
+    margin-top: 12px;
+    padding-left: 22px;
+    list-style: disc;
+  }
+
+  .legal-body li {
+    margin-top: 4px;
+  }
+
+  .legal-body a {
+    color: var(--color-brand);
+    text-decoration: underline;
+  }
+
+  .legal-body > :first-child {
+    margin-top: 0;
+  }
+
   .t-body {
     font-size: 16px;
     font-weight: 500;

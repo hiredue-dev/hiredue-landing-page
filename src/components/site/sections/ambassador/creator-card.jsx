@@ -5,20 +5,18 @@ import { useEffect, useId, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { assets } from "@/lib/assets";
 import { spring } from "@/lib/motion";
-import { commissionPayout, compactViews, money, viewsPayout } from "./earnings";
+import { commissionPayout, money } from "./earnings";
 import { platformColor, platformIcons } from "./creator-icons";
 import { useCountUp } from "./use-count-up";
 
-/* Three sketches of the kind of creator the program is for. The money is not
-   written down anywhere — it is derived from the same rate card the estimator
-   uses, so the card can never drift out of step with the published numbers. */
+/* Three sketches of the kind of creator the program is for. Earnings are
+   derived from the same referral commission used by the estimator. */
 const creators = [
   {
     handle: "@careerwithanya",
     niche: "Career coaching · 48K subs",
     platform: "YouTube",
     avatar: assets.testimonials.avatars.c,
-    views: 184_000,
     sales: 26,
     code: "ANYA",
     bars: [22, 34, 28, 52, 45, 78, 96],
@@ -28,7 +26,6 @@ const creators = [
     niche: "Dev tooling · 12K followers",
     platform: "Instagram",
     avatar: assets.testimonials.avatars.a,
-    views: 62_000,
     sales: 11,
     code: "DEVD",
     bars: [30, 26, 44, 38, 62, 55, 84],
@@ -38,7 +35,6 @@ const creators = [
     niche: "Campus placements · 9K followers",
     platform: "LinkedIn",
     avatar: assets.testimonials.avatars.e,
-    views: 41_000,
     sales: 18,
     code: "CAMPUS",
     bars: [18, 40, 33, 58, 48, 70, 88],
@@ -47,7 +43,7 @@ const creators = [
 
 const DWELL = 4200;
 
-/** The hero's proof-of-concept: one creator's month, both payouts, on repeat. */
+/** The hero's proof-of-concept: one creator's referral month, on repeat. */
 export function CreatorCard() {
   const reduced = useReducedMotion();
   const [i, setI] = useState(0);
@@ -59,11 +55,10 @@ export function CreatorCard() {
   }, [i, reduced]);
 
   const creator = creators[i];
-  const fromViews = viewsPayout(creator.views);
   const fromSales = commissionPayout(creator.sales);
 
-  const views = useCountUp(creator.views);
-  const total = useCountUp(fromViews + fromSales);
+  const sales = useCountUp(creator.sales);
+  const total = useCountUp(fromSales);
 
   return (
     <div className="relative w-full max-w-[520px]">
@@ -92,7 +87,9 @@ export function CreatorCard() {
               className="absolute -right-1 -bottom-1 grid size-[22px] place-items-center rounded-full bg-white ring-2 ring-white"
               style={{ color: platformColor[creator.platform] }}
             >
-              <span className="block size-[15px]">{platformIcons[creator.platform]}</span>
+              <span className="block size-[15px]">
+                {platformIcons[creator.platform]}
+              </span>
             </span>
           </div>
 
@@ -119,15 +116,15 @@ export function CreatorCard() {
           </span>
         </div>
 
-        {/* reach */}
+        {/* referral performance */}
         <div className="flex flex-col gap-3 rounded-[20px] bg-surface p-5">
           <div className="flex items-end justify-between gap-3">
             <div className="flex flex-col gap-1">
               <span className="text-[13px] leading-none font-medium text-dim">
-                Views on your HireDue content
+                Customers referred this month
               </span>
               <span className="font-display text-[28px] leading-none font-semibold text-ink tabular-nums">
-                {compactViews(Math.round(views))}
+                {Math.round(sales)}
               </span>
             </div>
             <span className="flex items-center gap-1 rounded-full bg-success-20 px-2.5 py-1 text-[12px] leading-none font-semibold text-success">
@@ -150,9 +147,12 @@ export function CreatorCard() {
 
         {/* the money */}
         <div className="flex flex-col gap-3">
-          <Row label="Views payout" value={money(fromViews)} />
           <Row
-            label={`Referral commission · ${creator.sales} signups`}
+            label="Commission per eligible sale"
+            value={money(commissionPayout(1))}
+          />
+          <Row
+            label={`Referral earnings · ${creator.sales} customers`}
             value={money(fromSales)}
             accent
           />
@@ -193,15 +193,17 @@ export function CreatorCard() {
   );
 }
 
-/* A view curve rather than a bar chart: at this card's width bars come out
-   wider than they are tall, which reads as blobs instead of a trend. */
+/* A compact referral trend for the creator's last 30 days. */
 const SPARK_W = 300;
 const SPARK_H = 64;
 
 function sparkPath(points) {
   const max = Math.max(...points, 1);
   const step = SPARK_W / (points.length - 1);
-  const xy = points.map((v, i) => [i * step, SPARK_H - (v / max) * (SPARK_H - 6) - 3]);
+  const xy = points.map((v, i) => [
+    i * step,
+    SPARK_H - (v / max) * (SPARK_H - 6) - 3,
+  ]);
 
   let d = `M${xy[0][0]} ${xy[0][1]}`;
   for (let i = 1; i < xy.length; i += 1) {

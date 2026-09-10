@@ -3,12 +3,15 @@
 import Image from "next/image";
 import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
+import { YouTubeEmbed } from "@/components/site/ui/YouTubeEmbed";
 import { assets } from "@/lib/assets";
 import { overview } from "@/lib/content";
 
+const DEMO_VIDEO_URL = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL || "";
+
 export function Overview() {
   return (
-    <section className="relative isolate py-[120px] md:py-[200px]">
+    <section id="overview" className="relative isolate py-[120px] md:py-[200px]">
       <Image
         src={assets.overview.bg}
         alt=""
@@ -35,13 +38,10 @@ export function Overview() {
 
           <div className="flex w-full flex-col gap-[30px]">
             <Reveal y={30} className="rounded-[20px] bg-white p-1.5">
-              <Image
-                src={assets.overview.dashboard}
-                alt="HireDue live dashboard"
-                width={1920}
-                height={1080}
-                unoptimized
-                sizes="(max-width: 1260px) 100vw, 1188px"
+              <YouTubeEmbed
+                url={DEMO_VIDEO_URL}
+                fallbackSrc={assets.overview.dashboard}
+                fallbackAlt="HireDue live dashboard"
                 className="w-full rounded-[14px]"
               />
             </Reveal>

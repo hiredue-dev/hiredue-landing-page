@@ -4,19 +4,21 @@ export const nav = {
   brand: "HireDue",
   links: [
     { label: "Features", href: "#features" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Use Cases", href: "#use-cases" },
-    { label: "Pricing", href: "/pricing" },
+    { label: "Get Started", href: "#how-it-works" },
+    { label: "Platform Overview", href: "#overview" },
+    { label: "Pricing", href: "#pricing" },
   ],
   cta: { label: "Get Started Free", href: "/signup" },
 };
 
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
+  rotatingWords: ["Discovers", "Outreach", "Auto Apply"],
+  tagline: "while you sleep",
   description:
     "HireDue scours 50,000+ career pages and top job boards, pitches the right decision-makers, and auto-submits your applications. You just focus on the interview.",
   primary: { label: "Sign Up Free", href: "/signup" },
-  secondary: { label: "Download the App", href: "/download" },
+  secondary: { label: "Join Live Onboarding", href: "/onboarding-call" },
   proof: [
     { icon: assets.icons.star, label: "1000+ active users" },
     { icon: assets.icons.shield, label: "Privacy-first, data store locally" },
@@ -74,7 +76,8 @@ export const features = {
   resume: { title: "Resume Optimization" },
   outreach: {
     title: "Recruiter Outreach",
-    description: "Drafts personalized emails and LinkedIn messages to recruiters, then sends them.",
+    description:
+      "Drafts personalized emails and LinkedIn messages to recruiters, then sends them.",
   },
   autoApply: {
     title: "Auto Apply",
@@ -90,7 +93,7 @@ export const overview = {
   description:
     "A live dashboard that brings job discovery, applications, and recruiter outreach together in one clear view.",
   primary: { label: "Explore Features", href: "/feature" },
-  secondary: { label: "Try the Live Demo", href: "/signup" },
+  secondary: { label: "Download the App", href: "/download" },
   cards: [
     {
       icon: assets.overview.iconRocket,
@@ -108,10 +111,11 @@ export const overview = {
 };
 
 export const steps = {
-  eyebrow: "How it works",
+  eyebrow: "Get started",
   title: "Four steps from sign-up to live applications",
   description:
     "Most users go from download to their first auto-applied role in under ten minutes.",
+  cta: { label: "Download the App", href: "/download" },
   stats: [
     { value: "10 min", label: "Average time to first auto-applied role" },
     { value: "100%", label: "Privacy-first, all your data stays locally" },
@@ -120,7 +124,8 @@ export const steps = {
     {
       tab: "Step 01",
       title: "Download & Install",
-      description: "Grab the desktop app — it downloads and installs itself in seconds.",
+      description:
+        "Grab the desktop app — it downloads and installs itself in seconds.",
     },
     {
       tab: "Step 02",
@@ -131,7 +136,8 @@ export const steps = {
     {
       tab: "Step 03",
       title: "Set Your Preferences",
-      description: "Tell HireDue your expected salary, target locations, and the roles you want.",
+      description:
+        "Tell HireDue your expected salary, target locations, and the roles you want.",
     },
     {
       tab: "Step 04",
@@ -154,7 +160,12 @@ export const security = {
     "You control what's shared, and can revoke access anytime",
     "Privacy-first: your data is never sold to third parties",
   ],
-  local: ["Login & session", "Saved credentials", "Email & message history", "Other private data"],
+  local: [
+    "Login & session",
+    "Saved credentials",
+    "Email & message history",
+    "Other private data",
+  ],
   synced: "Resume, profile & billing sync",
 };
 
@@ -180,7 +191,8 @@ export const useCases = {
     },
     {
       title: "Active job seekers",
-      description: "Apply to dozens of roles a day without doing each one by hand.",
+      description:
+        "Apply to dozens of roles a day without doing each one by hand.",
       statValue: "100+",
       statLabel: "Applications/day automated",
       ...assets.useCases[2],
@@ -198,7 +210,7 @@ export const useCases = {
   quote: {
     text: "“Your time belongs in interviews, not in endless application portals. We built HireDue to do the heavy lifting.”",
     author: "Founder, HireDue",
-    avatar: assets.testimonials.avatars.a,
+    avatar: assets.founder.sanglap,
   },
 };
 
@@ -215,50 +227,50 @@ export const stats = {
   eyebrow: "HireDue in action",
   title: "Your job search, working around the clock",
   description:
-    "One intelligent system for discovering roles, tailoring resumes, applying, and reaching recruiters.",
+    "One intelligent system that discovers roles, tailors resumes, applies, and reaches recruiters — on a loop, all day and all night.",
   cards: [
     {
-      label: "Active users",
-      value: "300+",
-      description: "Job seekers automating their search.",
-      icon: assets.stats.users,
+      label: "Morning",
+      value: "6:00 AM",
+      description: "Scans 50,000+ career pages for roles that opened overnight.",
+      icon: "sunrise",
       tone: "light",
       /* position within the 1200 × 1080 stage, in px */
       x: 50,
       y: 130,
     },
     {
-      label: "Jobs found",
-      value: "Live",
-      description: "Fresh matching roles, continuously discovered.",
-      icon: assets.stats.search,
-      tone: "dark",
+      label: "Midday",
+      value: "11:00 AM",
+      description: "Tailors your resume and auto-applies to the best matches.",
+      icon: "sun",
+      tone: "primary",
       x: 920,
       y: 120,
     },
     {
-      label: "Applications sent",
-      value: "Live",
-      description: "Automation running for active users.",
-      icon: assets.stats.send,
+      label: "Afternoon",
+      value: "3:00 PM",
+      description: "Reaches out to recruiters with personalized messages.",
+      icon: "cloud-sun",
       tone: "light",
       x: 920,
       y: 710,
     },
     {
-      label: "Recruiter messages",
-      value: "Live",
-      description: "Personalized outreach, automatically sent.",
-      icon: assets.stats.globe,
-      tone: "primary",
+      label: "Evening",
+      value: "8:00 PM",
+      description: "Tracks replies and lines up tomorrow's applications.",
+      icon: "sunset",
+      tone: "dark",
       x: 460,
       y: 800,
     },
     {
-      label: "Match quality",
-      value: "AI",
-      description: "Resume optimization before every submission.",
-      icon: assets.stats.bulb,
+      label: "Night",
+      value: "1:00 AM",
+      description: "Still working — your agent never clocks out.",
+      icon: "moon",
       tone: "dark",
       x: 20,
       y: 740,
@@ -270,7 +282,7 @@ export const testimonials = {
   title: "What job seekers say about HireDue",
   meta: [
     { icon: assets.icons.star, label: "4.9/5 Rating" },
-    { icon: assets.icons.heart, label: "75+ Testimonials" },
+    { icon: assets.icons.heart, label: "100+ Testimonials" },
     { icon: assets.icons.users, label: "10K+ Growth community" },
   ],
   cta: { label: "Get Started Free", href: "/signup" },
@@ -279,71 +291,61 @@ export const testimonials = {
       quote:
         "I can see every role, every tailored resume, and every application without chasing spreadsheets.",
       name: "Megha Joshi",
-      role: "Operations associate",
-      avatar: assets.testimonials.avatars.a,
+      role: "Got interview call from Amazon",
     },
     {
       quote:
         "HireDue helped me spend less time searching and more time preparing for the interviews that mattered.",
       name: "Priya Sharma",
-      role: "Final-year candidate",
-      avatar: assets.testimonials.avatars.a,
+      role: "Got interview call from Flipkart",
     },
     {
       quote:
         "The alerts are fast enough that I’m no longer discovering good roles after they’ve already closed.",
       name: "Vikram Iyer",
-      role: "Product analyst",
-      avatar: assets.testimonials.avatars.b,
+      role: "Got interview call from Visa",
     },
     {
       quote:
         "The matching is genuinely useful. I found roles I would have missed and had applications moving within days.",
       name: "Rahul Mehta",
-      role: "Career switcher",
-      avatar: assets.testimonials.avatars.b,
+      role: "Got interview call from LinkedIn",
     },
     {
       quote:
         "HireDue keeps my search consistent while I balance a full-time job and interview prep.",
       name: "Fatima Khan",
-      role: "Business analyst",
-      avatar: assets.testimonials.avatars.c,
+      role: "Got interview call from Deloitte",
     },
     {
       quote:
         "The platform made the volume manageable, and the resume tailoring gave every application more purpose.",
       name: "Aditya Verma",
-      role: "Graduate applicant",
-      avatar: assets.testimonials.avatars.d,
+      role: "Got interview call from Microsoft",
     },
     {
       quote:
         "Automating the repetitive applications gave me back hours every week without losing control of my search.",
       name: "Ananya Patel",
-      role: "Active job seeker",
-      avatar: assets.testimonials.avatars.c,
+      role: "Got interview call from Swiggy",
     },
     {
       quote:
         "The tailored resume suggestions helped me feel much more confident applying for technical roles.",
       name: "Karan Singh",
-      role: "Software engineer",
-      avatar: assets.testimonials.avatars.d,
+      role: "Got interview call from Google",
     },
     {
       quote:
         "I stopped spending evenings on repetitive forms and started focusing on the conversations that move my career forward.",
       name: "Arjun Nair",
-      role: "Experienced professional",
-      avatar: assets.testimonials.avatars.e,
+      role: "Got interview call from Morgan Stanley",
     },
     {
       quote:
         "Recruiter outreach and application tracking are finally in one calm, clear place.",
       name: "Sneha Reddy",
-      role: "Marketing professional",
-      avatar: assets.testimonials.avatars.e,
+      role: "Got interview call from Adobe",
     },
   ],
 };
@@ -351,46 +353,11 @@ export const testimonials = {
 export const pricing = {
   eyebrow: "Subscription plans",
   title: "Transparent pricing without hidden fees",
-  monthlyLabel: "Monthly",
-  yearlyLabel: "Yearly",
-  discountLabel: "20%off",
-  plans: [
-    {
-      name: "Starter plan",
-      tagline: "Best for individual investors",
-      monthly: 19,
-      yearly: 16,
-      cta: "Get started",
-      ctaHref: "/signup",
-      popular: false,
-      features: [
-        "Connect up to 5 investment accounts",
-        "Portfolio performance tracking",
-        "Basic AI insights",
-        "Market updates & alerts",
-        "Real-time price alerts",
-        "Email support",
-      ],
-    },
-    {
-      name: "Pro plan",
-      tagline: "Best for active investors",
-      monthly: 39,
-      yearly: 32,
-      cta: "Get started",
-      ctaHref: "/signup",
-      popular: true,
-      features: [
-        "Unlimited account connections",
-        "Advanced AI investment insights",
-        "Portfolio risk analysis",
-        "Smart alerts & automation",
-        "Historical performance analytics",
-        "Priority support",
-      ],
-    },
-  ],
-  notes: ["7-day free trial available", "No credit card required", "Cancel anytime"],
+  loading: "Loading plans…",
+  error: "Couldn’t load plans right now. Please try again shortly.",
+  ctaLabel: "Get started",
+  ctaHref: "/signup",
+  notes: ["No credit card required", "Cancel anytime"],
   enterprise: {
     title: "Enterprise plan",
     description:
@@ -408,21 +375,37 @@ export const faq = {
     description: "Reach out, and our team will guide you.",
     cta: { label: "Talk to our team", href: "/contact" },
   },
-  /**
-   * Only the first entry has a published answer on the live site — the
-   * remaining five are still empty in the source CMS. Fill them in here.
-   */
   items: [
     {
       question: "How does HireDue work?",
       answer:
         "HireDue uses AI to scan job platforms, optimize your resume for each role, automatically submit applications, and reach out to recruiters while you focus on interview prep.",
     },
-    { question: "Which platforms are supported?", answer: "" },
-    { question: "Is my data secure?", answer: "" },
-    { question: "Does HireDue store credentials?", answer: "" },
-    { question: "Is HireDue for students only?", answer: "" },
-    { question: "Can I control the automation?", answer: "" },
+    {
+      question: "Which platforms are supported?",
+      answer:
+        "HireDue searches LinkedIn, Naukri, Wellfound, and 50,000+ career pages and job boards, and applies through 6+ ATS providers, with more added regularly.",
+    },
+    {
+      question: "Is my data secure?",
+      answer:
+        "Yes. HireDue is a desktop app, so your sessions, saved credentials, and email history stay encrypted on your device — never on our servers. Only your resume, profile, and billing details sync online.",
+    },
+    {
+      question: "Does HireDue store credentials?",
+      answer:
+        "Your login credentials are encrypted and stored locally on your machine, not in our cloud. You control what's shared and can revoke access at any time.",
+    },
+    {
+      question: "Is HireDue for students only?",
+      answer:
+        "No. HireDue is built for students, career switchers, active job seekers, and experienced professionals alike — anyone who wants to automate the repetitive parts of job hunting.",
+    },
+    {
+      question: "Can I control the automation?",
+      answer:
+        "Yes. You set your preferences — roles, locations, salary, and seniority — and can review, pause, or adjust the automation at any time from the app.",
+    },
   ],
 };
 
@@ -445,7 +428,7 @@ export const footer = {
       title: "Quick links",
       links: [
         { label: "Features", href: "#features" },
-        { label: "How It Works", href: "#how-it-works" },
+        { label: "Get Started", href: "#how-it-works" },
         { label: "Use Cases", href: "#use-cases" },
         { label: "Integrations", href: "#integrations" },
       ],
@@ -458,7 +441,7 @@ export const footer = {
         { label: "Ambassadors", href: "/ambassadors" },
         { label: "Blog", href: "/blog" },
         { label: "Career", href: "/career" },
-        { label: "Pricing", href: "/pricing" },
+        { label: "Pricing", href: "#pricing" },
         { label: "Download", href: "/download" },
       ],
     },
@@ -480,10 +463,26 @@ export const footer = {
    * shipping a link that goes nowhere.
    */
   socials: [
-    { name: "Instagram", icon: assets.footer.social[0], href: process.env.NEXT_PUBLIC_INSTAGRAM_URL },
-    { name: "LinkedIn", icon: assets.footer.social[1], href: process.env.NEXT_PUBLIC_LINKEDIN_URL },
-    { name: "Facebook", icon: assets.footer.social[2], href: process.env.NEXT_PUBLIC_FACEBOOK_URL },
-    { name: "X", icon: assets.footer.social[3], href: process.env.NEXT_PUBLIC_TWITTER_URL },
+    {
+      name: "Instagram",
+      icon: assets.footer.social[0],
+      href: process.env.NEXT_PUBLIC_INSTAGRAM_URL,
+    },
+    {
+      name: "LinkedIn",
+      icon: assets.footer.social[1],
+      href: process.env.NEXT_PUBLIC_LINKEDIN_URL,
+    },
+    {
+      name: "Facebook",
+      icon: assets.footer.social[2],
+      href: process.env.NEXT_PUBLIC_FACEBOOK_URL,
+    },
+    {
+      name: "X",
+      icon: assets.footer.social[3],
+      href: process.env.NEXT_PUBLIC_TWITTER_URL,
+    },
   ],
 };
 
@@ -492,25 +491,34 @@ export const footer = {
 /* ------------------------------------------------------------------ */
 export const featurePage = {
   hero: {
-    title: "Find jobs, Reach out, Apply Automatically.",
+    title: "Be the first one to apply, every time",
     description:
       "One agent that finds the roles, tailors the resume, contacts the recruiter and submits the application — while you only focus on preparing for interviews.",
     stats: [
-      { value: "50,000+", label: "Career pages and job boards scanned every day." },
-      { value: "24/7", label: "The agent keeps working while you only prepare for Interviews." },
+      {
+        value: "50,000+",
+        label: "Career pages and job boards scanned every day.",
+      },
+      {
+        value: "24/7",
+        label: "The agent keeps working while you only prepare for Interviews.",
+      },
     ],
     cta: { label: "Get started now", href: "/signup" },
+    secondaryCta: { label: "Live onboarding meet", href: "/onboarding-call" },
   },
 
   signals: {
     eyebrow: "Under the hood",
     /* the template hard-breaks this headline into two lines */
-    title: "Intelligence that works\nwhile you sleep",
+    title: "Outreach that sounds\nlike you",
+    description:
+      "HireDue researches the hiring manager, then tailors every note to the role and sends it from your own connected accounts.",
     items: [
-      "Scan 50,000+ career pages and boards in real time",
-      "Rank every opening against your actual profile",
-      "Alert you the moment a matching role goes live",
-      "Explain why each role was matched, in plain language",
+      "Write a personal LinkedIn message for every hiring manager",
+      "Draft a role-specific email with your strongest experience",
+      "Send from your LinkedIn and email — never a generic bot account",
+      "Keep every message personal, relevant and in your voice",
     ],
     cta: { label: "Get started now", href: "/signup" },
   },
@@ -575,19 +583,22 @@ export const featurePage = {
       {
         number: "01",
         title: "Install the app",
-        description: "Download HireDue and sign in — setup takes under two minutes.",
+        description:
+          "Download HireDue and sign in — setup takes under two minutes.",
         tone: "surface",
       },
       {
         number: "02",
         title: "Set your preferences",
-        description: "Roles, locations, salary and seniority. The agent takes it from there.",
+        description:
+          "Roles, locations, salary and seniority. The agent takes it from there.",
         tone: "primary",
       },
       {
         number: "03",
         title: "Let it run",
-        description: "It discovers, tailors, applies and follows up while you prepare.",
+        description:
+          "It discovers, tailors, applies and follows up while you prepare.",
         tone: "dark",
       },
     ],
@@ -595,7 +606,7 @@ export const featurePage = {
 
   depth: {
     eyebrow: "Under the hood",
-    title: "Applications that\ngo deeper",
+    title: "Resume that\ngets you noticed",
     description:
       "Most tools blast the same resume everywhere. HireDue rewrites it per role, matches the language of the posting, and files it before the queue fills up.",
     items: [
@@ -608,7 +619,7 @@ export const featurePage = {
 
   integrations: {
     eyebrow: "Integrations",
-    title: "Works with the boards\nyou already use",
+    title: "Works with the Job boards\nyou already use",
     description:
       "Connect the boards and portals you already use and let HireDue work across them.",
     items: [
@@ -616,37 +627,41 @@ export const featurePage = {
         name: "LinkedIn",
         icon: marks.linkedin,
         color: "#0a66c2",
-        description: "Apply through Easy Apply and message recruiters directly.",
+        description:
+          "Apply through Easy Apply and message recruiters directly.",
       },
       {
-        name: "Indeed",
-        icon: marks.indeed,
-        color: "#003a9b",
-        description: "Track new postings and submit applications automatically.",
+        name: "Naukri",
+        color: "#2d5fa5",
+        description:
+          "Find relevant roles across India's largest hiring marketplace.",
       },
       {
         name: "Wellfound",
         icon: marks.wellfound,
         color: "#000000",
-        description: "Reach startup founders and hiring leads the day a role opens.",
+        description:
+          "Reach startup founders and hiring leads the day a role opens.",
       },
       {
-        name: "Greenhouse",
-        icon: marks.greenhouse,
-        color: "#24a47f",
-        description: "Fill company ATS forms end to end without retyping anything.",
+        name: "Foundit",
+        color: "#6b3fd4",
+        description:
+          "Discover matching opportunities and keep applications moving.",
       },
       {
         name: "Monster",
         icon: marks.monster,
         color: "#6d4c9f",
-        description: "Keep your profile live and applications flowing every day.",
+        description:
+          "Keep your profile live and applications flowing every day.",
       },
       {
         name: "Handshake",
         icon: marks.handshake,
         color: "#1d1d1d",
-        description: "Catch campus and early-career roles the moment they post.",
+        description:
+          "Catch campus and early-career roles the moment they post.",
       },
     ],
   },
@@ -656,41 +671,41 @@ export const featurePage = {
 /*  /ambassadors — the creator ambassador program                       */
 /* ------------------------------------------------------------------ */
 export const ambassadorPage = {
-  /* Every apply button on the page reads this one value — paste the Google
-     Form URL here once it exists and the whole page points at it. */
-  applyUrl: "#apply",
+  /* Every apply button on the page reads this one value — set
+     NEXT_PUBLIC_AMBASSADOR_APPLY_URL and the whole page points at it. */
+  applyUrl: process.env.NEXT_PUBLIC_AMBASSADOR_APPLY_URL || "#apply",
   applyLabel: "Apply to the program",
 
   hero: {
     eyebrow: "Creator Ambassador Program",
     title: "Get paid to talk about HireDue",
     description:
-      "Make content about the AI agent that finds, contacts and applies to jobs while you sleep. We pay you for the views it earns — and 80% commission on everyone who signs up with your code.",
-    secondary: { label: "See how payouts work", href: "#payouts" },
+      "Share HireDue with your audience and earn up to $8 for every successful referral.",
+    secondary: { label: "See referral earnings", href: "#payouts" },
     stats: [
-      { value: "80%", label: "Commission on every referred sale" },
-      { value: "Monthly", label: "Payouts on the views your content earns" },
+      { value: "$8", label: "Earned per successful referral" },
+      { value: "Tracked", label: "Every purchase through your code or link" },
       { value: "0", label: "Follower minimum to apply" },
     ],
   },
 
   perks: {
     eyebrow: "What you get",
-    title: "A program built to pay creators properly",
+    title: "A referral program built for creators",
     description:
-      "Two income streams from the same post, a code that is yours from day one, and a team that actually answers.",
+      "A generous commission, a code that is yours from day one, clear tracking and a team that actually answers.",
     cards: [
       {
-        icon: "views",
-        title: "Paid for your views",
+        icon: "commission",
+        title: "Up to $8 per successful referral",
         description:
-          "Every video, reel or post you publish about HireDue earns a payout scaled to the views it does. Reviewed and paid out every month.",
+          "When someone buys a HireDue plan through your referral, you earn up to $8 — paid for every eligible signup.",
       },
       {
-        icon: "commission",
-        title: "80% commission, every sale",
+        icon: "payout",
+        title: "Simple monthly payouts",
         description:
-          "Anyone who signs up with your referral code and buys a plan pays you 80% of it. Not a finder's fee — the large majority of the sale.",
+          "Your successful referrals are totalled each month, so your earnings stay clear and predictable.",
       },
       {
         icon: "code",
@@ -708,34 +723,21 @@ export const ambassadorPage = {
   },
 
   payouts: {
-    eyebrow: "Payouts",
-    title: "Two ways the same post pays you",
+    eyebrow: "Referral earnings",
+    title: "One clear way to earn",
     description:
-      "One stream rewards the reach your content earns. The other rewards the people it converts. You collect both.",
-
-    /* PLACEHOLDER RATES — swap these for the real rate card before launch.
-       `tiers` drives the table and the view half of the estimator; `planPrice`
-       and `commission` drive the referral half. */
-    placeholder: true,
+      "Share your personal code or link. When someone uses it to buy a plan, you earn up to $8 for that referral.",
     currency: "$",
-    tiers: [
-      { views: 10_000, label: "10K views", payout: 25 },
-      { views: 50_000, label: "50K views", payout: 150 },
-      { views: 200_000, label: "200K views", payout: 700 },
-      { views: 1_000_000, label: "1M+ views", payout: 4_000 },
-    ],
-    commission: 0.8,
-    planPrice: 39,
-    note: "Example figures while the rate card is being finalised. Your confirmed rates land in your welcome email.",
+    perReferral: 8,
+    note: "You earn up to $8 for every eligible customer who buys a plan through your referral.",
 
     estimator: {
-      title: "What a month could look like",
-      viewsLabel: "Monthly views on your HireDue content",
-      salesLabel: "People who buy with your code",
-      viewsPayoutLabel: "Views payout",
-      commissionLabel: "Referral commission (80%)",
+      title: "Estimate your referral earnings",
+      salesLabel: "Customers who buy with your code",
+      commissionLabel: "Referral earnings ($8 each)",
       totalLabel: "Estimated monthly earnings",
-      disclaimer: "An estimate, not an offer. Real payouts follow the confirmed rate card.",
+      disclaimer:
+        "An estimate, not an offer. Final earnings depend on eligible purchases completed through your referral.",
     },
   },
 
@@ -765,7 +767,7 @@ export const ambassadorPage = {
         number: "04",
         title: "Get paid",
         description:
-          "We total your views and your referred sales at the end of each month and pay out.",
+          "We total the eligible purchases made through your referral and pay your commission each month.",
       },
     ],
   },
@@ -795,14 +797,14 @@ export const ambassadorPage = {
           "No. The program is free to apply to and free to be part of. You are never asked to buy anything to take part.",
       },
       {
-        question: "How is the 80% commission calculated?",
+        question: "How much do I earn per referral?",
         answer:
-          "When somebody signs up with your referral code and buys a plan, you receive 80% of what they pay for it. They pay the normal price — the commission comes out of our side, not theirs.",
+          "When somebody signs up with your referral code and buys a plan, you earn up to $8 for that referral. They pay the normal price — your earnings come out of our side, not theirs.",
       },
       {
-        question: "How are view payouts counted?",
+        question: "How are my referrals tracked?",
         answer:
-          "We count the views on posts you publish about HireDue across the platforms you registered when you applied, and total them at the end of each month against the rate card you were sent.",
+          "Every approved ambassador receives a personal referral code and link. Eligible purchases completed through either one are attributed to your account.",
       },
       {
         question: "Do I need a minimum number of followers?",
@@ -823,8 +825,219 @@ export const ambassadorPage = {
   },
 
   cta: {
-    title: "Your next post could be earning",
+    title: "Your next referral could be earning",
     description:
       "Applications take about two minutes. Tell us where you post and what you make, and we will come back to you.",
+  },
+};
+
+export const contactPage = {
+  hero: {
+    eyebrow: "Contact us",
+    title: "Get in touch\nwith our team",
+    description:
+      "Get answers about the platform, pricing, and integrations. Our team is ready to help you land your next role faster.",
+    points: [
+      "Real support from a real team",
+      "Encrypted credentials & sessions",
+      "Privacy-first, nothing sold to third parties",
+      "Fast responses, no ticket black hole",
+    ],
+    form: {
+      nameLabel: "Full name",
+      namePlaceholder: "Enter your full name",
+      emailLabel: "Email address",
+      emailPlaceholder: "you@example.com",
+      phoneLabel: "Phone number",
+      phonePlaceholder: "Your contact number",
+      subjectLabel: "Subject",
+      subjectPlaceholder: "How can we help?",
+      messageLabel: "Message",
+      messagePlaceholder: "Write your message here...",
+      submitLabel: "Send Message",
+      submittingLabel: "Sending…",
+    },
+  },
+  team: {
+    title: "Connect with our team",
+    cards: [
+      {
+        title: "Sales inquiries",
+        description: "Talk with our team about plans, pricing, and getting started.",
+        email: "support@hiredue.com",
+        tone: "light",
+      },
+      {
+        title: "Customer support",
+        description: "Get help with your account, the desktop app, or a technical question.",
+        email: "support@hiredue.com",
+        tone: "dark",
+      },
+      {
+        title: "Partnerships",
+        description: "Reach out to explore campus, community, or integration partnerships.",
+        email: "support@hiredue.com",
+        tone: "brand",
+      },
+    ],
+  },
+  faq: {
+    title: "Frequently asked questions",
+    items: [
+      {
+        question: "How quickly will I hear back?",
+        answer:
+          "Our team typically replies within 24 hours on business days. For account or billing issues, email support@hiredue.com directly for the fastest response.",
+      },
+      {
+        question: "Can I get help during onboarding?",
+        answer:
+          "Yes. If you get stuck connecting your resume, LinkedIn, or job boards, reach out and our team will walk you through setup.",
+      },
+      {
+        question: "Can I change or cancel my plan?",
+        answer:
+          "You can upgrade, downgrade, or cancel anytime from your account settings — no phone call required. Contact support if you run into any trouble.",
+      },
+      {
+        question: "Do you offer plans for teams or campus placement cells?",
+        answer:
+          "Yes. Contact our sales team and we'll design a plan for your organization, university, or student cohort.",
+      },
+      {
+        question: "I found a bug or have feedback — where does it go?",
+        answer:
+          "Email support@hiredue.com with as much detail as you can (screenshots help). We read every message.",
+      },
+    ],
+  },
+};
+
+export const downloadPage = {
+  eyebrow: "Desktop app",
+  title: "Download HireDue",
+  description:
+    "Install the desktop app to start automating your job search — it's free, and takes under a minute to set up.",
+  version: "Version 1.0.1",
+  freeNote: "Free to install",
+  notice: {
+    heading: "Already installed?",
+    body: "Open the desktop app and sign in with the same email and password — your subscription and account sync automatically.",
+    cta: { label: "Sign up", href: "/signup" },
+    altCta: { label: "log in", href: "/login" },
+  },
+};
+
+export const onboardingCallPage = {
+  hero: {
+    eyebrow: "Live onboarding",
+    title: "Get onboarded\nby our team",
+    description:
+      "We onboard new users live, every day at 9:30 PM IST — join to see a live demo and optimize your profile with our team.",
+    points: [
+      "Live demo of the desktop app",
+      "We optimize your profile with you, live",
+      "Every day at 9:30 PM IST",
+      "About 20 minutes, no cost",
+    ],
+    form: {
+      nameLabel: "Full name",
+      namePlaceholder: "Enter your full name",
+      phoneLabel: "Phone number",
+      phonePlaceholder: "Your contact number",
+      emailLabel: "Email address",
+      emailPlaceholder: "you@example.com",
+      dateLabel: "Preferred date",
+      submitLabel: "Reserve my seat",
+      submittingLabel: "Reserving…",
+    },
+  },
+  faq: {
+    title: "Frequently asked questions",
+    items: [
+      {
+        question: "What happens on the call?",
+        answer:
+          "Our team walks you through a live demo of the desktop app, then helps you optimize your profile — resume, preferences, and connected accounts — so your agent starts strong.",
+      },
+      {
+        question: "What time is the call?",
+        answer:
+          "We run a live onboarding session every day at 9:30 PM IST. Pick your preferred date in the form and we'll confirm your slot.",
+      },
+      {
+        question: "How long does it take?",
+        answer: "About 20 minutes. Just bring your resume and a few minutes of focus.",
+      },
+      {
+        question: "Is there a cost?",
+        answer: "No. Onboarding calls are free for every new user, on any plan.",
+      },
+      {
+        question: "What if I can't make it?",
+        answer:
+          "No problem — email support@hiredue.com and we'll help you pick another date, or point you to a self-serve setup guide instead.",
+      },
+    ],
+  },
+};
+
+export const aboutPage = {
+  eyebrow: "About HireDue",
+  title: "Our story",
+  paragraphs: [
+    "HireDue started as a single question: what if applying to a job felt as effortless as saving a tab? We watched friends rewrite the same resume thirty different ways for thirty different roles — copy-pasting cover letters, fighting form fields, and second-guessing whether the role was even a fit.",
+    "Hiring teams weren't the villains, and candidates weren't lazy. The workflow itself was broken, stitched together from tools that never spoke to each other. So we built HireDue: an AI agent that discovers relevant roles, tailors your resume, reaches out to the right people, and submits your applications automatically — all while you focus on the part that actually moves the needle, preparing for the interview.",
+    "Our mission is simple: turn job-search effort into focused interview preparation and better outcomes, and become the most trusted automation layer for job seekers everywhere — fast, accurate, and stress-free, with your data staying exactly where it belongs, with you.",
+  ],
+};
+
+export const careerPage = {
+  hero: {
+    eyebrow: "Careers",
+    title: "Join a team of builders",
+    description:
+      "We're looking for ambitious, talented people to help us build the AI layer for job seekers — and ship thoughtful products at startup speed.",
+    quote: {
+      text: "We are proud to be part of a team creating a thoughtfully crafted product centered on real user outcomes.",
+      author: "Arnob",
+      role: "Engineering",
+    },
+  },
+  openings: {
+    eyebrow: "Open roles",
+    title: "Current openings",
+    description:
+      "We're currently hiring for focused internship roles across the founder's office and engineering.",
+    items: [
+      {
+        title: "Founder's Office Intern (Brand, Content & UI/UX)",
+        team: "Founder's Office",
+        location: "Remote",
+        type: "Internship",
+        jdUrl: "https://drive.google.com/file/d/15xifbyFZcdl_-nRUENCMjUqrJzsuAkrz/view?usp=sharing",
+      },
+      {
+        title: "Founder's Office Intern (Management and Outreach)",
+        team: "Founder's Office",
+        location: "Remote",
+        type: "Internship",
+        jdUrl: "https://drive.google.com/file/d/1FHu_9kPQB9FlngGlzwNkO6AAWi5hrusv/view?usp=sharing",
+      },
+      {
+        title: "SDE Intern",
+        team: "Engineering",
+        location: "Remote",
+        type: "Internship",
+        jdUrl: "https://drive.google.com/file/d/1NbEbOi_vlQUe35a12WDeAgNYdqedLOsq/view?usp=sharing",
+      },
+    ],
+  },
+  apply: {
+    title: "How to apply",
+    description:
+      "Choose a role above and submit your application through our shared form. If none match today, apply to our talent pool and we'll reach out when a relevant role opens.",
+    cta: { label: "Apply now", href: "https://forms.gle/dVBBpCa7YKrxp6Zj8" },
+    fallbackEmail: "careers@hiredue.com",
   },
 };

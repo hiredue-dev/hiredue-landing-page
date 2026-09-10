@@ -11,8 +11,27 @@ import { Stats } from "@/components/site/sections/Stats";
 import { Testimonials } from "@/components/site/sections/Testimonials";
 import { Pricing } from "@/components/site/sections/Pricing";
 import { Faq } from "@/components/site/sections/Faq";
+import { client } from "@/lib/sanity/client";
+import { FAQ_QUERY, TESTIMONIALS_QUERY } from "@/lib/sanity/queries";
+import {
+  createPageMetadata,
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+} from "@/lib/seo";
 
-export default function Home() {
+export const metadata = createPageMetadata({
+  title: DEFAULT_TITLE,
+  description: DEFAULT_DESCRIPTION,
+  path: "/",
+  absoluteTitle: true,
+});
+
+export default async function Home() {
+  const [faqItems, testimonialItems] = await Promise.all([
+    client.fetch(FAQ_QUERY, {}, { next: { revalidate: 60 } }),
+    client.fetch(TESTIMONIALS_QUERY, {}, { next: { revalidate: 60 } }),
+  ]);
+
   return (
     <>
       <Hero />
@@ -25,9 +44,11 @@ export default function Home() {
       <UseCases />
       <Integrations />
       <Stats />
-      <Testimonials />
+      <Testimonials
+        items={testimonialItems?.length ? testimonialItems : undefined}
+      />
       <Pricing />
-      <Faq />
+      <Faq items={faqItems?.length ? faqItems : undefined} />
     </>
   );
 }

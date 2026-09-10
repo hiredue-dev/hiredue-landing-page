@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button/Button.jsx";
 import Input from "@/components/ui/Input/Input.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { friendlyAuthError } from "../errorMessages.js";
+import AuthShell from "./AuthShell.jsx";
 import styles from "./AuthForm.module.css";
 
 export default function SigninForm() {
@@ -36,24 +37,30 @@ export default function SigninForm() {
         router.replace(redirect);
         return;
       }
-      router.replace(hasActiveSubscription ? "/download" : "/pricing");
+      router.replace(hasActiveSubscription ? "/download" : "/#pricing");
     } catch (err) {
-      setError(friendlyAuthError(err.message, "signin", "Invalid email or password."));
+      setError(
+        friendlyAuthError(err.message, "signin", "Invalid email or password."),
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className={styles.shell}>
+    <AuthShell mode="signin">
       <div className={styles.card}>
         <p className={styles.eyebrow}>Welcome back</p>
         <h1 className={styles.title}>Sign in to HireDue</h1>
-        <p className={styles.subtitle}>Pick up where you left off.</p>
+        <p className={styles.subtitle}>
+          Pick up where you left off and keep your search moving.
+        </p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="email">Email</label>
+            <label className={styles.label} htmlFor="email">
+              Email
+            </label>
             <Input
               id="email"
               name="email"
@@ -61,12 +68,15 @@ export default function SigninForm() {
               autoComplete="email"
               value={form.email}
               onChange={handleChange}
+              placeholder="you@example.com"
               required
             />
           </div>
 
           <div className={styles.field}>
-            <label className={styles.label} htmlFor="password">Password</label>
+            <label className={styles.label} htmlFor="password">
+              Password
+            </label>
             <div className={styles.inputWrap}>
               <Input
                 id="password"
@@ -75,6 +85,7 @@ export default function SigninForm() {
                 autoComplete="current-password"
                 value={form.password}
                 onChange={handleChange}
+                placeholder="Enter your password"
                 required
                 style={{ paddingRight: 44 }}
               />
@@ -98,16 +109,23 @@ export default function SigninForm() {
 
           {error && <div className={styles.error}>{error}</div>}
 
-          <Button type="submit" size="lg" className={styles.submit} disabled={loading}>
+          <Button
+            type="submit"
+            size="lg"
+            className={styles.submit}
+            disabled={loading}
+          >
             {loading ? "Signing in…" : "Sign in"}
           </Button>
         </form>
 
         <p className={styles.footerText}>
-          Don&apos;t have an account?
-          <Link href="/signup" className={styles.footerLink}>Sign up</Link>
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" className={styles.footerLink}>
+            Create one free
+          </Link>
         </p>
       </div>
-    </div>
+    </AuthShell>
   );
 }

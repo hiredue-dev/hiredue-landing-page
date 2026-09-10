@@ -38,8 +38,16 @@ function Anchor({
       </Link>
     );
   }
+  /* Full external URLs (wa.me, social links, …) open in a new tab so we
+     don't navigate the visitor away from the site entirely. */
+  const external = /^https?:\/\//.test(href);
   return (
-    <a href={href} className={className} {...rest}>
+    <a
+      href={href}
+      className={className}
+      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+      {...rest}
+    >
       {children}
     </a>
   );

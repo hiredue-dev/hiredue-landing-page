@@ -4,11 +4,11 @@ export const nav = {
   brand: "HireDue",
   links: [
     { label: "Features", href: "#features" },
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Use Cases", href: "#use-cases" },
-    { label: "Pricing", href: "/pricing" },
+    { label: "Get Started", href: "#how-it-works" },
+    { label: "Platform Overview", href: "#overview" },
+    { label: "Pricing", href: "#pricing" },
   ],
-  cta: { label: "Get Started Free", href: "/signup" },
+  cta: { label: "Download the App", href: "/download" },
 };
 
 export const cta = {
@@ -29,7 +29,7 @@ export const footer = {
       title: "Quick links",
       links: [
         { label: "Features", href: "#features" },
-        { label: "How It Works", href: "#how-it-works" },
+        { label: "Get Started", href: "#how-it-works" },
         { label: "Use Cases", href: "#use-cases" },
         { label: "Integrations", href: "#integrations" },
       ],
@@ -42,8 +42,9 @@ export const footer = {
         { label: "Ambassadors", href: "/ambassadors" },
         { label: "Blog", href: "/blog" },
         { label: "Career", href: "/career" },
-        { label: "Pricing", href: "/pricing" },
+        { label: "Pricing", href: "#pricing" },
         { label: "Download", href: "/download" },
+        { label: "Live Onboarding", href: "/onboarding-call" },
       ],
     },
     {

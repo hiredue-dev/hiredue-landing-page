@@ -5,12 +5,14 @@ import { AmbassadorSteps } from "@/components/site/sections/ambassador/Ambassado
 import { AmbassadorWho } from "@/components/site/sections/ambassador/AmbassadorWho";
 import { AmbassadorFaq } from "@/components/site/sections/ambassador/AmbassadorFaq";
 import { AmbassadorCta } from "@/components/site/sections/ambassador/AmbassadorCta";
+import { createPageMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Creator Ambassador Program — HireDue",
+export const metadata = createPageMetadata({
+  title: "Creator Ambassador Program",
   description:
-    "Make content about HireDue and get paid for it: monthly payouts scaled to your views, plus 80% commission on every plan bought with your referral code.",
-};
+    "Share HireDue with your audience and earn 80% commission on every eligible plan bought through your referral code.",
+  path: "/ambassadors",
+});
 
 export default function AmbassadorsPage() {
   return (

@@ -15,11 +15,11 @@ const stroke = {
 };
 
 export const perkIcons = {
-  /* a rising view count */
-  views: (
+  /* a completed payout */
+  payout: (
     <svg {...stroke}>
-      <path d="M3.5 12.4S6.9 6.5 12 6.5s8.5 5.9 8.5 5.9-3.4 5.9-8.5 5.9-8.5-5.9-8.5-5.9z" />
-      <circle cx="12" cy="12.4" r="2.6" />
+      <rect x="3" y="6" width="18" height="13" rx="3" />
+      <path d="M3 10h18M7 15h4" />
     </svg>
   ),
   /* money changing hands */
@@ -56,7 +56,13 @@ export const platformIcons = {
     </svg>
   ),
   Instagram: (
-    <svg viewBox="0 0 24 24" aria-hidden fill="none" stroke="currentColor" strokeWidth="1.9">
+    <svg
+      viewBox="0 0 24 24"
+      aria-hidden
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.9"
+    >
       <rect x="3.2" y="3.2" width="17.6" height="17.6" rx="5.2" />
       <circle cx="12" cy="12" r="4" />
       <circle cx="16.9" cy="7.1" r="1.15" fill="currentColor" stroke="none" />

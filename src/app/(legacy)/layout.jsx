@@ -6,6 +6,10 @@
  *
  * A route group adds no path segment — /login, /pricing, … are unchanged.
  */
+export const metadata = {
+  robots: { index: false, follow: true },
+};
+
 export default function LegacyLayout({ children }) {
   return <div className="legacyPage">{children}</div>;
 }

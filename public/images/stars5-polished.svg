@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="164" height="32" viewBox="0 0 164 32" fill="none">
+  <defs>
+    <linearGradient id="starFace" x1="12" y1="2" x2="12" y2="22" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF2A3"/>
+      <stop offset="0.34" stop-color="#FFD24A"/>
+      <stop offset="0.72" stop-color="#FFAD18"/>
+      <stop offset="1" stop-color="#ED7900"/>
+    </linearGradient>
+    <radialGradient id="starShine" cx="0.31" cy="0.2" r="0.74">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.88"/>
+      <stop offset="0.46" stop-color="#FFFFFF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="starEdge" x1="12" y1="17" x2="12" y2="23" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D76A00"/>
+      <stop offset="1" stop-color="#A94700"/>
+    </linearGradient>
+    <filter id="starShadow" x="-45%" y="-45%" width="190%" height="220%" filterUnits="objectBoundingBox">
+      <feDropShadow dx="0" dy="2.4" stdDeviation="1.45" flood-color="#7A3B00" flood-opacity="0.34" />
+    </filter>
+    <path id="starShape" d="M12 2.2 14.86 8.6 21.8 9.42 16.6 14.08 18.1 20.9 12 17.35 5.9 20.9 7.4 14.08 2.2 9.42 9.14 8.6Z" />
+    <clipPath id="starClip">
+      <use href="#starShape" />
+    </clipPath>
+  </defs>
+  <g filter="url(#starShadow)">
+    <g transform="translate(0,3)">
+      <use href="#starShape" transform="translate(0 1.8)" fill="url(#starEdge)" stroke="#A84B00" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starFace)" stroke="#D27800" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starShine)" clip-path="url(#starClip)" />
+    </g>
+    <g transform="translate(35,3)">
+      <use href="#starShape" transform="translate(0 1.8)" fill="url(#starEdge)" stroke="#A84B00" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starFace)" stroke="#D27800" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starShine)" clip-path="url(#starClip)" />
+    </g>
+    <g transform="translate(70,3)">
+      <use href="#starShape" transform="translate(0 1.8)" fill="url(#starEdge)" stroke="#A84B00" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starFace)" stroke="#D27800" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starShine)" clip-path="url(#starClip)" />
+    </g>
+    <g transform="translate(105,3)">
+      <use href="#starShape" transform="translate(0 1.8)" fill="url(#starEdge)" stroke="#A84B00" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starFace)" stroke="#D27800" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starShine)" clip-path="url(#starClip)" />
+    </g>
+    <g transform="translate(140,3)">
+      <use href="#starShape" transform="translate(0 1.8)" fill="url(#starEdge)" stroke="#A84B00" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starFace)" stroke="#D27800" stroke-width="0.9" stroke-linejoin="round" />
+      <use href="#starShape" fill="url(#starShine)" clip-path="url(#starClip)" />
+    </g>
+  </g>
+</svg>

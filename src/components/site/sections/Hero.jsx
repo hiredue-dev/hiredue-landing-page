@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
+import { RotatingWord } from "@/components/site/ui/RotatingWord";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -37,7 +38,7 @@ const HILL_FADE = [250, 820];
  * tall window the grass sits low (or below the fold) instead of cutting
  * across the product shot.
  */
-const COPY_BLOCK = 605;
+const COPY_BLOCK = 420;
 
 export function Hero() {
   /* Both effects belong to the desktop layout only, same as the original. */
@@ -60,7 +61,7 @@ export function Hero() {
   return (
     <section
       id="top"
-      className="relative isolate flex flex-col overflow-hidden bg-white pt-[140px] pb-[40px] sm:pt-[194px] min-[1200px]:min-h-[175vh]"
+      className="relative isolate flex flex-col overflow-hidden bg-white pt-[120px] pb-[40px] sm:pt-[150px] min-[1200px]:min-h-[145vh]"
     >
       {/* sky */}
       <Image
@@ -81,7 +82,7 @@ export function Hero() {
 
       <div className="relative z-[2] flex flex-1 flex-col">
         <div className="container-page flex flex-1 flex-col">
-          <div className="flex flex-1 flex-col gap-[60px] md:gap-[120px]">
+          <div className="flex flex-1 flex-col gap-[40px] md:gap-[60px]">
             {/* reserve the original's copy-block height so the product shot
                 always lands in the same place, however long the copy runs */}
             <div
@@ -91,7 +92,13 @@ export function Hero() {
               <div className="flex flex-col items-center gap-5">
                 <div className="flex flex-col items-center gap-2.5">
                   <motion.h1 {...appear(0.3)} className="t-h1 max-w-[1200px] text-center">
-                    {hero.title}
+                    HireDue{" "}
+                    <RotatingWord
+                      words={hero.rotatingWords}
+                      className="text-white [text-shadow:0_4px_20px_rgba(29,29,29,0.25)]"
+                    />
+                    <br />
+                    {hero.tagline}
                   </motion.h1>
                 </div>
 
@@ -169,7 +176,7 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-y-0 -right-5 left-0 z-[3] hidden overflow-clip min-[1200px]:block">
         <motion.div
           style={{ scale: hillScale, y: hillY, opacity: hillOpacity }}
-          className="absolute bottom-[231px] left-0 w-full origin-center will-change-transform"
+          className="absolute bottom-[120px] left-0 w-full origin-center will-change-transform"
         >
           <Image
             src={assets.hero.hills}

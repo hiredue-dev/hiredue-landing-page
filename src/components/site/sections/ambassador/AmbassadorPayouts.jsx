@@ -2,34 +2,22 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import clsx from "clsx";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { ambassadorPage } from "@/lib/content";
 import { spring } from "@/lib/motion";
-import { commissionPayout, compactViews, money, viewsPayout } from "./earnings";
+import { commissionPayout, money } from "./earnings";
 import { useCountUp } from "./use-count-up";
 
 const { payouts } = ambassadorPage;
-const { estimator, tiers } = payouts;
+const { estimator } = payouts;
 
-const MAX_VIEWS = tiers[tiers.length - 1].views;
 const MAX_SALES = 50;
 
-/** Which published tier a given view count falls into. */
-const band = (views) =>
-  (tiers.find((t) => views <= t.views) ?? tiers[tiers.length - 1]).label;
-
 export function AmbassadorPayouts() {
-  const [views, setViews] = useState(50_000);
   const [sales, setSales] = useState(10);
-
-  const fromViews = viewsPayout(views);
   const fromSales = commissionPayout(sales);
-  const total = useCountUp(fromViews + fromSales, 500);
-
-  /* the split bar under the total, so the two streams stay legible as one
-     slider is pushed far past the other */
-  const share = fromViews + fromSales === 0 ? 0.5 : fromViews / (fromViews + fromSales);
+  const total = useCountUp(fromSales, 500);
+  const commissionPerSale = commissionPayout(1);
 
   return (
     <section
@@ -48,40 +36,50 @@ export function AmbassadorPayouts() {
             y={30}
             className="grid w-full gap-5 min-[1000px]:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] min-[1000px]:gap-[30px]"
           >
-            {/* rate card */}
+            {/* referral model */}
             <div className="flex flex-col gap-5 rounded-[30px] bg-surface p-[26px] min-[810px]:p-10">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex flex-col gap-1">
-                  <h3 className="t-h4">Paid on reach</h3>
-                  <p className="t-body">Every month, across everything you posted.</p>
+                  <h3 className="t-h4">Earn on every referral</h3>
+                  <p className="t-body">
+                    You earn when someone buys through your code or link.
+                  </p>
                 </div>
-                {payouts.placeholder && (
-                  <span className="shrink-0 rounded-full bg-white px-3 py-1.5 text-[11px] leading-none font-semibold tracking-wide text-dim uppercase">
-                    Example
-                  </span>
-                )}
+                <span className="shrink-0 rounded-full bg-success-20 px-3 py-1.5 text-[13px] leading-none font-semibold text-success">
+                  Up to {money(payouts.perReferral)}
+                </span>
               </div>
 
               <div className="flex flex-col gap-2.5">
-                {tiers.map((tier, i) => (
+                {[
+                  [
+                    "01",
+                    "Share your code",
+                    "Add your personal referral code or link to your content.",
+                  ],
+                  [
+                    "02",
+                    "A customer buys",
+                    "Their eligible purchase is tracked back to your account.",
+                  ],
+                  [
+                    "03",
+                    "Earn your commission",
+                    `You receive up to ${money(payouts.perReferral)} for that referral.`,
+                  ],
+                ].map(([number, title, description]) => (
                   <div
-                    key={tier.label}
-                    className="flex items-center gap-4 rounded-[16px] bg-white px-5 py-4"
+                    key={number}
+                    className="flex items-start gap-3 rounded-[16px] bg-white px-5 py-4"
                   >
-                    <span className="w-[92px] shrink-0 text-[15px] leading-none font-semibold text-ink">
-                      {tier.label}
+                    <span className="grid size-8 shrink-0 place-items-center rounded-full bg-brand/10 text-[11px] font-bold text-brand">
+                      {number}
                     </span>
-                    <span className="relative h-2 flex-1 overflow-hidden rounded-full bg-surface">
-                      <motion.span
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${((i + 1) / tiers.length) * 100}%` }}
-                        viewport={{ once: true, amount: 0.6 }}
-                        transition={spring(0.7, 0.08 * i)}
-                        className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(90deg,#5290f4_0%,#406ae4_100%)]"
-                      />
-                    </span>
-                    <span className="w-[68px] shrink-0 text-right text-[16px] leading-none font-semibold text-brand tabular-nums">
-                      {money(tier.payout)}
+                    <span className="flex flex-col gap-1">
+                      <strong className="text-[15px] leading-[1.2] font-semibold text-ink">
+                        {title}
+                      </strong>
+                      <span className="t-body-sm">{description}</span>
                     </span>
                   </div>
                 ))}
@@ -90,15 +88,13 @@ export function AmbassadorPayouts() {
               <div className="flex flex-col gap-2.5 rounded-[16px] bg-white px-5 py-4">
                 <div className="flex items-center justify-between gap-3">
                   <span className="text-[15px] leading-none font-semibold text-ink">
-                    Paid on referrals
+                    Earnings per referral
                   </span>
-                  <span className="rounded-full bg-success-20 px-2.5 py-1 text-[13px] leading-none font-semibold text-success">
-                    {Math.round(payouts.commission * 100)}% of every sale
+                  <span className="text-[18px] leading-none font-semibold text-brand tabular-nums">
+                    {money(commissionPerSale)}
                   </span>
                 </div>
-                <p className="t-body-sm">
-                  Your code, your commission — for as long as they buy through it.
-                </p>
+                <p className="t-body-sm">Paid for every eligible referral, on any plan.</p>
               </div>
 
               <p className="t-body-sm">{payouts.note}</p>
@@ -109,19 +105,11 @@ export function AmbassadorPayouts() {
               <div className="flex flex-col gap-1">
                 <h3 className="t-h4 text-white">{estimator.title}</h3>
                 <p className="text-[16px] leading-[1.3] font-medium text-white/60">
-                  Drag either one. The maths is the rate card on the left.
+                  Adjust the number of customers who purchase through your
+                  referral.
                 </p>
               </div>
 
-              <Slider
-                label={estimator.viewsLabel}
-                value={views}
-                display={compactViews(views)}
-                min={0}
-                max={MAX_VIEWS}
-                step={5_000}
-                onChange={setViews}
-              />
               <Slider
                 label={estimator.salesLabel}
                 value={sales}
@@ -133,31 +121,28 @@ export function AmbassadorPayouts() {
               />
 
               <p className="text-[13px] leading-[1.3] font-medium text-white/45">
-                That reach sits in the{" "}
-                <span className="font-semibold text-white/80">{band(views)}</span> band on the rate
-                card, and each sale pays you{" "}
+                Each eligible referred sale earns you{" "}
                 <span className="font-semibold text-white/80">
-                  {money(payouts.planPrice * payouts.commission)}
+                  {money(commissionPerSale)}
                 </span>
-                .
+                , on any plan.
               </p>
 
               <div className="mt-auto flex flex-col gap-4 rounded-[20px] bg-white/8 p-5">
-                <div className="flex flex-col gap-2.5">
-                  <Line label={estimator.viewsPayoutLabel} value={money(fromViews)} dot="bg-brand-lighter" />
-                  <Line label={estimator.commissionLabel} value={money(fromSales)} dot="bg-success" />
+                <div className="flex items-center justify-between gap-3">
+                  <span className="flex items-center gap-2 text-[14px] leading-[1.3] font-medium text-white/70">
+                    <span className="size-2 shrink-0 rounded-full bg-success" />
+                    {estimator.commissionLabel}
+                  </span>
+                  <span className="shrink-0 text-[16px] leading-none font-semibold text-white tabular-nums">
+                    {money(fromSales)}
+                  </span>
                 </div>
 
-                {/* how the total splits between the two streams */}
-                <span className="flex h-2 overflow-hidden rounded-full bg-white/15">
+                <span className="relative h-2 overflow-hidden rounded-full bg-white/15">
                   <motion.span
-                    className="bg-brand-lighter"
-                    animate={{ width: `${share * 100}%` }}
-                    transition={spring(0.4)}
-                  />
-                  <motion.span
-                    className="bg-success"
-                    animate={{ width: `${(1 - share) * 100}%` }}
+                    className="absolute inset-y-0 left-0 rounded-full bg-success"
+                    animate={{ width: `${(sales / MAX_SALES) * 100}%` }}
                     transition={spring(0.4)}
                   />
                 </span>
@@ -183,21 +168,15 @@ export function AmbassadorPayouts() {
   );
 }
 
-function Slider({
-  label,
-  value,
-  display,
-  min,
-  max,
-  step,
-  onChange,
-}) {
+function Slider({ label, value, display, min, max, step, onChange }) {
   const pct = max === min ? 0 : ((value - min) / (max - min)) * 100;
 
   return (
     <label className="flex flex-col gap-2.5">
       <span className="flex items-baseline justify-between gap-3">
-        <span className="text-[14px] leading-[1.3] font-medium text-white/60">{label}</span>
+        <span className="text-[14px] leading-[1.3] font-medium text-white/60">
+          {label}
+        </span>
         <span className="font-display text-[20px] leading-none font-semibold text-white tabular-nums">
           {display}
         </span>
@@ -213,19 +192,5 @@ function Slider({
         style={{ backgroundSize: `${pct}% 100%` }}
       />
     </label>
-  );
-}
-
-function Line({ label, value, dot }) {
-  return (
-    <span className="flex items-center justify-between gap-3">
-      <span className="flex items-center gap-2 text-[14px] leading-[1.3] font-medium text-white/70">
-        <span className={clsx("size-2 shrink-0 rounded-full", dot)} />
-        {label}
-      </span>
-      <span className="shrink-0 text-[16px] leading-none font-semibold text-white tabular-nums">
-        {value}
-      </span>
-    </span>
   );
 }

@@ -100,7 +100,7 @@ export default function AccountPage() {
               {portalLoading ? "Opening portal…" : "Manage subscription"}
             </Button>
           ) : (
-            <Button onClick={() => router.push("/pricing")}>View plans</Button>
+            <Button onClick={() => router.push("/#pricing")}>View plans</Button>
           )}
           <Button variant="secondary" onClick={() => router.push("/download")}>
             Download desktop app

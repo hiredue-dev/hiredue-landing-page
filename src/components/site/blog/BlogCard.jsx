@@ -16,9 +16,12 @@ export function BlogCard({ post, sizes }) {
         <div className="relative aspect-[1200/680] w-full overflow-hidden rounded-[10px]">
           <Image
             src={post.cover}
-            alt=""
+            alt={post.coverAlt ?? `${post.title} article cover`}
             fill
-            sizes={sizes ?? "(max-width: 810px) 100vw, (max-width: 1200px) 50vw, 352px"}
+            sizes={
+              sizes ??
+              "(max-width: 810px) 100vw, (max-width: 1200px) 50vw, 352px"
+            }
             className="scale-[1.01] object-cover transition-transform duration-500 ease-[cubic-bezier(0.44,0,0.56,1)] group-hover:scale-105"
           />
         </div>

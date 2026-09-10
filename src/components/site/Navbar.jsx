@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,7 +11,7 @@ import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { nav } from "@/lib/navigation-content";
 import { spring } from "@/lib/motion";
 
-const sectionIds = ["features", "how-it-works", "use-cases", "pricing"];
+const sectionIds = ["features", "how-it-works", "overview", "pricing"];
 
 export function Navbar() {
   const [active, setActive] = useState(null);
@@ -93,11 +94,15 @@ export function Navbar() {
       >
         <div className="mx-auto w-full max-w-[860px] px-[30px]">
           <div className="flex items-center gap-5 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
-            <Link
-              href="/"
-              className="font-display text-2xl leading-none font-bold text-ink"
-            >
-              {nav.brand}
+            <Link href="/" className="flex shrink-0 items-center">
+              <Image
+                src="/assets/Brand_logos/full_logo_dark.svg"
+                alt={nav.brand}
+                width={260}
+                height={64}
+                priority
+                className="h-6 w-auto"
+              />
             </Link>
 
             <nav className="ml-auto hidden items-center gap-1 lg:flex">

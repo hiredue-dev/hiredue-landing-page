@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
+import { ArrowButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import {
   ConnectVisual,
@@ -49,6 +50,7 @@ export function Steps() {
                 </div>
               ))}
             </div>
+            <ArrowButton label={steps.cta.label} href={steps.cta.href} tone="dark" />
           </Reveal>
 
           <Reveal

@@ -1,7 +1,12 @@
 "use client";
 
 import clsx from "clsx";
-import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
+import {
+  Eyebrow,
+  Reveal,
+  RevealGroup,
+  RevealItem,
+} from "@/components/site/ui/Primitives";
 import { featurePage } from "@/lib/content";
 
 const { steps } = featurePage;
@@ -33,7 +38,7 @@ const body = {
 
 export function FeatureSteps() {
   return (
-    <section className="relative pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]">
+    <section className="relative py-[100px] min-[810px]:py-[160px] min-[1200px]:py-[200px]">
       <div className="container-page">
         <div className="flex flex-col items-center gap-[30px] min-[810px]:gap-10 min-[1200px]:gap-[50px]">
           <Reveal className="flex max-w-[800px] flex-col items-center gap-2.5">
@@ -64,8 +69,15 @@ export function FeatureSteps() {
                   {step.number}
                 </span>
                 <div className="flex flex-col items-center gap-1.5 text-center">
-                  <h3 className={clsx("t-h5", title[step.tone])}>{step.title}</h3>
-                  <p className={clsx("text-[16px] leading-[1.3] font-medium", body[step.tone])}>
+                  <h3 className={clsx("t-h5", title[step.tone])}>
+                    {step.title}
+                  </h3>
+                  <p
+                    className={clsx(
+                      "text-[16px] leading-[1.3] font-medium",
+                      body[step.tone],
+                    )}
+                  >
                     {step.description}
                   </p>
                 </div>

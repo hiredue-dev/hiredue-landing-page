@@ -39,7 +39,7 @@ export const assets = {
     bolt: img("yMT4mMoFpKnWs2yU5HHxgRIdrc.svg"),
     heart: img("aljF5lhKI0wLwJbLJN7Va9tNyCI.svg"),
     users: img("haC1N7nJkCBSyVJF33CEFhE4Ls.svg"),
-    stars5: img("Ks3rxCrb5LDuCsoN57uNgnYXtc.svg"),
+    stars5: img("stars5-polished.svg"),
     chevron: img("OXmFlFjSz1lrJp3vaL02MNthg.svg"),
     chevronBlue: img("5qbimdlaVq6A7LLm15aiqqrGNMQ.svg"),
     crossRed: img("59eNALHIwT6GZ6JhLrrkTHE0f7Y.svg"),
@@ -97,7 +97,7 @@ export const assets = {
 
   integrations: {
     hills: img("XlxsE037ei7LGhxYPQDC3jctO9A.png"),
-    hub: img("4LS9gC9h4W4WbsmhQmoxQ7DsncQ.svg"),
+    hub: "/assets/Brand_logos/logo_light.svg",
   },
 
   stats: {
@@ -143,6 +143,10 @@ export const assets = {
       security: img("QiTvuX4rj0Ikxkajt1axKhZedC8.jpg"),
       integrations: img("mJD3HCcFuvurKzlLWANGOOlY98.jpg"),
     },
+  },
+
+  founder: {
+    sanglap: "/assets/AboutUs/SanglapKundu.png",
   },
 
   /* /feature page — the template's own artwork for that route. */
