@@ -25,7 +25,7 @@ export function RotatingWord({ words, interval = 2000, className }) {
 
   return (
     <span
-      className={`relative inline-grid h-[1em] overflow-hidden text-left align-top leading-none ${className ?? ""}`}
+      className={`relative inline-grid h-[1em] overflow-hidden text-center align-top leading-none md:text-left ${className ?? ""}`}
     >
       <span className="invisible col-start-1 row-start-1 grid">
         {words.map((w) => (
