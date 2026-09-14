@@ -38,9 +38,17 @@ const coverUrl = (image) =>
 const socialImageUrl = (image) =>
   image ? urlFor(image).width(1200).height(630).fit("crop").url() : null;
 
+const avatarUrl = (image) =>
+  image
+    ? urlFor(image).width(96).height(96).fit("crop").crop("top").url()
+    : null;
+
 const withCover = (post) => ({
   ...post,
   cover: coverUrl(post.cover),
+  author: post.author
+    ? { ...post.author, image: avatarUrl(post.author.image) }
+    : post.author,
   seo: post.seo
     ? {
         ...post.seo,
