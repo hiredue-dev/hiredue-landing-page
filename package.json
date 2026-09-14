@@ -1,7 +1,7 @@
 {
   "name": "hiredue-landing-page",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
   "type": "module",
   "scripts": {
     "dev": "next dev --port 3000 --turbopack",
