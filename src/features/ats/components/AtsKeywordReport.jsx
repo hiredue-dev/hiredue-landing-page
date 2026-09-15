@@ -1,7 +1,7 @@
 "use client";
 
 import { Check, Minus } from "lucide-react";
-import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
 import { getKeywords } from "../domain/report.js";
 
@@ -25,30 +25,31 @@ export function AtsKeywordReport({ report = null }) {
           <p className="t-body mt-6 text-dim">{ats.keyword.noData}</p>
         </Reveal>
       ) : (
-        <Reveal className="mt-10 rounded-[20px] bg-white p-8">
-          <ul className="flex flex-wrap gap-3">
+        <Reveal className="mt-10 rounded-[20px] bg-white p-8 shadow-[0_1px_3px_rgba(0,0,0,0.04)]">
+          <RevealGroup step={0.04} className="flex flex-wrap gap-3">
             {keywords.map((keyword, index) => {
               const matched = Boolean(keyword.matched);
               return (
-                <li
-                  key={`${keyword.keyword}-${index}`}
-                  className={[
-                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[14px] font-medium",
-                    matched
-                      ? "border-green-200 bg-green-50 text-green-700"
-                      : "border-line bg-surface text-dim",
-                  ].join(" ")}
-                >
-                  {matched ? (
-                    <Check aria-hidden className="size-4" />
-                  ) : (
-                    <Minus aria-hidden className="size-4" />
-                  )}
-                  {keyword.keyword}
-                </li>
+                <RevealItem key={`${keyword.keyword}-${index}`} y={12}>
+                  <span
+                    className={[
+                      "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-[14px] font-medium",
+                      matched
+                        ? "border-green-200 bg-green-50 text-green-700"
+                        : "border-line bg-surface text-dim",
+                    ].join(" ")}
+                  >
+                    {matched ? (
+                      <Check aria-hidden className="size-4" />
+                    ) : (
+                      <Minus aria-hidden className="size-4" />
+                    )}
+                    {keyword.keyword}
+                  </span>
+                </RevealItem>
               );
             })}
-          </ul>
+          </RevealGroup>
         </Reveal>
       )}
     </section>

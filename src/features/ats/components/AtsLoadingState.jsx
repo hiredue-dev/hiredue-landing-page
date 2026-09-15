@@ -1,6 +1,6 @@
 "use client";
 
-import { Reveal } from "@/components/site/ui/Primitives";
+import { Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
 
 /**
@@ -25,16 +25,18 @@ export function AtsLoadingState() {
             {ats.loading.description}
           </p>
         </div>
-        <ol className="flex flex-col gap-3 text-left">
+        <RevealGroup step={0.1} className="flex flex-col gap-3 text-left">
           {ats.loading.steps.map((step) => (
-            <li key={step} className="flex items-center gap-3 t-body text-dim">
-              <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[11px] font-semibold text-ink">
-                ✓
-              </span>
-              {step}
-            </li>
+            <RevealItem key={step} y={12}>
+              <div className="flex items-center gap-3 t-body text-dim">
+                <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[11px] font-semibold text-ink">
+                  ✓
+                </span>
+                {step}
+              </div>
+            </RevealItem>
           ))}
-        </ol>
+        </RevealGroup>
       </div>
     </Reveal>
   );

@@ -1,8 +1,10 @@
 "use client";
 
+import { motion } from "framer-motion";
 import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
 import { getCategoryScores } from "../domain/report.js";
+import { spring } from "@/lib/motion";
 
 /**
  * Presents backend category sub-scores and their "why" lines (UX-11). It
@@ -42,9 +44,12 @@ export function AtsBreakdown({ report = null }) {
                   aria-hidden
                   className="mt-3 h-2 w-full overflow-hidden rounded-full bg-surface"
                 >
-                  <div
-                    className="h-full rounded-full bg-brand"
-                    style={{ width: `${score}%` }}
+                  <motion.div
+                    className="h-full origin-left rounded-full bg-brand"
+                    initial={{ width: 0 }}
+                    whileInView={{ width: `${score}%` }}
+                    viewport={{ once: true }}
+                    transition={spring(0.8, 0.1)}
                   />
                 </div>
                 {category.detail ? (

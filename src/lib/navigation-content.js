@@ -7,7 +7,7 @@ export const nav = {
     { label: "Get Started", href: "#how-it-works" },
     { label: "Platform Overview", href: "#overview" },
     { label: "Pricing", href: "#pricing" },
-    { label: "ATS Score", href: "/ats" },
+    { label: "ATS Score", href: "#ats-score" },
   ],
   cta: { label: "Download the App", href: "/download" },
 };

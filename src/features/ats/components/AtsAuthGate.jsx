@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
 
@@ -28,19 +28,13 @@ export function AtsAuthGate() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center justify-center gap-4">
-          <Link
+        <div className="flex flex-wrap items-center justify-center gap-5">
+          <ArrowButton
+            label={ats.auth.signupLabel}
             href={SIGNUP_HREF}
-            className="rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-8 py-3 text-[16px] font-semibold text-white transition-opacity hover:opacity-90"
-          >
-            {ats.auth.signupLabel}
-          </Link>
-          <Link
-            href={LOGIN_HREF}
-            className="rounded-full border border-line bg-white px-8 py-3 text-[16px] font-semibold text-ink transition-colors hover:bg-surface"
-          >
-            {ats.auth.loginLabel}
-          </Link>
+            tone="dark"
+          />
+          <SlideButton label={ats.auth.loginLabel} href={LOGIN_HREF} tone="white" />
         </div>
 
         <p className="text-[13px] font-medium tracking-wide text-dim">

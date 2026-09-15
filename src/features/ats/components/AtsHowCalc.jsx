@@ -26,7 +26,7 @@ export function AtsHowCalc() {
         {CATEGORIES.map((category) => (
           <RevealItem
             key={category.title}
-            className="rounded-[20px] bg-white p-6"
+            className="rounded-[20px] bg-white p-6 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
           >
             <span className="grid size-11 place-items-center rounded-[12px] bg-brand/10 text-lg text-brand">
               {category.icon}

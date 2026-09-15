@@ -1122,6 +1122,7 @@ export const ats = {
     cta: { label: "Scan my resume", href: "#scan" },
   },
   inputMode: {
+    eyebrow: "How you want to scan",
     title: "Choose how to start",
     generic: {
       label: "Scan my resume",
@@ -1133,6 +1134,7 @@ export const ats = {
       title: "Match to a job description",
       text: "Compare your resume against a job description for job-specific skill relevance (available after sign-in).",
     },
+    upgradeNote: "Requires sign-in",
     note: "A generic score never claims job-specific relevance without a job description.",
   },
   upload: {

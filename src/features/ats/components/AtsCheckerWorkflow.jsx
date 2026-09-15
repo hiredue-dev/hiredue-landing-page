@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Reveal } from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
+import { spring } from "@/lib/motion";
 import { useAtsScan } from "../hooks/useAtsScan.js";
 import { AtsUploadCard } from "./AtsUploadCard.jsx";
 import { AtsAuthGate } from "./AtsAuthGate.jsx";
@@ -15,20 +17,24 @@ import { AtsHistoryBar } from "./AtsHistoryBar.jsx";
 import { AtsErrorState } from "./AtsErrorState.jsx";
 
 /**
- * The stateful workflow host: it owns the scan state machine and routes each
- * phase to the matching presentation component. It is the only place that
- * knows the full sequence — children remain single-purpose:
- *
- *   idle                            → AtsUploadCard
- *   uploading                       → AtsLoadingState
- *   awaitingAuth                    → AtsAuthGate   (the lock, non-negotiable)
- *   scanning                        → AtsLoadingState
- *   result                          → score + report sections
- *   error                           → AtsErrorState (reset = back to idle)
- *
- * The score/report, suggestions, keywords, breakdown and history are only
- * mounted after a valid, authenticated result exists.
+ * Smoothly swaps between workflow phases with the same critically-damped
+ * rise the rest of the landing page uses. Pure presentation — the *which* is
+ * still decided by the hook's state below.
  */
+function Phase({ children, className }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -16 }}
+      transition={spring(0.5)}
+      className={className}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
 export function AtsCheckerWorkflow({ initialMode = "generic" }) {
   const [mode, setMode] = useState(initialMode);
   const {
@@ -49,34 +55,48 @@ export function AtsCheckerWorkflow({ initialMode = "generic" }) {
   return (
     <section id="scan" className="mt-[120px] md:mt-[160px]">
       <div className="rounded-[24px] bg-surface p-6 md:p-8">
-        {isIdle || isUploading ? (
-          <>
-            <AtsUploadCard
-              disabled={isUploading}
-              onSelect={(file) => {
-                if (upload(file)) return true;
-                return false;
-              }}
-            />
-            {isUploading ? (
-              <div className="mt-6">
-                <AtsLoadingState />
-              </div>
-            ) : null}
-          </>
-        ) : null}
+        <AnimatePresence mode="wait" initial={false}>
+          {isIdle || isUploading ? (
+            <Phase key="upload">
+              <AtsUploadCard
+                disabled={isUploading}
+                onSelect={(file) => {
+                  if (upload(file)) return true;
+                  return false;
+                }}
+              />
+              {isUploading ? (
+                <div className="mt-6">
+                  <AtsLoadingState />
+                </div>
+              ) : null}
+            </Phase>
+          ) : null}
 
-        {isAwaitingAuth ? <AtsAuthGate /> : null}
+          {isAwaitingAuth ? (
+            <Phase key="auth">
+              <AtsAuthGate />
+            </Phase>
+          ) : null}
 
-        {isScanning ? <AtsLoadingState /> : null}
+          {isScanning ? (
+            <Phase key="scanning">
+              <AtsLoadingState />
+            </Phase>
+          ) : null}
 
-        {hasError ? (
-          <AtsErrorState errorKey={errorKey} onReset={reset} />
-        ) : null}
+          {hasError ? (
+            <Phase key="error">
+              <AtsErrorState errorKey={errorKey} onReset={reset} />
+            </Phase>
+          ) : null}
 
-        {hasResult && report ? (
-          <ResultBody report={report} history={history} onSelect={loadHistory} />
-        ) : null}
+          {hasResult && report ? (
+            <Phase key="result">
+              <ResultBody report={report} history={history} onSelect={loadHistory} />
+            </Phase>
+          ) : null}
+        </AnimatePresence>
       </div>
     </section>
   );

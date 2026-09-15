@@ -11,7 +11,7 @@ import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { nav } from "@/lib/navigation-content";
 import { spring } from "@/lib/motion";
 
-const sectionIds = ["features", "how-it-works", "overview", "pricing"];
+const sectionIds = ["features", "how-it-works", "overview", "pricing", "ats-score"];
 
 export function Navbar() {
   const [active, setActive] = useState(null);

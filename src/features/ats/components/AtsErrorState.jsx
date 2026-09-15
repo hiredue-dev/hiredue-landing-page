@@ -24,7 +24,7 @@ export function AtsErrorState({ errorKey = "uploadFailed", onReset }) {
         <button
           type="button"
           onClick={onReset}
-          className="rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-8 py-3 text-[16px] font-semibold text-white transition-opacity hover:opacity-90"
+          className="inline-flex items-center justify-center rounded-full bg-ink px-8 py-3 text-[16px] font-semibold leading-[1.3] text-white transition-opacity duration-200 hover:opacity-90"
         >
           {ats.resetCta}
         </button>
