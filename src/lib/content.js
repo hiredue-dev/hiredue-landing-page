@@ -983,12 +983,58 @@ export const onboardingCallPage = {
 };
 
 export const aboutPage = {
-  eyebrow: "About HireDue",
-  title: "Our story",
-  paragraphs: [
-    "HireDue started as a single question: what if applying to a job felt as effortless as saving a tab? We watched friends rewrite the same resume thirty different ways for thirty different roles — copy-pasting cover letters, fighting form fields, and second-guessing whether the role was even a fit.",
-    "Hiring teams weren't the villains, and candidates weren't lazy. The workflow itself was broken, stitched together from tools that never spoke to each other. So we built HireDue: an AI agent that discovers relevant roles, tailors your resume, reaches out to the right people, and submits your applications automatically — all while you focus on the part that actually moves the needle, preparing for the interview.",
-    "Our mission is simple: turn job-search effort into focused interview preparation and better outcomes, and become the most trusted automation layer for job seekers everywhere — fast, accurate, and stress-free, with your data staying exactly where it belongs, with you.",
+  eyebrow: "Our manifesto",
+  title: "Candidates first. Always.",
+  intro:
+    "We're building HireDue for one person: the candidate. Not recruiters, not job boards, not the hiring funnel. You.",
+  sections: [
+    {
+      heading: "We've been where you are",
+      paragraphs: [
+        "Our team has built products at Amazon, Visa, slice, and Zomato. But before any of those names showed up on our resumes, we were where so many people are today: refreshing job boards late at night, tweaking the same resume for the fifteenth time, and waiting on replies that never came.",
+        "Many of us started our careers at startups. Then we went through the job hunt all over again to make the jump to large MNCs. We know every step of that road because we walked it: the cold applications, the endless forms, the silence, and the self-doubt that creeps in around application number fifty.",
+      ],
+    },
+    {
+      heading: "Job hunting shouldn't be manual",
+      paragraphs: [
+        "Along the way, we realised the problem wasn't the people. Candidates weren't under-qualified, and they weren't lazy. The process was broken: a patchwork of job boards, application portals, and spreadsheets that never talked to each other, turning talented people into full-time copy-pasters.",
+        "Today, finding a job is a second job. Hours go into discovering roles, rewriting resumes, filling in the same fields again and again, and chasing the right people to talk to. Those hours should go into preparing for the interview, which is what actually decides the outcome. That's when we decided that job hunting should not be manual.",
+      ],
+    },
+    {
+      heading: "What we believe",
+      points: [
+        {
+          title: "The candidate comes first.",
+          text: "Every feature we build starts with one question: does this make life better for the person looking for work?",
+        },
+        {
+          title: "Your time belongs to preparation, not paperwork.",
+          text: "Let automation handle the repetitive work, so you can focus on the work only you can do.",
+        },
+        {
+          title: "Every application should be your best one.",
+          text: "Tailored, relevant, and sent to roles that actually fit, instead of hundreds of generic applications.",
+        },
+        {
+          title: "Your data is yours.",
+          text: "It stays with you, and it is never the product.",
+        },
+        {
+          title: "Honesty over hype.",
+          text: "We'll tell you what works and what doesn't, and we'll never promise shortcuts that don't exist.",
+        },
+      ],
+    },
+    {
+      heading: "Where we're going",
+      paragraphs: [
+        "HireDue is an AI agent that discovers relevant roles, tailors your resume, reaches out to the right people, and submits applications for you, so your energy goes into preparing for interviews and landing the offer.",
+        "Our vision is to become the most trusted partner between job seekers and their next opportunity. We want a world where no one loses months of their life to a manual process, and where every candidate walks into the interview prepared, confident, and in control.",
+        "We've been on the other side of the job hunt. We built HireDue so you don't have to go through it alone.",
+      ],
+    },
   ],
 };
 

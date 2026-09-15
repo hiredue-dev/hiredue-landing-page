@@ -95,7 +95,7 @@ export function Hero() {
                     HireDue{" "}
                     <RotatingWord
                       words={hero.rotatingWords}
-                      className="text-white [text-shadow:0_4px_20px_rgba(29,29,29,0.25)]"
+                      className="text-white drop-shadow-[0_4px_20px_rgba(29,29,29,0.25)]"
                     />
                     <br />
                     {hero.tagline}
