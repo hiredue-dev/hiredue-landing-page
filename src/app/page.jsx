@@ -2,6 +2,7 @@ import { Hero } from "@/components/site/sections/Hero";
 import { Clients } from "@/components/site/sections/Clients";
 import { Comparison } from "@/components/site/sections/Comparison";
 import { Features } from "@/components/site/sections/Features";
+import { AtsChecker } from "@/components/site/sections/AtsChecker";
 import { Overview } from "@/components/site/sections/Overview";
 import { Steps } from "@/components/site/sections/Steps";
 import { Security } from "@/components/site/sections/Security";
@@ -38,6 +39,7 @@ export default async function Home() {
       <Clients />
       <Comparison />
       <Features />
+      <AtsChecker />
       <Overview />
       <Steps />
       <Security />

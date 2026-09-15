@@ -7,6 +7,7 @@ export const nav = {
     { label: "Get Started", href: "#how-it-works" },
     { label: "Platform Overview", href: "#overview" },
     { label: "Pricing", href: "#pricing" },
+    { label: "ATS Score", href: "/ats" },
   ],
   cta: { label: "Download the App", href: "/download" },
 };
@@ -40,6 +41,7 @@ export const footer = {
         { label: "About", href: "/about" },
         { label: "Feature", href: "/feature" },
         { label: "Ambassadors", href: "/ambassadors" },
+        { label: "ATS Score", href: "/ats" },
         { label: "Blog", href: "/blog" },
         { label: "Career", href: "/career" },
         { label: "Pricing", href: "#pricing" },

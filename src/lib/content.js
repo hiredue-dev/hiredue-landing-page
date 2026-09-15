@@ -1041,3 +1041,203 @@ export const careerPage = {
     fallbackEmail: "careers@hiredue.com",
   },
 };
+
+export const ats = {
+  page: {
+    eyebrow: "ATS Score Checker",
+    title: "How ATS-friendly is your resume?",
+    description:
+      "Upload your resume and get a clear, deterministic 0–100 ATS compatibility score with an honest, explainable breakdown of what to improve.",
+    meta: {
+      title: "Free ATS Resume Score Checker",
+      description:
+        "Get a deterministic, explainable ATS score for your resume. Upload PDF, DOCX or TXT — no score is shown until you sign in.",
+    },
+  },
+  hero: {
+    eyebrow: "ATS Score Checker",
+    title: "How ATS-friendly is your resume?",
+    description:
+      "Most resumes never make it past the Applicant Tracking System. Upload yours and find out with a transparent, rule-based score and a clear breakdown of what to fix — no guesswork, no black box.",
+    points: [
+      {
+        title: "Rule-based & deterministic",
+        text: "The same resume scores the same every time. No hidden AI decides your number.",
+      },
+      {
+        title: "Fully explainable",
+        text: "Every sub-score and suggestion shows the reason behind it.",
+      },
+      {
+        title: "Honest about limits",
+        text: "A generic score measures ATS compatibility, not how well you fit a specific job.",
+      },
+    ],
+    cta: { label: "Scan my resume", href: "#scan" },
+  },
+  inputMode: {
+    title: "Choose how to start",
+    generic: {
+      label: "Scan my resume",
+      title: "Generic ATS compatibility",
+      text: "A broad health check of structure, format, readability and completeness. No job description needed.",
+    },
+    match: {
+      label: "Match to a job",
+      title: "Match to a job description",
+      text: "Compare your resume against a job description for job-specific skill relevance (available after sign-in).",
+    },
+    note: "A generic score never claims job-specific relevance without a job description.",
+  },
+  upload: {
+    title: "Drop your resume",
+    description: "PDF, DOCX or TXT — up to 10 MB.",
+    dragText: "Drag & drop your resume here",
+    browseLabel: "or browse your files",
+    pickerLabel: "Choose a file",
+    dropOverlay: "Drop it like it's hot",
+    formats: ["PDF", "DOCX", "TXT"],
+    maxSizeMb: 10,
+    selectedName: "Selected",
+    removeLabel: "Remove file",
+    scanCta: "Scan my resume",
+    scanningCta: "Scanning…",
+  },
+  auth: {
+    eyebrow: "One more step",
+    title: "Sign up or log in to see your ATS score",
+    description:
+      "Your resume is uploaded safely. Create an account or log in and we'll run your scan and show the full, explainable breakdown.",
+    signupLabel: "Sign up free",
+    loginLabel: "Log in",
+    privacyNote: "We never show any score before you sign in.",
+  },
+  loading: {
+    title: "Analyzing your resume",
+    description: "Parsing, normalizing and scoring your resume with deterministic rules. This usually takes under 10 seconds.",
+    steps: ["Parsing your file", "Normalizing content", "Running scoring rules", "Preparing your breakdown"],
+  },
+  score: {
+    eyebrow: "Your ATS score",
+    title: "Your resume scored",
+    verdicts: {
+      low: "Needs work",
+      mid: "On the right track",
+      high: "ATS-friendly",
+    },
+    scoringVersionLabel: "Scoring version",
+  },
+  breakdown: {
+    eyebrow: "Breakdown",
+    title: "What's driving your score",
+    scoreLabel: "Out of 100",
+    noData: "No category breakdown available.",
+  },
+  howCalc: {
+    eyebrow: "Methodology",
+    title: "How is this calculated?",
+    description:
+      "Your score is computed by a fixed, versioned set of deterministic rules across categories. The same resume and same scoring version always return the same number — no AI, randomness, or live network calls influence it.",
+    scoringVersionLabel: "Scoring version",
+    categoriesTitle: "Weighted categories",
+    categories: [
+      {
+        title: "Parsing & format",
+        icon: "〃",
+        description:
+          "Whether the file opens, text is extracted, and the layout is machine-readable — a hard gate for everything that follows.",
+      },
+      {
+        title: "Structure",
+        icon: "▤",
+        description:
+          "Clear, detectable sections — contact, skills, experience, education — presented in a standard, scannable order.",
+      },
+      {
+        title: "Contact info",
+        icon: "✉",
+        description:
+          "A valid email and phone number are present and formatted the way an ATS expects to read them.",
+      },
+      {
+        title: "Experience",
+        icon: "◷",
+        description:
+          "Companies, job titles and dates are present, consistent, and not obviously out of order.",
+      },
+      {
+        title: "Impact & numbers",
+        icon: "◆",
+        description:
+          "Achievements are quantified with metrics and outcome language rather than generic duties.",
+      },
+      {
+        title: "Skills & education",
+        icon: "✦",
+        description:
+          "A readable skills section (no repetition or stuffing) plus degree, institution and graduation year.",
+      },
+      {
+        title: "Completeness & length",
+        icon: "═",
+        description:
+          "The resume covers the essentials and stays within a reasonable length for a single pass.",
+      },
+    ],
+    disclaimer:
+      "This measures ATS compatibility. It does not measure how well a resume matches a specific job — that requires a job description.",
+  },
+  keyword: {
+    eyebrow: "Keyword report",
+    title: "Detected keywords",
+    noData: "No keyword data returned for this report.",
+    disclaimer:
+      "For a generic scan this reflects skill and section breadth only — it is not a job-specific relevance match.",
+  },
+  suggestions: {
+    eyebrow: "Suggestions",
+    title: "How to improve",
+    noData: "No suggestions available. Re-scan after editing to refresh your score.",
+  },
+  history: {
+    eyebrow: "Your scans",
+    title: "Scan history",
+    upgradeTitle: "History requires a paid subscription",
+    upgradeText:
+      "Upgrade to store every scan, track score improvements over time and unlock unlimited scans.",
+    upgradeCta: "See plans",
+    empty: "No saved scans yet.",
+  },
+  errorStates: {
+    unsupportedFile:
+      "That file type isn't supported. Please upload a PDF, DOCX or TXT resume.",
+    fileTooLarge: "This file is too large. Please upload a file under 10 MB.",
+    noFile: "Choose a resume file to scan.",
+    uploadFailed:
+      "We couldn't upload your resume right now. Please try again in a moment.",
+    authInterrupted:
+      "We couldn't finish the sign-in step. Please try again.",
+    scanFailed:
+      "We couldn't score your resume right now. Please try again in a moment.",
+    expiredUpload:
+      "This upload expired before it could be claimed. Please upload your resume again.",
+    backendUnavailable:
+      "The scoring service is temporarily unavailable. Please try again shortly.",
+    invalidReport:
+      "We received an unexpected report. Please refresh and try again.",
+    subscriptionRestricted:
+      "This action requires a paid subscription. Upgrade to continue.",
+  },
+  resetCta: "Start over",
+  genericDisclaimer:
+    "A generic ATS score measures resume health and parseability — it does not rank job-specific relevance without a job description.",
+};
+
+export const atsHome = {
+  eyebrow: "ATS Score Checker",
+  title: "Is your resume beating the ATS?",
+  description:
+    "Get a deterministic, explainable 0–100 ATS compatibility score for your resume in seconds. Structured rules, no black box — and no score shown until you sign in.",
+  benefits: ["Deterministic & reproducible", "Explainable breakdown", "PDF · DOCX · TXT"],
+  cta: { label: "Check your ATS score", href: "/ats" },
+};
