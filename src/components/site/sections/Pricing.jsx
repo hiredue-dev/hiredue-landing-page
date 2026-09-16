@@ -160,6 +160,10 @@ export function Pricing() {
                   />
                 )}
 
+                <FreePlanCard
+                  onSelect={() => router.push("/download")}
+                />
+
                 <div className="grid w-full gap-5 md:grid-cols-3">
                   {products.map((product) => (
                     <PlanCard
@@ -376,6 +380,36 @@ function StatusBanner({ variant, message, onVerify, verifying, onDismiss, verify
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+function FreePlanCard({ onSelect }) {
+  return (
+    <div className="flex w-full flex-col gap-6 overflow-hidden rounded-[20px] bg-[linear-gradient(110deg,#eef8ff_0%,#f7fbff_100%)] p-[30px] ring-1 ring-[#d8eaff] md:flex-row md:items-center md:gap-8">
+      <div className="flex flex-1 flex-col gap-1.5">
+        <h3 className="t-h5">Free plan</h3>
+        <p className="text-[18px] leading-[1.3] font-medium text-dim">
+          One free automation per week for all the platforms
+        </p>
+      </div>
+
+      <div className="flex shrink-0 flex-col gap-0.5">
+        <span className="font-display text-[40px] leading-[1.2] font-semibold text-ink">
+          ₹0
+        </span>
+        <span className="text-[16px] leading-[1.3] font-medium text-dim">
+          Free forever
+        </span>
+      </div>
+
+      <button
+        type="button"
+        onClick={onSelect}
+        className="inline-flex w-full shrink-0 items-center justify-center rounded-full bg-ink px-8 py-[18px] text-[18px] leading-[1.3] font-semibold text-white transition-opacity duration-200 hover:opacity-90 md:w-[220px]"
+      >
+        Download now
+      </button>
     </div>
   );
 }
