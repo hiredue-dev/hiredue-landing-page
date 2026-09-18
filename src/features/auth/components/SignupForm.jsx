@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 import Button from "@/components/ui/Button/Button.jsx";
@@ -33,10 +33,22 @@ const EMPTY_FORM = {
 };
 
 export default function SignupForm() {
-  const { signUp, confirmSignUp, resendConfirmationCode, completeSignup } =
-    useAuth();
+  const {
+    signUp,
+    confirmSignUp,
+    resendConfirmationCode,
+    completeSignup,
+    isAuthenticated,
+    isLoading,
+  } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+
+  useEffect(() => {
+    if (!isLoading && isAuthenticated) {
+      router.replace("/download");
+    }
+  }, [isLoading, isAuthenticated, router]);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [userSub, setUserSub] = useState(null);
@@ -155,6 +167,10 @@ export default function SignupForm() {
     if (!result.success)
       throw new Error(result.error || "Failed to resend code.");
   };
+
+  if (isLoading || isAuthenticated) {
+    return null;
+  }
 
   return (
     <AuthShell mode="signup">
