@@ -8,13 +8,12 @@ import { ats } from "@/lib/content";
  * stay isolated in the service/hook layer and are never surfaced verbatim here.
  */
 export function AtsErrorState({ errorKey = "uploadFailed", onReset }) {
-  const message =
-    ats.errorStates[errorKey] || ats.errorStates.uploadFailed;
+  const message = ats.errorStates[errorKey] || ats.errorStates.uploadFailed;
 
   return (
     <div
       role="alert"
-      className="flex flex-col items-center gap-6 rounded-[24px] bg-surface p-10 text-center md:p-14"
+      className="flex flex-col items-center gap-6 rounded-[24px] border border-line bg-white p-10 text-center shadow-[0_1px_3px_rgba(0,0,0,0.04)] md:p-14"
     >
       <div className="flex flex-col items-center gap-3">
         <h3 className="t-h4">Something went wrong</h3>

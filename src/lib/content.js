@@ -232,7 +232,8 @@ export const stats = {
     {
       label: "Morning",
       value: "6:00 AM",
-      description: "Scans 50,000+ career pages for roles that opened overnight.",
+      description:
+        "Scans 50,000+ career pages for roles that opened overnight.",
       icon: "sunrise",
       tone: "light",
       /* position within the 1200 × 1080 stage, in px */
@@ -863,19 +864,22 @@ export const contactPage = {
     cards: [
       {
         title: "Sales inquiries",
-        description: "Talk with our team about plans, pricing, and getting started.",
+        description:
+          "Talk with our team about plans, pricing, and getting started.",
         email: "support@hiredue.com",
         tone: "light",
       },
       {
         title: "Customer support",
-        description: "Get help with your account, the desktop app, or a technical question.",
+        description:
+          "Get help with your account, the desktop app, or a technical question.",
         email: "support@hiredue.com",
         tone: "dark",
       },
       {
         title: "Partnerships",
-        description: "Reach out to explore campus, community, or integration partnerships.",
+        description:
+          "Reach out to explore campus, community, or integration partnerships.",
         email: "support@hiredue.com",
         tone: "brand",
       },
@@ -967,11 +971,13 @@ export const onboardingCallPage = {
       },
       {
         question: "How long does it take?",
-        answer: "About 20 minutes. Just bring your resume and a few minutes of focus.",
+        answer:
+          "About 20 minutes. Just bring your resume and a few minutes of focus.",
       },
       {
         question: "Is there a cost?",
-        answer: "No. Onboarding calls are free for every new user, on any plan.",
+        answer:
+          "No. Onboarding calls are free for every new user, on any plan.",
       },
       {
         question: "What if I can't make it?",
@@ -1061,21 +1067,24 @@ export const careerPage = {
         team: "Founder's Office",
         location: "Remote",
         type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/15xifbyFZcdl_-nRUENCMjUqrJzsuAkrz/view?usp=sharing",
+        jdUrl:
+          "https://drive.google.com/file/d/15xifbyFZcdl_-nRUENCMjUqrJzsuAkrz/view?usp=sharing",
       },
       {
         title: "Founder's Office Intern (Management and Outreach)",
         team: "Founder's Office",
         location: "Remote",
         type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/1FHu_9kPQB9FlngGlzwNkO6AAWi5hrusv/view?usp=sharing",
+        jdUrl:
+          "https://drive.google.com/file/d/1FHu_9kPQB9FlngGlzwNkO6AAWi5hrusv/view?usp=sharing",
       },
       {
         title: "SDE Intern",
         team: "Engineering",
         location: "Remote",
         type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/1NbEbOi_vlQUe35a12WDeAgNYdqedLOsq/view?usp=sharing",
+        jdUrl:
+          "https://drive.google.com/file/d/1NbEbOi_vlQUe35a12WDeAgNYdqedLOsq/view?usp=sharing",
       },
     ],
   },
@@ -1097,14 +1106,26 @@ export const ats = {
     meta: {
       title: "Free ATS Resume Score Checker",
       description:
-        "Get a deterministic, explainable ATS score for your resume. Upload PDF, DOCX or TXT — no score is shown until you sign in.",
+        "Get a deterministic, explainable ATS score for your resume. Upload, scan, and see an honest breakdown of what to improve — no score is shown until you sign in.",
     },
   },
   hero: {
-    eyebrow: "ATS Score Checker",
+    eyebrow: "ATS Resume Analysis",
     title: "How ATS-friendly is your resume?",
     description:
-      "Most resumes never make it past the Applicant Tracking System. Upload yours and find out with a transparent, rule-based score and a clear breakdown of what to fix — no guesswork, no black box.",
+      "Upload your resume and see how well it matches ATS-friendly standards.",
+    preview: {
+      captionAlt:
+        "Illustrative sample resume being analyzed by the HireDue ATS checker",
+      caption:
+        "Illustrative sample only — this is not your resume and not your result.",
+      badges: {
+        atsReady: { label: "ATS Ready", toneClass: "text-green-700" },
+        skills: { label: "Skills detected", toneClass: "text-ink" },
+        experience: { label: "Experience", toneClass: "text-ink" },
+        keywords: { label: "Keywords", toneClass: "text-ink" },
+      },
+    },
     points: [
       {
         title: "Rule-based & deterministic",
@@ -1138,32 +1159,70 @@ export const ats = {
     note: "A generic score never claims job-specific relevance without a job description.",
   },
   upload: {
-    title: "Drop your resume",
-    description: "PDF, DOCX or TXT — up to 10 MB.",
-    dragText: "Drag & drop your resume here",
-    browseLabel: "or browse your files",
-    pickerLabel: "Choose a file",
-    dropOverlay: "Drop it like it's hot",
+    // The approved product requirement is PDF · DOCX · TXT, so the UI is
+    // designed for all three. The deployed ATS backend snapshot is still
+    // PDF-only (docs/ats-api-contract.md §9); the S3 Content-Type is derived
+    // from the file in `atsService.uploadPdfToS3`, so nothing here needs to
+    // change when the backend is widened.
+    eyebrow: "Upload",
+    title: "How ATS-friendly is your resume?",
+    description:
+      "Upload your resume to check its ATS compatibility and see what you can improve.",
+    formsAllowed: "Multiple files supported",
     formats: ["PDF", "DOCX", "TXT"],
     maxSizeMb: 10,
-    selectedName: "Selected",
+    fileLabel: "Resume",
+    required: "Required",
+    sizeNote: "Up to 10 MB",
+    dragText: "Drag & drop your resume here",
+    browseLabel: "or browse from your device",
+    browseFiles: "Browse Files",
+    pickerLabel: "Choose files",
+    dropOverlay: "Drop your files",
+    fileTypeLabel: "File type",
+    fileSizeLabel: "File size",
+    statusLabel: "Status",
+    badgeReady: "Ready",
     removeLabel: "Remove file",
-    scanCta: "Scan my resume",
+    emptyTitle: "No files added yet",
+    emptyText: "Drop your resume above or browse your device to get started.",
+    invalidChip: "Unsupported",
+    duplicateChip: "Duplicate",
+    // Optional Job Description — captured in the UI but NOT sent to the current
+    // backend (process only accepts { uploadId }). Available to a future
+    // JD-aware process call without changing the API contract today.
+    jdTitle: "Job Description",
+    jdOptional: "Optional",
+    jdDescription:
+      "Paste the job description to see how well your resume matches the role.",
+    jdPlaceholder: "Paste the job description here...",
+    jdHint: "Optional — leave blank for a general ATS score.",
+    scanCta: "Scan My Resume",
     scanningCta: "Scanning…",
+    scanHelper:
+      "Sign in when prompted to unlock your ATS score and resume analysis.",
   },
   auth: {
-    eyebrow: "One more step",
-    title: "Sign up or log in to see your ATS score",
+    eyebrow: "Your result is ready to unlock",
+    title: "Your ATS score is ready to be checked.",
     description:
-      "Your resume is uploaded safely. Create an account or log in and we'll run your scan and show the full, explainable breakdown.",
-    signupLabel: "Sign up free",
-    loginLabel: "Log in",
+      "Sign up or log in to view your ATS score and resume analysis — the full, explainable breakdown is locked until you do.",
+    lockedNote:
+      "Results are locked until you sign in — no score is revealed beforehand.",
+    signupLabel: "Sign Up",
+    loginLabel: "Log In",
     privacyNote: "We never show any score before you sign in.",
   },
   loading: {
     title: "Analyzing your resume",
-    description: "Parsing, normalizing and scoring your resume with deterministic rules. This usually takes under 10 seconds.",
-    steps: ["Parsing your file", "Normalizing content", "Running scoring rules", "Preparing your breakdown"],
+    description:
+      "Parsing, normalizing and scoring your resume with deterministic rules. This usually takes under 10 seconds.",
+    steps: [
+      "Parsing your file",
+      "Normalizing content",
+      "Running scoring rules",
+      "Preparing your breakdown",
+    ],
   },
   score: {
     eyebrow: "Your ATS score",
@@ -1174,6 +1233,12 @@ export const ats = {
       high: "ATS-friendly",
     },
     scoringVersionLabel: "Scoring version",
+    // CTA shown in the result so users can immediately improve and re-check
+    // their resume. It clears the current result and returns to a fresh upload
+    // (the previous result is never carried into the next scan).
+    newScanCta: "Scan another resume",
+    newScanHelper:
+      "Improve your resume, then re-check it here. Your history is kept, the previous result clears.",
   },
   breakdown: {
     eyebrow: "Breakdown",
@@ -1235,6 +1300,45 @@ export const ats = {
     disclaimer:
       "This measures ATS compatibility. It does not measure how well a resume matches a specific job — that requires a job description.",
   },
+  whatChecks: {
+    eyebrow: "What the analysis checks",
+    title: "What an ATS analysis looks at",
+    description:
+      "Recruiter ATS tools screen for clear structure, relevant skills and readable content. Here is the general checklist HireDue evaluates when you upload a resume.",
+    note: "This is a general explanation of how resume screening works. Your report shows the specific metrics and recommendations returned for your own scan.",
+    items: [
+      {
+        title: "Resume structure",
+        text: "Recognizable headings, a clear section order and a single-column layout that parsers read top to bottom.",
+        icon: "▤",
+      },
+      {
+        title: "Relevant skills",
+        text: "Skills written in plain terms so the parser recognizes the experience you actually have.",
+        icon: "✦",
+      },
+      {
+        title: "Content quality",
+        text: "Clear, specific and free of gaps, repetition or vague filler that reads poorly to a scanner.",
+        icon: "✓",
+      },
+      {
+        title: "Experience descriptions",
+        text: "Action-oriented bullets with results and measurable impact rather than a bare list of duties.",
+        icon: "◷",
+      },
+      {
+        title: "Formatting",
+        text: "Standard fonts and headings, and no tables, images or graphics that hide the text from a parser.",
+        icon: "▣",
+      },
+      {
+        title: "Keyword coverage",
+        text: "Role-appropriate terminology matched naturally — not stuffed — so the right terms get picked up.",
+        icon: "⌕",
+      },
+    ],
+  },
   keyword: {
     eyebrow: "Keyword report",
     title: "Detected keywords",
@@ -1245,26 +1349,34 @@ export const ats = {
   suggestions: {
     eyebrow: "Suggestions",
     title: "How to improve",
-    noData: "No suggestions available. Re-scan after editing to refresh your score.",
+    noData:
+      "No suggestions available. Re-scan after editing to refresh your score.",
   },
-  history: {
-    eyebrow: "Your scans",
-    title: "Scan history",
-    upgradeTitle: "History requires a paid subscription",
-    upgradeText:
-      "Upgrade to store every scan, track score improvements over time and unlock unlimited scans.",
-    upgradeCta: "See plans",
-    empty: "No saved scans yet.",
+  jdMatch: {
+    eyebrow: "Job match",
+    title: "How well your resume fits the role",
+    scoreLabel: "Estimated fit",
+    matchedTitle: "Matched keywords",
+    missingTitle: "Missing keywords",
+    noData: "No job-description match was returned for this scan.",
+    note: "A job match is estimated from the role-specific keywords you pasted — the generic score above reflects overall resume health.",
   },
   errorStates: {
     unsupportedFile:
-      "That file type isn't supported. Please upload a PDF, DOCX or TXT resume.",
-    fileTooLarge: "This file is too large. Please upload a file under 10 MB.",
-    noFile: "Choose a resume file to scan.",
+      "That file type isn't supported. Please upload a resume in a supported format.",
+    fileTooLarge: "This file is too large. Please upload files under 10 MB each.",
+    duplicateFile:
+      "That file was already added. Add a different version or remove the existing one.",
+    noFile: "Choose at least one resume file to scan.",
+    invalidUpload:
+      "That upload was rejected. Please try uploading your resume again.",
+    uploadNotFound:
+      "We couldn't find that upload. Please upload your resume again.",
+    uploadConflict:
+      "That upload was already processed. Please scan again or upload a new resume.",
     uploadFailed:
       "We couldn't upload your resume right now. Please try again in a moment.",
-    authInterrupted:
-      "We couldn't finish the sign-in step. Please try again.",
+    authInterrupted: "We couldn't finish the sign-in step. Please try again.",
     scanFailed:
       "We couldn't score your resume right now. Please try again in a moment.",
     expiredUpload:
@@ -1278,7 +1390,191 @@ export const ats = {
   },
   resetCta: "Start over",
   genericDisclaimer:
-    "A generic ATS score measures resume health and parseability — it does not rank job-specific relevance without a job description.",
+    "A generic ATS score measures resume health and parseability — it is deterministic and specific to your resume, not to any single job posting.",
+
+  /* ------------------------------------------------------------------ *
+   * /ats/dashboard — the results experience (Phase 1 redesign).
+   * Renders ONLY the real backend fields (headline, quality, parseHealth,
+   * cappedByParseHealth, completeness, contentStrength, advisories).
+   * ------------------------------------------------------------------ */
+  dashboard: {
+    eyebrow: "ATS Resume Analysis",
+    meta: {
+      title: "ATS Resume Score Dashboard",
+      description:
+        "Your ATS resume analysis: headline score, parsing health, completeness and content strength, plus actionable advisories.",
+    },
+    // Supporting context beneath the headline — only the uploaded resume
+    // filename is shown (captured during upload). Nothing else is invented.
+    fileNameLabel: "Resume analyzed",
+    fileChip: "PDF",
+    scoreLabel: "ATS Score",
+    analysisContextLabel: "Analysis",
+    qualityLabel: "Quality",
+    parseHealthLabel: "Parse health",
+    cappedTag: "Parse-health cap",
+    cappedNote:
+      "Your headline score was capped by parse health. Improving how cleanly your resume is parsed can raise it.",
+    newScanCta: "Scan another resume",
+    newScanHelper:
+      "Improve your resume, then re-check it here. New scans start fresh from the upload page.",
+    primaryCta: "New Scan",
+    primaryHelper:
+      "Upload a fresh resume to get an updated score. Your current result clears and the analysis starts over.",
+    opening: "Your result is ready — opening your dashboard…",
+    // My-resume column header for the two-column workspace.
+    myResumeLabel: "Your Resume",
+    summary: {
+      eyebrow: "ATS Score",
+      outOf: "/ 100",
+      // Short tier verdict + the concise explanation shown under the score.
+      // Only honest copy — it never invents a specific finding beyond the real
+      // score tier.
+      verdicts: {
+        high: "Strong & readable",
+        mid: "On the right track",
+        low: "Needs work",
+      },
+      high: "Your resume is readable by ATS systems, with several areas that could be improved.",
+      mid: "Your resume is on the right track, with a few areas that need attention.",
+      low: "Your resume needs work to be parsed and scored well by ATS systems.",
+    },
+    needsAttention: {
+      eyebrow: "Analysis",
+      title: "What needs attention",
+      empty:
+        "The engine returned no specific items. That doesn't mean it's perfect — it just means nothing was flagged this time.",
+    },
+    metrics: {
+      eyebrow: "Key metrics",
+      title: "How it scored",
+      noData: "No metrics were returned for this analysis.",
+    },
+    whatsWorking: {
+      eyebrow: "What's working",
+      title: "What the engine flagged",
+      empty: "No positive findings were returned for this scan.",
+      showMore: "Show all",
+      showLess: "Show less",
+    },
+    resumePreview: {
+      title: "Your Resume",
+      subtitle: "The exact resume you uploaded",
+      openLabel: "Open resume",
+      downloadLabel: "Download",
+      loading: "Preparing your resume preview…",
+      unavailableTitle: "Preview not available",
+      unavailable:
+        "Your uploaded resume can't be re-rendered here yet. The current ATS API doesn't return a readable preview URL or reference for the uploaded document after processing.",
+      unavailableHint:
+        "This is the exact file you analyzed — the analysis above refers to it even though the visual preview isn't available in this session.",
+      inlineUnavailableTitle: "Can't preview this file type inline",
+      inlineUnavailable:
+        "This resume type can't be drawn in the browser, but the original file you uploaded is available below — open or download it to review the exact document that was analyzed.",
+      zoomInLabel: "Zoom in",
+      zoomOutLabel: "Zoom out",
+      zoomResetLabel: "Reset zoom",
+    },
+    empty: {
+      eyebrow: "No analysis yet",
+      title: "Nothing to show yet",
+      description:
+        "Analyze your resume first to unlock your ATS score dashboard. We'll keep your latest result here after every scan.",
+      cta: "Scan my resume",
+    },
+  },
+  metrics: {
+    eyebrow: "Analysis",
+    title: "How your resume scored",
+    intro:
+      "The engine's headline score is built from four measures. A dash means the backend did not return a value for that metric.",
+    scoreOutOf: "/ 100",
+    noData: "No metrics were returned for this analysis.",
+  },
+  whatsWorking: {
+    eyebrow: "What's working",
+    title: "What the engine flagged",
+    intro:
+      "Observations the analysis returned for your resume. These come straight from the engine — nothing is added or hidden on this page.",
+    empty: "No specific observations were returned for this analysis.",
+    listLabel: "Detected in your resume",
+  },
+  advisories: {
+    eyebrow: "Recommendations",
+    title: "How to improve your resume",
+    intro:
+      "Actionable recommendations from the analysis engine — each one is tied to something it detected in your resume.",
+    severityLabels: {
+      critical: "Needs attention",
+      warning: "Review",
+      info: "Tip",
+    },
+    empty:
+      "No specific recommendations were returned for this analysis. That doesn't mean your resume is perfect — it just means the engine had nothing specific to flag.",
+  },
+  optimize: {
+    eyebrow: "Optimize your resume",
+    title: "Turn a passing score into a strong one",
+    description:
+      "Understand what the analysis looks for, then target the areas that move your score most. These are the levers every scan report helps you prioritize.",
+    note: "Every recommendation comes from your own scan — there is no one-click rewrite. You act on the report, then re-scan to track your score.",
+    items: [
+      {
+        title: "Improve keyword matching",
+        text: "Use role-specific terminology naturally so the parser recognizes the skills you actually have.",
+        icon: "🔑",
+      },
+      {
+        title: "Identify missing skills",
+        text: "Spot the skills and sections the analysis flags as absent or under-explained.",
+        icon: "▣",
+      },
+      {
+        title: "Fix formatting",
+        text: "Keep standard headings, avoid tables and graphics, and use a clean single-column layout that parsers read top-to-bottom.",
+        icon: "▤",
+      },
+      {
+        title: "Improve resume structure",
+        text: "Order sections the way an ATS expects — contact, summary, skills, experience, education.",
+        icon: "◷",
+      },
+      {
+        title: "Get actionable recommendations",
+        text: "Every scan returns concrete advisories so you know exactly what to change and why.",
+        icon: "✦",
+      },
+    ],
+  },
+  journey: {
+    eyebrow: "From upload to improvement",
+    title: "How the analysis fits into your workflow",
+    description:
+      "Scanning is step one. Every completed report points you toward concrete improvements, and you can re-scan anytime to track your progress.",
+    steps: [
+      {
+        number: "01",
+        title: "Upload Resume",
+        text: "Drop in one or more resumes — no account needed to start the scan.",
+      },
+      {
+        number: "02",
+        title: "ATS Analysis",
+        text: "HireDue parses and scores it with transparent, deterministic rules.",
+      },
+      {
+        number: "03",
+        title: "Understand Results",
+        text: "See your score, what is working and exactly what to improve.",
+      },
+      {
+        number: "04",
+        title: "Improve Resume",
+        text: "Apply the report's recommendations, then re-scan and track your score.",
+      },
+    ],
+    note: "Scan, analysis and results are live today. Improvement is guided by every report — there is no one-click rewrite, just clear direction you can act on.",
+  },
 };
 
 export const atsHome = {
@@ -1286,6 +1582,10 @@ export const atsHome = {
   title: "Is your resume beating the ATS?",
   description:
     "Get a deterministic, explainable 0–100 ATS compatibility score for your resume in seconds. Structured rules, no black box — and no score shown until you sign in.",
-  benefits: ["Deterministic & reproducible", "Explainable breakdown", "PDF · DOCX · TXT"],
+  benefits: [
+    "Deterministic & reproducible",
+    "Explainable breakdown",
+    "Multi-file upload",
+  ],
   cta: { label: "Check your ATS score", href: "/ats" },
 };

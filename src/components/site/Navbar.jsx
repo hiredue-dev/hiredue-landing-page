@@ -92,8 +92,8 @@ export function Navbar() {
         transition={spring(0.6, 0.1)}
         className="fixed inset-x-0 top-0 z-50 py-5"
       >
-        <div className="mx-auto w-full max-w-[860px] px-[30px]">
-          <div className="flex items-center gap-5 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
+        <div className="mx-auto w-fit max-w-[1000px] px-[30px]">
+          <div className="flex items-center gap-3 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
             <Link href="/" className="flex shrink-0 items-center">
               <Image
                 src="/assets/Brand_logos/full_logo_dark.svg"
@@ -105,7 +105,7 @@ export function Navbar() {
               />
             </Link>
 
-            <nav className="ml-auto hidden items-center gap-1 lg:flex">
+            <nav className="hidden items-center gap-1 lg:flex">
               {nav.links.map((link) => {
                 const id = link.href.replace("#", "");
                 const isActive = link.href.startsWith("#")
@@ -116,7 +116,7 @@ export function Navbar() {
                     key={link.label}
                     href={to(link.href)}
                     className={clsx(
-                      "rounded-full px-4 py-2 text-[16px] leading-[1.3] font-semibold transition-colors duration-300",
+                      "shrink-0 whitespace-nowrap rounded-full px-4 py-2 text-[16px] leading-[1.3] font-semibold transition-colors duration-300",
                       isActive
                         ? "bg-surface text-ink"
                         : "text-dim hover:bg-surface hover:text-ink",
@@ -128,7 +128,7 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="ml-auto hidden lg:ml-0 lg:block">
+            <div className="hidden lg:block">
               {isAuthenticated ? (
                 <div ref={userMenuRef} className="relative">
                   <button

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { Reveal } from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
@@ -9,17 +10,18 @@ import { useAtsScan } from "../hooks/useAtsScan.js";
 import { AtsUploadCard } from "./AtsUploadCard.jsx";
 import { AtsAuthGate } from "./AtsAuthGate.jsx";
 import { AtsLoadingState } from "./AtsLoadingState.jsx";
-import { AtsScoreMeter } from "./AtsScoreMeter.jsx";
-import { AtsBreakdown } from "./AtsBreakdown.jsx";
-import { AtsKeywordReport } from "./AtsKeywordReport.jsx";
-import { AtsSuggestions } from "./AtsSuggestions.jsx";
-import { AtsHistoryBar } from "./AtsHistoryBar.jsx";
 import { AtsErrorState } from "./AtsErrorState.jsx";
 
 /**
- * Smoothly swaps between workflow phases with the same critically-damped
- * rise the rest of the landing page uses. Pure presentation — the *which* is
- * still decided by the hook's state below.
+ * The /ats upload-to-dashboard workflow. Pure presentation — the *which* phase
+ * is decided by the hook's state below.
+ *
+ * The journey is:
+ *   upload PDF -> S3 -> auth gate -> process -> RESULT
+ * and, the moment a result is ready, the workflow forwards to /ats/dashboard
+ * (the results experience). /ats itself never renders the result inline, and it
+ * never restores a previously completed result — completed scans are forwarded
+ * once and cleared so /ats always shows a fresh upload experience.
  */
 function Phase({ children, className }) {
   return (
@@ -35,8 +37,7 @@ function Phase({ children, className }) {
   );
 }
 
-export function AtsCheckerWorkflow({ initialMode = "generic" }) {
-  const [mode, setMode] = useState(initialMode);
+export function AtsCheckerWorkflow({ className }) {
   const {
     isIdle,
     isUploading,
@@ -44,93 +45,85 @@ export function AtsCheckerWorkflow({ initialMode = "generic" }) {
     isScanning,
     hasResult,
     hasError,
-    report,
-    history,
     errorKey,
     upload,
     reset,
-    loadHistory,
-  } = useAtsScan({ mode });
+  } = useAtsScan();
+
+  const router = useRouter();
+
+  // Field once a result is ready: forward to the dashboard. Completed results
+  // are saved by the hook (resultStorage) so the dashboard can render them after
+  // the /ats -> /ats/dashboard navigation. The ref keeps StrictMode/side-effect
+  // re-runs from scheduling duplicate navigations.
+  const forwardedRef = useRef(false);
+  useEffect(() => {
+    if (!hasResult) {
+      forwardedRef.current = false;
+      return;
+    }
+    if (forwardedRef.current) return;
+    forwardedRef.current = true;
+    router.replace("/ats/dashboard");
+  }, [hasResult, router]);
 
   return (
-    <section id="scan" className="mt-[120px] md:mt-[160px]">
-      <div className="rounded-[24px] bg-surface p-6 md:p-8">
-        <AnimatePresence mode="wait" initial={false}>
-          {isIdle || isUploading ? (
-            <Phase key="upload">
-              <AtsUploadCard
-                disabled={isUploading}
-                onSelect={(file) => {
-                  if (upload(file)) return true;
-                  return false;
-                }}
+    <section id="scan" className={className ?? "mt-[120px] md:mt-[160px]"}>
+      <AnimatePresence mode="wait" initial={false}>
+        {isIdle || isUploading ? (
+          <Phase key="upload">
+            <AtsUploadCard
+              disabled={isUploading}
+              onSubmit={({ file, jobDescription }) =>
+                upload(file, jobDescription)
+              }
+            />
+            {isUploading ? (
+              <div className="mt-6">
+                <AtsLoadingState />
+              </div>
+            ) : null}
+          </Phase>
+        ) : null}
+
+        {isAwaitingAuth ? (
+          <Phase key="auth">
+            <AtsAuthGate />
+          </Phase>
+        ) : null}
+
+        {isScanning ? (
+          <Phase key="scanning">
+            <AtsLoadingState />
+          </Phase>
+        ) : null}
+
+        {hasError ? (
+          <Phase key="error">
+            <AtsErrorState errorKey={errorKey} onReset={reset} />
+          </Phase>
+        ) : null}
+
+        {hasResult ? (
+          <Phase key="redirect">
+            <Reveal
+              aria-live="polite"
+              role="status"
+              className="flex flex-col items-center gap-6 rounded-[24px] border border-line bg-white p-10 text-center md:p-14 shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
+            >
+              <div
+                aria-hidden
+                className="size-12 animate-spin rounded-full border-4 border-line border-t-brand"
               />
-              {isUploading ? (
-                <div className="mt-6">
-                  <AtsLoadingState />
-                </div>
-              ) : null}
-            </Phase>
-          ) : null}
-
-          {isAwaitingAuth ? (
-            <Phase key="auth">
-              <AtsAuthGate />
-            </Phase>
-          ) : null}
-
-          {isScanning ? (
-            <Phase key="scanning">
-              <AtsLoadingState />
-            </Phase>
-          ) : null}
-
-          {hasError ? (
-            <Phase key="error">
-              <AtsErrorState errorKey={errorKey} onReset={reset} />
-            </Phase>
-          ) : null}
-
-          {hasResult && report ? (
-            <Phase key="result">
-              <ResultBody report={report} history={history} onSelect={loadHistory} />
-            </Phase>
-          ) : null}
-        </AnimatePresence>
-      </div>
+              <h3 className="t-h4">{ats.loading.title}</h3>
+              <p className="t-body max-w-[440px] text-dim">
+                {ats.dashboard.opening}
+              </p>
+            </Reveal>
+          </Phase>
+        ) : null}
+      </AnimatePresence>
     </section>
-  );
-}
-
-/** Renders the full authenticated result (score, report sections, history). */
-function ResultBody({ report, history, onSelect }) {
-  return (
-    <div className="flex flex-col gap-10">
-      <Reveal className="rounded-[24px] bg-white p-10 md:p-14">
-        <AtsScoreMeter
-          score={report.finalScore}
-          verdict={report.verdict}
-          scoringVersion={report.scoringVersion}
-        />
-      </Reveal>
-
-      <div className="grid gap-10 lg:grid-cols-[1fr_320px]">
-        <div className="flex flex-col">
-          <AtsBreakdown report={report} />
-          <AtsKeywordReport report={report} />
-          <AtsSuggestions report={report} />
-
-          <Reveal className="mt-[120px] md:mt-[160px]">
-            <p className="t-body max-w-[680px] text-dim">
-              {ats.genericDisclaimer}
-            </p>
-          </Reveal>
-        </div>
-        <aside className="flex flex-col gap-6 lg:mt-[160px]">
-          <AtsHistoryBar history={history} onSelect={onSelect} />
-        </aside>
-      </div>
-    </div>
   );
 }
 

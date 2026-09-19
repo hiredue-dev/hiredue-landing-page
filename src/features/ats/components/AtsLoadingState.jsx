@@ -1,6 +1,10 @@
 "use client";
 
-import { Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
+import {
+  Reveal,
+  RevealGroup,
+  RevealItem,
+} from "@/components/site/ui/Primitives";
 import { ats } from "@/lib/content";
 
 /**
@@ -12,7 +16,7 @@ export function AtsLoadingState() {
     <Reveal
       aria-live="polite"
       role="status"
-      className="rounded-[24px] bg-surface p-10 md:p-14"
+      className="rounded-[24px] border border-line bg-white p-10 shadow-[0_1px_3px_rgba(0,0,0,0.04)] md:p-14"
     >
       <div className="flex flex-col items-center gap-6 text-center">
         <div
@@ -29,7 +33,7 @@ export function AtsLoadingState() {
           {ats.loading.steps.map((step) => (
             <RevealItem key={step} y={12}>
               <div className="flex items-center gap-3 t-body text-dim">
-                <span className="grid size-5 shrink-0 place-items-center rounded-full bg-white text-[11px] font-semibold text-ink">
+                <span className="grid size-5 shrink-0 place-items-center rounded-full bg-surface text-[11px] font-semibold text-ink">
                   ✓
                 </span>
                 {step}
