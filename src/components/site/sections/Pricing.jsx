@@ -16,28 +16,56 @@ import { createCheckout, getProducts } from "@/features/subscription/services/su
 
 const CURRENCY_SYMBOLS = { INR: "₹", USD: "$", EUR: "€", GBP: "£" };
 
+const BILLING_INTERVALS = {
+  day: { plan: "Daily plan", billed: "Billed daily" },
+  week: { plan: "Weekly plan", billed: "Billed weekly" },
+  month: { plan: "Monthly plan", billed: "Billed monthly" },
+  year: { plan: "Annual plan", billed: "Billed annually" },
+};
+
 function formatPrice(priceMinor, currency) {
   const major = priceMinor / 100;
   const symbol = CURRENCY_SYMBOLS[currency] || `${currency} `;
   return `${symbol}${major.toLocaleString()}`;
 }
 
+function getBillingPeriod(price) {
+  const parsedCount = Number(price?.payment_frequency_count);
+  const count =
+    Number.isFinite(parsedCount) && parsedCount > 0 ? parsedCount : 1;
+  const interval = price?.payment_frequency_interval?.toLowerCase() || "month";
+  return { count, interval };
+}
+
+function pluralizeInterval(interval, count) {
+  if (count === 1) return interval;
+  return interval.endsWith("s") ? interval : `${interval}s`;
+}
+
 function billingLabel(price) {
   if (!price) return "";
-  const count = price.payment_frequency_count;
-  const interval = price.payment_frequency_interval?.toLowerCase();
-  return count === 1 ? `/ ${interval}` : `/ ${count} ${interval}s`;
+  const { count, interval } = getBillingPeriod(price);
+  return count === 1
+    ? `/ ${interval}`
+    : `/ ${count} ${pluralizeInterval(interval, count)}`;
 }
 
 function planTagline(price) {
-  const count = price?.payment_frequency_count ?? 1;
-  return count === 1 ? "Billed monthly" : `Billed every ${count} months`;
+  const { count, interval } = getBillingPeriod(price);
+  if (count === 1)
+    return BILLING_INTERVALS[interval]?.billed ?? `Billed every ${interval}`;
+  return `Billed every ${count} ${pluralizeInterval(interval, count)}`;
 }
 
 function planName(price) {
-  const count = price?.payment_frequency_count ?? 1;
-  if (count === 1) return "Monthly plan";
-  return `${count}-month plan`;
+  const { count, interval } = getBillingPeriod(price);
+  if (count === 1) {
+    return (
+      BILLING_INTERVALS[interval]?.plan ??
+      `${interval[0].toUpperCase()}${interval.slice(1)} plan`
+    );
+  }
+  return `${count}-${interval} plan`;
 }
 
 export function Pricing() {
