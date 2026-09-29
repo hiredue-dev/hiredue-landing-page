@@ -92,9 +92,27 @@ export function Navbar() {
         transition={spring(0.6, 0.1)}
         className="fixed inset-x-0 top-0 z-50 py-5"
       >
-        <div className="mx-auto w-full max-w-[860px] px-[30px]">
-          <div className="flex items-center gap-5 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
-            <Link href="/" className="flex shrink-0 items-center">
+        <div className="mx-auto w-full max-w-[940px] px-[30px]">
+          {/*
+           * Logo and the right-side (CTA/avatar) sit in normal flex flow, pushed to
+           * the ends by ml-auto on the right side; the nav pill is pulled out of
+           * flow and centered on the bar itself. A 1fr/auto/1fr grid looked
+           * symmetric in theory, but CSS grows a flex track past its 1fr share once
+           * its content's min-width needs it (the CTA button did), which starved
+           * the other 1fr column and threw the centered nav off by ~10px.
+           *
+           * Both end columns also get the same fixed width at lg+ (RIGHT_COL_W),
+           * sized to the widest thing that ever sits in either: "Download the
+           * App" (~178px). The logo (~103px) is narrower and the signed-in
+           * avatar (~70px) narrower still, so without this the right side's
+           * footprint — and the whitespace framing the centered nav — visibly
+           * changed size depending on sign-in state. Reserving the same slot on
+           * both sides regardless of what's inside it keeps the bar's
+           * composition constant whether signed in, signed out, or the CTA
+           * swaps for the avatar.
+           */}
+          <div className="relative flex items-center gap-5 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
+            <Link href="/" className="flex shrink-0 items-center pl-1.5 lg:w-[184px]">
               <Image
                 src="/assets/Brand_logos/full_logo_dark.svg"
                 alt={nav.brand}
@@ -105,7 +123,7 @@ export function Navbar() {
               />
             </Link>
 
-            <nav className="ml-auto hidden items-center gap-1 lg:flex">
+            <nav className="hidden items-center gap-0.5 lg:absolute lg:inset-y-0 lg:left-1/2 lg:flex lg:-translate-x-1/2">
               {nav.links.map((link) => {
                 const id = link.href.replace("#", "");
                 const isActive = link.href.startsWith("#")
@@ -116,7 +134,7 @@ export function Navbar() {
                     key={link.label}
                     href={to(link.href)}
                     className={clsx(
-                      "rounded-full px-4 py-2 text-[16px] leading-[1.3] font-semibold transition-colors duration-300",
+                      "rounded-full px-3.5 py-2 text-center text-[15px] leading-[1.3] font-semibold whitespace-nowrap transition-colors duration-300",
                       isActive
                         ? "bg-surface text-ink"
                         : "text-dim hover:bg-surface hover:text-ink",
@@ -128,7 +146,7 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="ml-auto hidden lg:ml-0 lg:block">
+            <div className="ml-auto hidden lg:flex lg:w-[184px] lg:items-center lg:justify-end">
               {isAuthenticated ? (
                 <div ref={userMenuRef} className="relative">
                   <button

@@ -6,6 +6,7 @@ export const revalidate = 3600;
 const INDEXABLE_ROUTES = [
   "/",
   "/feature",
+  "/jobs",
   "/blog",
   "/about",
   "/career",

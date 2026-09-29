@@ -19,6 +19,7 @@ import {
   COUNTRY_BY_ISO,
   detectDefaultCountry,
 } from "../countries.js";
+import { safeRedirect, withRedirect } from "../redirect.js";
 import AuthShell from "./AuthShell.jsx";
 import OtpModal from "./OtpModal.jsx";
 import styles from "./AuthForm.module.css";
@@ -46,9 +47,9 @@ export default function SignupForm() {
 
   useEffect(() => {
     if (!isLoading && isAuthenticated) {
-      router.replace("/download");
+      router.replace(safeRedirect(searchParams.get("redirect"), "/download"));
     }
-  }, [isLoading, isAuthenticated, router]);
+  }, [isLoading, isAuthenticated, router, searchParams]);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [userSub, setUserSub] = useState(null);
@@ -158,8 +159,7 @@ export default function SignupForm() {
     });
 
     setOtpOpen(false);
-    const redirect = searchParams.get("redirect") || "/#pricing";
-    router.replace(redirect);
+    router.replace(safeRedirect(searchParams.get("redirect"), "/#pricing"));
   };
 
   const handleOtpResend = async () => {
@@ -362,7 +362,10 @@ export default function SignupForm() {
 
         <p className={styles.footerText}>
           Already have an account?{" "}
-          <Link href="/login" className={styles.footerLink}>
+          <Link
+            href={withRedirect("/login", searchParams.get("redirect"))}
+            className={styles.footerLink}
+          >
             Sign in
           </Link>
         </p>

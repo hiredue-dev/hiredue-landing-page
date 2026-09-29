@@ -531,3 +531,28 @@
     opacity: 1;
   }
 }
+
+@layer components {
+  /* A panel that scrolls on its own, with the scrollbar shown only on hover
+     (the job board's sticky filter sidebar). overscroll-behavior keeps the
+     page from scrolling once the panel hits its end. */
+  .scroll-on-hover {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: transparent transparent;
+  }
+  .scroll-on-hover:hover {
+    scrollbar-color: var(--color-line) transparent;
+  }
+  .scroll-on-hover::-webkit-scrollbar {
+    width: 6px;
+  }
+  .scroll-on-hover::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: transparent;
+  }
+  .scroll-on-hover:hover::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+  }
+}
