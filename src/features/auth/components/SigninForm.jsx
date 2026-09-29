@@ -9,6 +9,7 @@ import Button from "@/components/ui/Button/Button.jsx";
 import Input from "@/components/ui/Input/Input.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { friendlyAuthError } from "../errorMessages.js";
+import { safeRedirect, withRedirect } from "../redirect.js";
 import AuthShell from "./AuthShell.jsx";
 import styles from "./AuthForm.module.css";
 
@@ -32,7 +33,7 @@ export default function SigninForm() {
     setError(null);
     try {
       await login(form);
-      const redirect = searchParams.get("redirect");
+      const redirect = safeRedirect(searchParams.get("redirect"));
       if (redirect) {
         router.replace(redirect);
         return;
@@ -121,7 +122,10 @@ export default function SigninForm() {
 
         <p className={styles.footerText}>
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className={styles.footerLink}>
+          <Link
+            href={withRedirect("/signup", searchParams.get("redirect"))}
+            className={styles.footerLink}
+          >
             Create one free
           </Link>
         </p>

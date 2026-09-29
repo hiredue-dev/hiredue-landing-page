@@ -50,3 +50,6 @@ next-env.d.ts
 
 # local audit reports
 seo_report.md
+
+# playwright mcp screenshots/traces
+.playwright-mcp/

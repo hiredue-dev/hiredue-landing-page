@@ -7,6 +7,7 @@ export const nav = {
     { label: "Get Started", href: "#how-it-works" },
     { label: "Platform Overview", href: "#overview" },
     { label: "Pricing", href: "#pricing" },
+    { label: "Jobs", href: "/jobs" },
   ],
   cta: { label: "Download the App", href: "/download" },
 };
@@ -37,6 +38,7 @@ export const footer = {
     {
       title: "Pages",
       links: [
+        { label: "Jobs", href: "/jobs" },
         { label: "About", href: "/about" },
         { label: "Feature", href: "/feature" },
         { label: "Ambassadors", href: "/ambassadors" },

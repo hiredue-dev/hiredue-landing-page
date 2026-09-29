@@ -17,8 +17,11 @@ function notifyLoggedOut() {
 
 async function doFetch(path, options, withAuth) {
   const url = buildUrl(path);
+  // Content-Type only when there is a body: on a GET it serves no purpose and
+  // makes the cross-origin request "non-simple", costing a CORS preflight
+  // round trip before every call.
   const headers = {
-    "Content-Type": "application/json",
+    ...(options.body ? { "Content-Type": "application/json" } : {}),
     ...(options.headers || {}),
   };
 

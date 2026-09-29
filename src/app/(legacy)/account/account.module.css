@@ -71,6 +71,18 @@
   font-weight: 600;
 }
 
+.statusTrial {
+  color: #b45309;
+  font-weight: 600;
+}
+
+.hint {
+  margin-top: 12px;
+  color: var(--color-muted-foreground);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
 .notice {
   margin-top: 12px;
   padding: 12px;
