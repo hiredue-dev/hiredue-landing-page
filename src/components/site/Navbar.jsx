@@ -94,25 +94,22 @@ export function Navbar() {
       >
         <div className="mx-auto w-full max-w-[940px] px-[30px]">
           {/*
-           * Logo and the right-side (CTA/avatar) sit in normal flex flow, pushed to
-           * the ends by ml-auto on the right side; the nav pill is pulled out of
-           * flow and centered on the bar itself. A 1fr/auto/1fr grid looked
-           * symmetric in theory, but CSS grows a flex track past its 1fr share once
-           * its content's min-width needs it (the CTA button did), which starved
-           * the other 1fr column and threw the centered nav off by ~10px.
+           * Logo stays its natural width, always left-aligned. Only the right
+           * slot gets a fixed width at lg+, since that's the side whose content
+           * actually changes (the "Download the App" CTA vs. the signed-in
+           * avatar, ~178px vs ~70px) — reserving its widest footprint keeps the
+           * bar from resizing when auth state flips.
            *
-           * Both end columns also get the same fixed width at lg+ (RIGHT_COL_W),
-           * sized to the widest thing that ever sits in either: "Download the
-           * App" (~178px). The logo (~103px) is narrower and the signed-in
-           * avatar (~70px) narrower still, so without this the right side's
-           * footprint — and the whitespace framing the centered nav — visibly
-           * changed size depending on sign-in state. Reserving the same slot on
-           * both sides regardless of what's inside it keeps the bar's
-           * composition constant whether signed in, signed out, or the CTA
-           * swaps for the avatar.
+           * The nav sits between them as a flex-1 track and centers itself
+           * within whatever room that leaves. Centering it on the bar's full
+           * width instead (e.g. via absolute + left-1/2) looks centered on
+           * paper, but the logo is much narrower than its old reserved column
+           * while the CTA nearly fills its own — so the nav ended up hugging
+           * the CTA with barely any gap, and floating far from the logo with a
+           * huge one. Centering within the real remaining space avoids that.
            */}
-          <div className="relative flex items-center gap-5 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
-            <Link href="/" className="flex shrink-0 items-center pl-1.5 lg:w-[184px]">
+          <div className="flex items-center gap-5 rounded-[10px] bg-white p-2.5 shadow-[0_0_0_4px_rgba(221,229,237,0.7)]">
+            <Link href="/" className="flex shrink-0 items-center pl-1.5">
               <Image
                 src="/assets/Brand_logos/full_logo_dark.svg"
                 alt={nav.brand}
@@ -123,7 +120,7 @@ export function Navbar() {
               />
             </Link>
 
-            <nav className="hidden items-center gap-0.5 lg:absolute lg:inset-y-0 lg:left-1/2 lg:flex lg:-translate-x-1/2">
+            <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex">
               {nav.links.map((link) => {
                 const id = link.href.replace("#", "");
                 const isActive = link.href.startsWith("#")
@@ -146,7 +143,7 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="ml-auto hidden lg:flex lg:w-[184px] lg:items-center lg:justify-end">
+            <div className="hidden lg:flex lg:w-[184px] lg:shrink-0 lg:items-center lg:justify-end">
               {isAuthenticated ? (
                 <div ref={userMenuRef} className="relative">
                   <button
