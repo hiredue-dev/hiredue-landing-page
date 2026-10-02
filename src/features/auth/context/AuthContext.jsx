@@ -88,6 +88,14 @@ export function AuthProvider({ children }) {
   }, [hydrate]);
 
   useEffect(() => {
+    const handleStateChanged = () => {
+      hydrate();
+    };
+    window.addEventListener("auth:stateChanged", handleStateChanged);
+    return () => window.removeEventListener("auth:stateChanged", handleStateChanged);
+  }, [hydrate]);
+
+  useEffect(() => {
     const handler = () => {
       setUser(null);
       setIsAuthenticated(false);
@@ -104,6 +112,29 @@ export function AuthProvider({ children }) {
         throw new Error(result.error || "Sign in failed");
       }
       setUserEmail(email);
+      const derived = deriveUserFromIdToken();
+      setUser(derived);
+      setIsAuthenticated(true);
+      await loadSubscription();
+      return derived;
+    },
+    [loadSubscription],
+  );
+
+  const loginWithGoogle = useCallback(
+    async (tokens, idTokenClaims) => {
+      const { email, name: fullName, sub } = idTokenClaims;
+      setUserEmail(email);
+
+      const userResp = await createUserInCloud({
+        id: sub,
+        email,
+        fullName: fullName || email.split("@")[0],
+      });
+      if (!userResp.success) {
+        throw new Error(userResp.error || "Failed to create user record");
+      }
+
       const derived = deriveUserFromIdToken();
       setUser(derived);
       setIsAuthenticated(true);
@@ -153,6 +184,7 @@ export function AuthProvider({ children }) {
       subscription,
       hasActiveSubscription: !!subscription?.hasActiveSubscription,
       login,
+      loginWithGoogle,
       logout,
       completeSignup,
       refreshSubscription: loadSubscription,
@@ -168,6 +200,7 @@ export function AuthProvider({ children }) {
       isLoading,
       subscription,
       login,
+      loginWithGoogle,
       logout,
       completeSignup,
       loadSubscription,

@@ -22,6 +22,7 @@ import {
 import { safeRedirect, withRedirect } from "../redirect.js";
 import AuthShell from "./AuthShell.jsx";
 import OtpModal from "./OtpModal.jsx";
+import { GoogleSignInButton, GoogleDivider } from "./GoogleSignIn.jsx";
 import styles from "./AuthForm.module.css";
 
 const EMPTY_FORM = {
@@ -187,6 +188,14 @@ export default function SignupForm() {
           onSubmit={handleSubmit}
           noValidate
         >
+          <div className={styles.fullField}>
+            <GoogleSignInButton />
+          </div>
+
+          <div className={styles.fullField}>
+            <GoogleDivider />
+          </div>
+
           <div className={`${styles.field} ${styles.fullField}`}>
             <label className={styles.label} htmlFor="name">
               Name
