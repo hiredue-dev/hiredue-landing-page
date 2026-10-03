@@ -6,7 +6,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
-import { SignupDialog } from "@/features/auth/components/SignupDialog";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -45,7 +45,7 @@ export function Hero() {
   /* Both effects belong to the desktop layout only, same as the original. */
   const desktop = useMediaQuery("(min-width: 1200px)");
 
-  const [signupOpen, setSignupOpen] = useState(false);
+  const { showModal } = useAuthModal();
 
   const { scrollY } = useScroll();
   const dashScale = useTransform(
@@ -116,7 +116,7 @@ export function Hero() {
                 <motion.div {...appear(0.5)}>
                   <button
                     type="button"
-                    onClick={() => setSignupOpen(true)}
+                    onClick={() => showModal({ view: "signup" })}
                     className="inline-flex shrink-0 rounded-full bg-white/10 p-1.5"
                   >
                     <span className="relative flex items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-3 px-[30px] text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]">
@@ -202,10 +202,6 @@ export function Hero() {
       {/* fade the sky into the page */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-[100px] bg-[linear-gradient(rgba(255,255,255,0)_0%,rgba(255,255,255,0.7)_25%,#fff_50%)] min-[810px]:h-[160px] min-[1200px]:h-[200px]" />
 
-      <SignupDialog
-        isOpen={signupOpen}
-        onClose={() => setSignupOpen(false)}
-      />
     </section>
   );
 }
