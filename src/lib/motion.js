@@ -27,5 +27,5 @@ export const stagger = (step = 0.1, delayChildren = 0.1) => ({
 export const inView = {
   initial: "hidden",
   whileInView: "visible",
-  viewport: { once: true, amount: 0.2, margin: "0px 0px -80px 0px" },
+  viewport: { once: true, amount: 0.1, margin: "0px 0px -40px 0px" },
 };

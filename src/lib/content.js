@@ -71,13 +71,16 @@ export const features = {
   cta: { label: "Explore Features", href: "/feature" },
   findJobs: {
     title: "Find Relevant Jobs",
-    footnote: "+ 50,000 more career portals",
+    description: "Find relevant jobs 24x7 automatically",
   },
-  resume: { title: "Resume Optimization" },
+  resume: {
+    title: "Resume Optimization",
+    description: "Apply to each application with a customised resume",
+  },
   outreach: {
     title: "Recruiter Outreach",
     description:
-      "Drafts personalized emails and LinkedIn messages to recruiters, then sends them.",
+      "Drafts personalized emails and LinkedIn messages to recruiters, then sends them instantly",
   },
   autoApply: {
     title: "Auto Apply",

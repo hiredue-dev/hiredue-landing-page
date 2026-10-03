@@ -1,6 +1,5 @@
 import { Hero } from "@/components/site/sections/Hero";
 import { Clients } from "@/components/site/sections/Clients";
-import { Comparison } from "@/components/site/sections/Comparison";
 import { Features } from "@/components/site/sections/Features";
 import { Overview } from "@/components/site/sections/Overview";
 import { Steps } from "@/components/site/sections/Steps";
@@ -36,7 +35,6 @@ export default async function Home() {
     <>
       <Hero />
       <Clients />
-      <Comparison />
       <Features />
       <Overview />
       <Steps />

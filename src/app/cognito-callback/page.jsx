@@ -32,7 +32,7 @@ export default function CognitoCallbackPage() {
         <div style={styles.card}>
           <h1 style={styles.title}>Sign in failed</h1>
           <p style={styles.error}>{error}</p>
-          <a href="/login" style={styles.link}>
+          <a href="/" style={styles.link}>
             Back to sign in
           </a>
         </div>

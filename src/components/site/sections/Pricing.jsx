@@ -8,6 +8,7 @@ import clsx from "clsx";
 import { SlideButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { useAuth } from "@/features/auth/context/AuthContext";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { pricing } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -71,6 +72,7 @@ function planName(price) {
 export function Pricing() {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const { showModal } = useAuthModal();
 
   const [products, setProducts] = useState([]);
   const [status, setStatus] = useState("loading");
@@ -119,7 +121,7 @@ export function Pricing() {
       setCheckoutError(null);
 
       if (!isAuthenticated) {
-        router.push(`/signup?redirect=${encodeURIComponent("/#pricing")}`);
+        showModal({ view: "signup", redirectTo: "/#pricing" });
         return;
       }
 

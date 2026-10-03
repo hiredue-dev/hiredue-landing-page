@@ -5,6 +5,7 @@ import Link from "next/link";
 import clsx from "clsx";
 import { motion } from "framer-motion";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { downloadPage } from "@/lib/content";
 
@@ -47,6 +48,7 @@ const platforms = [
 ];
 
 export function DownloadHero() {
+  const { showModal } = useAuthModal();
   return (
     <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
       <div className="mx-auto w-full max-w-[1100px] px-[30px]">
@@ -77,19 +79,21 @@ export function DownloadHero() {
               <p className="t-body">
                 <strong className="font-semibold text-ink">{downloadPage.notice.heading}</strong>{" "}
                 {downloadPage.notice.body} Need an account?{" "}
-                <Link
-                  href={downloadPage.notice.cta.href}
+                <button
+                  type="button"
+                  onClick={() => showModal({ view: "signup" })}
                   className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
                 >
                   {downloadPage.notice.cta.label}
-                </Link>{" "}
+                </button>{" "}
                 or{" "}
-                <Link
-                  href="/login"
+                <button
+                  type="button"
+                  onClick={() => showModal({ view: "signin" })}
                   className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
                 >
                   {downloadPage.notice.altCta.label}
-                </Link>
+                </button>
                 .
               </p>
             </div>

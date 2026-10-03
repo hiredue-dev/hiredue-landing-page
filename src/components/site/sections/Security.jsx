@@ -4,10 +4,12 @@ import Image from "next/image";
 import { ArrowButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { SecurityDiagram } from "@/components/site/sections/security-diagram";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { security } from "@/lib/content";
 
 export function Security() {
+  const { showModal } = useAuthModal();
   return (
     <section className="relative">
       <div className="container-page">
@@ -24,7 +26,13 @@ export function Security() {
               <h2 className="t-h2">{security.title}</h2>
               <p className="t-body-lg">{security.description}</p>
               <div className="pt-2.5">
-                <ArrowButton label={security.cta.label} href={security.cta.href} tone="dark" />
+                <button
+                  type="button"
+                  onClick={() => showModal({ view: "signup" })}
+                  className="inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-9 py-3.5 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
+                >
+                  {security.cta.label}
+                </button>
               </div>
             </div>
 

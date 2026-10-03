@@ -4,10 +4,12 @@ import Image from "next/image";
 import { ArrowButton } from "@/components/site/ui/Button";
 import { Avatar } from "@/components/site/ui/Avatar";
 import { Marquee, Reveal } from "@/components/site/ui/Primitives";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { testimonials } from "@/lib/content";
 
 export function Testimonials({ items = testimonials.items }) {
+  const { showModal } = useAuthModal();
   return (
     <section className="relative isolate overflow-hidden py-[120px] md:py-[200px]">
       <Image
@@ -38,11 +40,13 @@ export function Testimonials({ items = testimonials.items }) {
               </ul>
             </Reveal>
             <Reveal delay={0.1}>
-              <ArrowButton
-                label={testimonials.cta.label}
-                href={testimonials.cta.href}
-                tone="dark"
-              />
+              <button
+                type="button"
+                onClick={() => showModal({ view: "signup" })}
+                className="inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-9 py-3.5 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
+              >
+                {testimonials.cta.label}
+              </button>
             </Reveal>
           </div>
         </div>

@@ -1,10 +1,11 @@
-import { ArrowButton } from "@/components/site/ui/Button";
 import { Reveal } from "@/components/site/ui/Primitives";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { ambassadorPage } from "@/lib/content";
 
 const { cta, applyUrl, applyLabel } = ambassadorPage;
 
 export function AmbassadorCta() {
+  const { showModal } = useAuthModal();
   return (
     <section id="apply" className="relative pb-[100px] min-[810px]:pb-[160px]">
       <div className="container-page">
@@ -29,7 +30,13 @@ export function AmbassadorCta() {
                 {cta.description}
               </p>
             </div>
-            <ArrowButton label={applyLabel} href={applyUrl} tone="dark" />
+            <button
+              type="button"
+              onClick={() => showModal({ view: "signup" })}
+              className="inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-9 py-3.5 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
+            >
+              {applyLabel}
+            </button>
           </div>
         </Reveal>
       </div>
