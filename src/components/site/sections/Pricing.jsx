@@ -138,7 +138,7 @@ export function Pricing() {
         setCheckoutLoadingId(null);
       }
     },
-    [isAuthenticated, router, start],
+    [isAuthenticated, showModal, start],
   );
 
   const featuredId =

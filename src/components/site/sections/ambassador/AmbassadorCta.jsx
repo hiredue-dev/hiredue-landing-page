@@ -1,3 +1,5 @@
+"use client";
+
 import { Reveal } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { ambassadorPage } from "@/lib/content";

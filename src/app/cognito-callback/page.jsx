@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { completeGoogleSignIn } from "@/features/auth/services/googleAuthService.js";
 import { useAuth } from "@/features/auth/context/AuthContext";
@@ -32,9 +33,9 @@ export default function CognitoCallbackPage() {
         <div style={styles.card}>
           <h1 style={styles.title}>Sign in failed</h1>
           <p style={styles.error}>{error}</p>
-          <a href="/" style={styles.link}>
+          <Link href="/" style={styles.link}>
             Back to sign in
-          </a>
+          </Link>
         </div>
       </section>
     );
