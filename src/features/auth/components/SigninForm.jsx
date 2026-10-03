@@ -11,6 +11,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { friendlyAuthError } from "../errorMessages.js";
 import { safeRedirect, withRedirect } from "../redirect.js";
 import AuthShell from "./AuthShell.jsx";
+import { GoogleSignInButton, GoogleDivider } from "./GoogleSignIn.jsx";
 import styles from "./AuthForm.module.css";
 
 export default function SigninForm() {
@@ -58,6 +59,10 @@ export default function SigninForm() {
         </p>
 
         <form className={styles.form} onSubmit={handleSubmit}>
+          <GoogleSignInButton />
+
+          <GoogleDivider />
+
           <div className={styles.field}>
             <label className={styles.label} htmlFor="email">
               Email

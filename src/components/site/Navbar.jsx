@@ -6,8 +6,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
-import { ArrowButton } from "@/components/site/ui/Button";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { nav } from "@/lib/navigation-content";
 import { spring } from "@/lib/motion";
 
@@ -21,6 +21,7 @@ export function Navbar() {
 
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuth();
+  const { showModal } = useAuthModal();
 
   /* Every hash target lives on the home page, so off-home the same hashes have
      to be prefixed with `/` to get there first. Real routes pass through. */
@@ -187,13 +188,13 @@ export function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <ArrowButton
-                  label={nav.cta.label}
-                  href={to(nav.cta.href)}
-                  tone="dark"
-                  size="sm"
-                  ring={false}
-                />
+                <button
+                  type="button"
+                  onClick={() => showModal({ view: "signup" })}
+                  className="inline-flex shrink-0 rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] py-2.5 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
+                >
+                  {nav.cta.label}
+                </button>
               )}
             </div>
 
@@ -270,14 +271,16 @@ export function Navbar() {
                   </>
                 ) : (
                   <div className="pt-1.5">
-                    <ArrowButton
-                      label={nav.cta.label}
-                      href={to(nav.cta.href)}
-                      tone="dark"
-                      size="sm"
-                      ring={false}
-                      className="w-full [&>span]:w-full"
-                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        showModal({ view: "signup" });
+                      }}
+                      className="inline-flex w-full shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] py-2.5 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)]"
+                    >
+                      {nav.cta.label}
+                    </button>
                   </div>
                 )}
               </motion.nav>

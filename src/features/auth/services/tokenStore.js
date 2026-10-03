@@ -43,6 +43,7 @@ export function clearTokens() {
   localStorage.removeItem(KEY_ID);
   localStorage.removeItem(KEY_REFRESH);
   localStorage.removeItem(KEY_USER_EMAIL);
+  localStorage.removeItem("hd_auth_method");
 }
 
 export function decodeJwtPayload(token) {

@@ -2,9 +2,10 @@
 
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
+import { SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { FeatureHeroVisual } from "@/components/site/sections/feature/FeatureHeroVisual";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { featurePage } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -19,6 +20,7 @@ const appear = (delay) => ({
 const { hero } = featurePage;
 
 export function FeatureHero() {
+  const { showModal } = useAuthModal();
   return (
     <section className="relative isolate flex flex-col overflow-hidden bg-white pt-[128px] pb-[100px] min-[810px]:pt-[158px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
       {/* sky */}
@@ -61,11 +63,15 @@ export function FeatureHero() {
             </div>
 
             <div className="flex flex-wrap items-center gap-5">
-              <ArrowButton
-                label={hero.cta.label}
-                href={hero.cta.href}
-                tone="primary"
-              />
+              <button
+                type="button"
+                onClick={() => showModal({ view: "signup" })}
+                className="inline-flex shrink-0 rounded-full bg-white/10 p-1.5"
+              >
+                <span className="relative flex items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] px-[30px] py-3 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)] transition-opacity hover:opacity-90">
+                  {hero.cta.label}
+                </span>
+              </button>
               {hero.secondaryCta && (
                 <SlideButton
                   label={hero.secondaryCta.label}

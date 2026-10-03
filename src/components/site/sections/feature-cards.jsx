@@ -145,7 +145,7 @@ export function SourceGraph() {
       </div>
 
       <p className="mt-3.5 text-center text-[13px] leading-[1.3] font-medium text-dim">
-        {features.findJobs.footnote}
+        {features.findJobs.description}
       </p>
     </div>
   );
