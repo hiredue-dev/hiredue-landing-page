@@ -13,7 +13,7 @@ export const nav = {
 
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
-  rotatingWords: ["Discovers", "Outreach", "Auto Apply"],
+  rotatingWords: ["Applies", "Discovers", "Outreaches"],
   tagline: "while you sleep",
   description:
     "HireDue scours 50,000+ career pages and top job boards, pitches the right decision-makers, and auto-submits your applications. You just focus on the interview.",
@@ -71,13 +71,16 @@ export const features = {
   cta: { label: "Explore Features", href: "/feature" },
   findJobs: {
     title: "Find Relevant Jobs",
-    footnote: "+ 50,000 more career portals",
+    description: "Find relevant jobs 24x7 automatically",
   },
-  resume: { title: "Resume Optimization" },
+  resume: {
+    title: "Resume Optimization",
+    description: "Apply to each application with a customised resume",
+  },
   outreach: {
     title: "Recruiter Outreach",
     description:
-      "Drafts personalized emails and LinkedIn messages to recruiters, then sends them.",
+      "Drafts personalized emails and LinkedIn messages to recruiters, then sends them instantly",
   },
   autoApply: {
     title: "Auto Apply",

@@ -33,14 +33,17 @@ export function Features() {
           </div>
 
           {/* bento */}
-          <RevealGroup step={0.08} className="grid gap-[30px] lg:grid-cols-3">
+          <RevealGroup step={0.04} delayChildren={0} className="grid gap-[30px] lg:grid-cols-3">
             <div className="grid gap-[30px] sm:grid-cols-2 lg:col-span-2">
-              <RevealItem className={`${cardBase} flex h-[393px] flex-col gap-6 p-10`}>
-                <p className="t-h5 text-center">{features.findJobs.title}</p>
+              <RevealItem className={`${cardBase} flex h-[393px] flex-col items-center gap-3 p-10`}>
+                <div className="flex flex-col items-center gap-1">
+                  <p className="t-h5 text-center">{features.findJobs.title}</p>
+                  <p className="t-body text-center text-dim">{features.findJobs.description}</p>
+                </div>
                 <SourceGraph />
               </RevealItem>
 
-              <RevealItem className={`${cardBase} flex h-[393px] flex-col items-center gap-[26px] p-10`}>
+              <RevealItem className={`${cardBase} flex h-[393px] flex-col items-center gap-[22px] p-10`}>
                 <Image
                   src={assets.features.chartBg}
                   alt=""
@@ -49,7 +52,10 @@ export function Features() {
                   className="object-cover"
                 />
                 <span className="absolute inset-0 bg-[linear-gradient(#fff_0%,#fff_0%,rgba(255,255,255,0)_100%)]" />
-                <p className="t-h5 relative text-center">{features.resume.title}</p>
+                <div className="relative flex flex-col items-center gap-1">
+                  <p className="t-h5 text-center">{features.resume.title}</p>
+                  <p className="t-body text-center text-dim">{features.resume.description}</p>
+                </div>
                 <ResumeSheet />
               </RevealItem>
 

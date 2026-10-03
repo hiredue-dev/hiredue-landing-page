@@ -20,7 +20,7 @@ export default function AccountPage() {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      router.replace("/login?redirect=/account");
+      router.replace("/");
     }
   }, [isLoading, isAuthenticated, router]);
 

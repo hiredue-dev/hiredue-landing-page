@@ -3,9 +3,10 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
+import { SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
+import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -43,6 +44,8 @@ const COPY_BLOCK = 420;
 export function Hero() {
   /* Both effects belong to the desktop layout only, same as the original. */
   const desktop = useMediaQuery("(min-width: 1200px)");
+
+  const { showModal } = useAuthModal();
 
   const { scrollY } = useScroll();
   const dashScale = useTransform(
@@ -92,12 +95,11 @@ export function Hero() {
               <div className="flex flex-col items-center gap-5">
                 <div className="flex flex-col items-center gap-2.5">
                   <motion.h1 {...appear(0.3)} className="t-h1 max-w-[1200px] text-center">
-                    HireDue{" "}
+                    HireDue&nbsp;:{" "}
                     <RotatingWord
                       words={hero.rotatingWords}
                       className="text-white drop-shadow-[0_4px_20px_rgba(29,29,29,0.25)]"
-                    />
-                    <br />
+                    />{" "}
                     {hero.tagline}
                   </motion.h1>
                 </div>
@@ -112,7 +114,15 @@ export function Hero() {
 
               <div className="flex flex-wrap items-center justify-center gap-5">
                 <motion.div {...appear(0.5)}>
-                  <ArrowButton label={hero.primary.label} href={hero.primary.href} tone="primary" />
+                  <button
+                    type="button"
+                    onClick={() => showModal({ view: "signup" })}
+                    className="inline-flex shrink-0 rounded-full bg-white/10 p-1.5"
+                  >
+                    <span className="relative flex items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-3 px-[30px] text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]">
+                      {hero.primary.label}
+                    </span>
+                  </button>
                 </motion.div>
                 <motion.div {...appear(0.6)}>
                   <SlideButton
@@ -191,6 +201,7 @@ export function Hero() {
 
       {/* fade the sky into the page */}
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-[100px] bg-[linear-gradient(rgba(255,255,255,0)_0%,rgba(255,255,255,0.7)_25%,#fff_50%)] min-[810px]:h-[160px] min-[1200px]:h-[200px]" />
+
     </section>
   );
 }
