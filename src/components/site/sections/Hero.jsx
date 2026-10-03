@@ -92,12 +92,11 @@ export function Hero() {
               <div className="flex flex-col items-center gap-5">
                 <div className="flex flex-col items-center gap-2.5">
                   <motion.h1 {...appear(0.3)} className="t-h1 max-w-[1200px] text-center">
-                    HireDue{" "}
+                    HireDue&nbsp;:{" "}
                     <RotatingWord
                       words={hero.rotatingWords}
                       className="text-white drop-shadow-[0_4px_20px_rgba(29,29,29,0.25)]"
-                    />
-                    <br />
+                    />{" "}
                     {hero.tagline}
                   </motion.h1>
                 </div>

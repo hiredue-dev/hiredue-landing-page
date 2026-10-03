@@ -13,7 +13,7 @@ export const nav = {
 
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
-  rotatingWords: ["Discovers", "Outreach", "Auto Apply"],
+  rotatingWords: ["Applies", "Discovers", "Outreaches"],
   tagline: "while you sleep",
   description:
     "HireDue scours 50,000+ career pages and top job boards, pitches the right decision-makers, and auto-submits your applications. You just focus on the interview.",
