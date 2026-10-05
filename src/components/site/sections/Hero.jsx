@@ -49,6 +49,8 @@ export function Hero() {
 
   const { showModal } = useAuthModal();
 
+  const { showModal } = useAuthModal();
+
   const { scrollY } = useScroll();
   const dashScale = useTransform(
     scrollY,
