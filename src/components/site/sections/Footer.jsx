@@ -11,6 +11,7 @@ import {
   RevealItem,
 } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
+import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { assets } from "@/lib/assets";
 import { cta, footer } from "@/lib/navigation-content";
 
@@ -23,6 +24,7 @@ export function Footer() {
       : `/${href}`;
 
   const { showModal } = useAuthModal();
+  const { isAuthenticated } = useAuth();
 
   return (
     <footer className="relative isolate overflow-hidden py-[100px]">
@@ -38,6 +40,7 @@ export function Footer() {
       <div className="container-page">
         <div className="flex flex-col gap-[60px] md:gap-[100px]">
           {/* closing call to action */}
+          {!isAuthenticated && (
           <Reveal className="mx-auto flex max-w-[600px] flex-col items-center gap-10">
             <div className="flex flex-col gap-2.5">
               <h2 className="t-h2 text-center whitespace-pre-line">
@@ -62,6 +65,7 @@ export function Footer() {
               />
             </div>
           </Reveal>
+          )}
 
           {/* site map */}
           <Reveal

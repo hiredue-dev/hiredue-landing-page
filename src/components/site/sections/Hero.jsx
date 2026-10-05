@@ -10,6 +10,7 @@ import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
 import { spring } from "@/lib/motion";
+import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 
 /** Load-in: fade up, with the same delay ladder the original uses. */
 const appear = (delay, y = 20, duration = 1) => ({
@@ -44,6 +45,7 @@ const COPY_BLOCK = 420;
 export function Hero() {
   /* Both effects belong to the desktop layout only, same as the original. */
   const desktop = useMediaQuery("(min-width: 1200px)");
+  const { isAuthenticated } = useAuth();
 
   const { showModal } = useAuthModal();
 
@@ -112,8 +114,10 @@ export function Hero() {
                 </motion.p>
               </div>
 
-              <div className="flex flex-wrap items-center justify-center gap-5">
+    <div className="flex flex-wrap items-center justify-center gap-5">
                 <motion.div {...appear(0.5)}>
+    {
+      !isAuthenticated && (
                   <button
                     type="button"
                     onClick={() => showModal({ view: "signup" })}
@@ -123,6 +127,8 @@ export function Hero() {
                       {hero.primary.label}
                     </span>
                   </button>
+      )
+    }
                 </motion.div>
                 <motion.div {...appear(0.6)}>
                   <SlideButton
