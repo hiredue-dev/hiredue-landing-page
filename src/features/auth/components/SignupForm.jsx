@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 
 import Button from "@/components/ui/Button/Button.jsx";
@@ -45,12 +45,6 @@ export default function SignupForm() {
   } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
-
-  useEffect(() => {
-    if (!isLoading && isAuthenticated) {
-      router.replace(safeRedirect(searchParams.get("redirect"), "/download"));
-    }
-  }, [isLoading, isAuthenticated, router, searchParams]);
 
   const [form, setForm] = useState(EMPTY_FORM);
   const [userSub, setUserSub] = useState(null);

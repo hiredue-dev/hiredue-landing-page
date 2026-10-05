@@ -290,7 +290,7 @@ function SigninView({ onClose, onSwitch, onForgot, redirectTo, router }) {
 
       <button
         type="button"
-        onClick={startGoogleSignIn}
+        onClick={() => startGoogleSignIn(redirectTo)}
         className={btnGoogle}
       >
         <GoogleIcon />
@@ -533,7 +533,7 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
         <>
           <button
             type="button"
-            onClick={startGoogleSignIn}
+            onClick={() => startGoogleSignIn(redirectTo)}
             className={btnGoogle}
           >
             <GoogleIcon />

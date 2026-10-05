@@ -123,21 +123,33 @@ export function AuthProvider({ children }) {
 
   const loginWithGoogle = useCallback(
     async (tokens, idTokenClaims) => {
-      const { email, name: fullName, sub } = idTokenClaims;
+      const { email, name: fullName, sub, phoneNumber } = idTokenClaims;
+
       setUserEmail(email);
-
-      const userResp = await createUserInCloud({
-        id: sub,
-        email,
-        fullName: fullName || email.split("@")[0],
-      });
-      if (!userResp.success) {
-        throw new Error(userResp.error || "Failed to create user record");
-      }
-
       const derived = deriveUserFromIdToken();
       setUser(derived);
       setIsAuthenticated(true);
+
+      if (phoneNumber) {
+        try {
+          const userResp = await createUserInCloud({
+            id: sub,
+            email,
+            fullName: fullName || email.split("@")[0],
+            phoneNumber,
+          });
+          if (!userResp.success) {
+            setUser(null);
+            setIsAuthenticated(false);
+            throw new Error(userResp.error || "Failed to create user record");
+          }
+        } catch (err) {
+          setUser(null);
+          setIsAuthenticated(false);
+          throw err;
+        }
+      }
+
       await loadSubscription();
       return derived;
     },

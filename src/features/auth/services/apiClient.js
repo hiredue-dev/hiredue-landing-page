@@ -88,4 +88,19 @@ export const apiClient = {
   delete(path, opts) {
     return request(path, { method: "DELETE" }, opts);
   },
+  /**
+   * Perform an authenticated GET without relying on localStorage. The caller
+   * supplies the access token directly (e.g. from a just-completed OAuth flow
+   * where tokens haven't been persisted yet).
+   */
+  async fetchWithToken(path, accessToken) {
+    return doFetch(
+      path,
+      {
+        method: "GET",
+        headers: { Authorization: `Bearer ${accessToken}` },
+      },
+      false,
+    );
+  },
 };
