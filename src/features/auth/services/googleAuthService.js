@@ -8,7 +8,9 @@ import {
 const COGNITO_CLIENT_ID = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID;
 const COGNITO_REGION = process.env.NEXT_PUBLIC_COGNITO_REGION;
 const COGNITO_DOMAIN = process.env.NEXT_PUBLIC_COGNITO_DOMAIN;
-const COGNITO_OAUTH_REDIRECT_URI = process.env.NEXT_PUBLIC_COGNITO_OAUTH_REDIRECT_URI;
+const COGNITO_OAUTH_REDIRECT_URI =
+  process.env.NEXT_PUBLIC_COGNITO_OAUTH_REDIRECT_URI
+  || process.env.NEXT_PUBLIC_COGNITO_OAUTH_REDIRECT_ENDPOINT;
 
 const AUTH_METHOD_KEY = "hd_auth_method";
 
@@ -37,8 +39,12 @@ async function generatePkcePair() {
   return { verifier, challenge };
 }
 
-export function startGoogleSignIn() {
+export function startGoogleSignIn(redirectAfterAuth) {
   const state = crypto.randomUUID();
+
+  if (redirectAfterAuth) {
+    sessionStorage.setItem("hd_google_redirect", redirectAfterAuth);
+  }
 
   generatePkcePair().then(({ verifier, challenge }) => {
     sessionStorage.setItem("hd_google_verifier", verifier);
@@ -61,7 +67,18 @@ export function startGoogleSignIn() {
   });
 }
 
-export async function completeGoogleSignIn() {
+export function getGoogleRedirectAfterAuth() {
+  if (typeof window === "undefined") return null;
+  const redirect = sessionStorage.getItem("hd_google_redirect");
+  sessionStorage.removeItem("hd_google_redirect");
+  return redirect;
+}
+
+/**
+ * Exchange the OAuth code for Cognito tokens. Does NOT persist them — the
+ * caller must inspect auth-status before committing via commitGoogleTokens().
+ */
+export async function exchangeGoogleCode() {
   const params = new URLSearchParams(window.location.search);
   const code = params.get("code");
   const state = params.get("state");
@@ -104,35 +121,54 @@ export async function completeGoogleSignIn() {
     throw new Error(`Token exchange failed: ${errorText}`);
   }
 
-  const tokens = await response.json();
+  const raw = await response.json();
 
-  setTokens({
-    accessToken: tokens.access_token,
-    idToken: tokens.id_token,
-    refreshToken: tokens.refresh_token,
-  });
+  const claims = decodeJwtPayload(raw.id_token);
+  if (!claims) {checkAuthStatus
+    throw new Error("Failed to decode id_token from token exchange.");
+  }
 
+  return {
+    tokens: {
+      accessToken: raw.access_token,
+      idToken: raw.id_token,
+      refreshToken: raw.refresh_token,
+    },
+    claims,
+  };
+}
+
+/**
+ * Persist tokens and mark auth method as Google. Call ONLY after auth-status
+ * confirms the user should proceed.
+ */
+export function commitGoogleTokens({ accessToken, idToken, refreshToken }) {
+  setTokens({ accessToken, idToken, refreshToken });
   localStorage.setItem(AUTH_METHOD_KEY, "google");
 
   if (typeof window !== "undefined") {
     window.dispatchEvent(new CustomEvent("auth:stateChanged"));
   }
+}
 
-  const idTokenClaims = decodeJwtPayload(tokens.id_token);
-  if (!idTokenClaims) {
-    throw new Error("Failed to decode id_token from token exchange.");
-  }
+/**
+ * Remove any partially-stored tokens for a Google sign-in that should not
+ * proceed (e.g. email_taken, network error during auth-status check).
+ */
+export function discardGoogleTokens() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem(AUTH_METHOD_KEY);
+}
 
-  setUserEmail(idTokenClaims.email);
-
-  return {
-    tokens: {
-      accessToken: tokens.access_token,
-      idToken: tokens.id_token,
-      refreshToken: tokens.refresh_token,
-    },
-    claims: idTokenClaims,
-  };
+/**
+ * Legacy wrapper — exchange + commit in one step. Used when the caller does
+ * its own auth-status check (or none) and just wants the old behaviour.
+ */
+export async function completeGoogleSignIn() {
+  const { tokens, claims } = await exchangeGoogleCode();
+  commitGoogleTokens(tokens);
+  setUserEmail(claims.email);
+  return { tokens, claims };
 }
 
 export async function refreshHostedUiTokens() {

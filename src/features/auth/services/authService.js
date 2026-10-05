@@ -9,6 +9,7 @@ import {
 
 import { getCognitoClient, COGNITO_CLIENT_ID } from "./cognitoClient.js";
 import { setTokens, getRefreshToken, clearTokens, setUserEmail } from "./tokenStore.js";
+import { refreshHostedUiTokens } from "./googleAuthService.js";
 
 function ok(data) {
   return { success: true, data, error: null };
@@ -175,49 +176,6 @@ export async function refreshTokens() {
     });
   } catch (err) {
     return fail(err, "Refresh failed");
-  }
-}
-
-async function refreshHostedUiTokens() {
-  const refreshToken = getRefreshToken();
-  if (!refreshToken) {
-    return fail({ message: "Missing refresh token" }, "Missing refresh token");
-  }
-
-  try {
-    const domain = process.env.NEXT_PUBLIC_COGNITO_DOMAIN;
-    const region = process.env.NEXT_PUBLIC_COGNITO_REGION;
-    const tokenUrl = `https://${domain}.auth.${region}.amazoncognito.com/oauth2/token`;
-
-    const body = new URLSearchParams({
-      grant_type: "refresh_token",
-      client_id: COGNITO_CLIENT_ID,
-      refresh_token: refreshToken,
-    });
-
-    const response = await fetch(tokenUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: body.toString(),
-    });
-
-    if (!response.ok) {
-      return fail({ message: "Hosted UI refresh failed" }, "Hosted UI refresh failed");
-    }
-
-    const tokens = await response.json();
-
-    setTokens({
-      accessToken: tokens.access_token,
-      idToken: tokens.id_token,
-    });
-
-    return ok({
-      accessToken: tokens.access_token,
-      idToken: tokens.id_token,
-    });
-  } catch (err) {
-    return fail(err, "Hosted UI refresh failed");
   }
 }
 
