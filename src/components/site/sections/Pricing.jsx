@@ -179,13 +179,22 @@ export function Pricing() {
                     {pricing.offer.description}
                   </p>
                 </div>
-                <ArrowButton
-                  label={pricing.offer.cta.label}
-                  href={pricing.offer.cta.href}
-                  onClick={handleOfferClick}
-                  ring={false}
-                  className="self-start sm:self-center"
-                />
+                <div className="flex flex-col items-start gap-4 sm:items-end">
+                  <div className="flex items-baseline gap-1.5">
+                    <span className="font-display text-[40px] leading-[1.2] font-semibold text-ink">
+                      {pricing.offer.price}
+                    </span>
+                    <span className="text-[18px] leading-[1.3] font-medium text-dim">
+                      {pricing.offer.period}
+                    </span>
+                  </div>
+                  <ArrowButton
+                    label={pricing.offer.cta.label}
+                    href={pricing.offer.cta.href}
+                    onClick={handleOfferClick}
+                    ring={false}
+                  />
+                </div>
               </div>
             </Reveal>
 
