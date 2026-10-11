@@ -361,6 +361,14 @@ export const pricing = {
   ctaLabel: "Get started",
   ctaHref: "/signup",
   notes: ["No credit card required", "Cancel anytime"],
+  /* Time-boxed community offer — pays through a hosted Razorpay page. */
+  offer: {
+    badge: "Limited offer · Valid for 2 hours only",
+    title: "Special offer for Mini Anon community mentees",
+    description:
+      "Your product will be activated within one day of making the payment. Please don’t make repeated payments if you’ve already paid — we’ll get back to you in under a day.",
+    cta: { label: "Claim offer", href: "https://rzp.io/rzp/hiredue" },
+  },
   enterprise: {
     title: "Enterprise plan",
     description:
