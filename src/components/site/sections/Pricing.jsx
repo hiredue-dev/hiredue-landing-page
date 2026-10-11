@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
-import { SlideButton } from "@/components/site/ui/Button";
+import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -141,6 +141,17 @@ export function Pricing() {
     [isAuthenticated, showModal, start],
   );
 
+  /* Signed-out visitors sign up first; the modal then sends them on to the
+     payment page. Signed-in ones follow the link directly. */
+  const handleOfferClick = useCallback(
+    (event) => {
+      if (isAuthenticated) return;
+      event.preventDefault();
+      showModal({ view: "signup", redirectTo: pricing.offer.cta.href });
+    },
+    [isAuthenticated, showModal],
+  );
+
   const featuredId =
     products.find((p) => String(p.metadata?.Is_best).toLowerCase() === "true")?.productId ??
     products[Math.floor(products.length / 2)]?.productId;
@@ -155,6 +166,29 @@ export function Pricing() {
           </Reveal>
 
           <div className="flex w-full flex-col items-center gap-[30px]">
+            {/* community offer strip */}
+            <Reveal className="w-full">
+              <div className="flex w-full flex-col gap-5 rounded-[30px] bg-[linear-gradient(110deg,rgba(64,106,228,0.12)_0%,rgba(82,144,244,0.04)_100%)] p-[30px] ring-1 ring-brand/15 sm:flex-row sm:items-center">
+                <div className="flex flex-1 flex-col items-start gap-2.5">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-[linear-gradient(110deg,#406ae4_0%,#5290f4_100%)] px-3.5 py-1.5 text-[14px] leading-[1.3] font-semibold text-white">
+                    <span className="size-1.5 animate-pulse rounded-full bg-white" />
+                    {pricing.offer.badge}
+                  </span>
+                  <h3 className="t-h5">{pricing.offer.title}</h3>
+                  <p className="max-w-[620px] text-[16px] leading-[1.4] font-medium text-dim">
+                    {pricing.offer.description}
+                  </p>
+                </div>
+                <ArrowButton
+                  label={pricing.offer.cta.label}
+                  href={pricing.offer.cta.href}
+                  onClick={handleOfferClick}
+                  ring={false}
+                  className="self-start sm:self-center"
+                />
+              </div>
+            </Reveal>
+
             {status === "loading" && (
               <p className="t-body-lg text-dim py-[60px]">{pricing.loading}</p>
             )}
