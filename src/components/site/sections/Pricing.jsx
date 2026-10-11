@@ -180,11 +180,19 @@ export function Pricing() {
                   </p>
                 </div>
                 <div className="flex flex-col items-start gap-4 sm:items-end">
-                  <div className="flex items-baseline gap-1.5">
-                    <span className="font-display text-[40px] leading-[1.2] font-semibold text-ink">
-                      {pricing.offer.price}
-                    </span>
-                    <span className="text-[18px] leading-[1.3] font-medium text-dim">
+                  <div className="flex flex-col items-start gap-1 sm:items-end">
+                    <div className="flex items-center gap-2.5">
+                      <span className="font-display text-[40px] leading-[1.2] font-semibold text-ink">
+                        {pricing.offer.price}
+                      </span>
+                      <span className="text-[20px] leading-[1.3] font-medium text-dim line-through">
+                        {pricing.offer.originalPrice}
+                      </span>
+                      <span className="rounded-full bg-success-10 px-3 py-1 text-[14px] leading-[1.3] font-semibold text-success">
+                        {pricing.offer.discount}
+                      </span>
+                    </div>
+                    <span className="text-[16px] leading-[1.3] font-medium text-dim">
                       {pricing.offer.period}
                     </span>
                   </div>
