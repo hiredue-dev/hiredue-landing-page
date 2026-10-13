@@ -7,6 +7,17 @@ const POLL_INTERVAL_MS = 5000;
 const MAX_POLL_ATTEMPTS = 60;
 const MAX_CONSECUTIVE_ERRORS = 3;
 
+/**
+ * True once the payment has landed. Deliberately not `hasActiveSubscription`:
+ * that is also true for a running trial, so someone upgrading mid-trial would
+ * be "confirmed" on the first poll, before they have paid. Falls back to it for
+ * a backend response that predates `accessType`.
+ */
+const isPaid = (subscription) =>
+  subscription?.accessType
+    ? subscription.accessType === "paid"
+    : !!subscription?.hasActiveSubscription;
+
 export default function useCheckoutPolling({ onActive } = {}) {
   const [polling, setPolling] = useState(false);
   const [verifying, setVerifying] = useState(false);
@@ -71,7 +82,7 @@ export default function useCheckoutPolling({ onActive } = {}) {
       try {
         const subscription = await checkOnce();
         consecutiveErrorsRef.current = 0;
-        if (subscription?.hasActiveSubscription) {
+        if (isPaid(subscription)) {
           handleConfirmed(subscription);
           return;
         }
@@ -103,7 +114,7 @@ export default function useCheckoutPolling({ onActive } = {}) {
     setError(null);
     try {
       const subscription = await checkOnce();
-      if (subscription?.hasActiveSubscription) {
+      if (isPaid(subscription)) {
         handleConfirmed(subscription);
       } else {
         setError(
@@ -122,7 +133,7 @@ export default function useCheckoutPolling({ onActive } = {}) {
       if (!polling || !mountedRef.current) return;
       try {
         const subscription = await checkOnce();
-        if (subscription?.hasActiveSubscription) handleConfirmed(subscription);
+        if (isPaid(subscription)) handleConfirmed(subscription);
       } catch {
         // ignore — interval will retry
       }
