@@ -7,6 +7,7 @@ const INDEXABLE_ROUTES = [
   "/",
   "/feature",
   "/jobs",
+  "/ats-checker",
   "/blog",
   "/about",
   "/career",

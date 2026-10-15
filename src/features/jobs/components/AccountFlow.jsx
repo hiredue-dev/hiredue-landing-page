@@ -16,11 +16,13 @@ import { primaryButton, secondaryButton } from "./ui.jsx";
  * (AuthContext), so an account made here is identical — only the UI differs.
  */
 
+// startGoogleSignIn takes the page to return to; passed straight as onClick it
+// got the click event instead, and sign-in landed on "/[object Object]".
 function GoogleButton() {
   return (
     <button
       type="button"
-      onClick={startGoogleSignIn}
+      onClick={() => startGoogleSignIn(`${window.location.pathname}${window.location.search}`)}
       className="inline-flex w-full items-center justify-center gap-2.5 rounded-[14px] border border-line bg-white px-4 py-0 min-h-[48px] text-[15px] font-semibold text-ink transition-colors hover:border-dim/60 hover:bg-surface hover:shadow-sm"
     >
       <svg className="size-5 shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
