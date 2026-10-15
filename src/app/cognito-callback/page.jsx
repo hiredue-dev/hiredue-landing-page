@@ -10,6 +10,7 @@ import {
   getGoogleRedirectAfterAuth,
 } from "@/features/auth/services/googleAuthService.js";
 import { checkAuthStatus } from "@/features/auth/services/userService.js";
+import { safeRedirect } from "@/features/auth/redirect.js";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import {
   COUNTRIES,
@@ -81,7 +82,7 @@ export default function CognitoCallbackPage() {
         commitGoogleTokens(tokens);
         try {
           await loginWithGoogle(tokens, claims);
-          const redirectTo = getGoogleRedirectAfterAuth() || "/#pricing";
+          const redirectTo = safeRedirect(getGoogleRedirectAfterAuth(), "/#pricing");
           router.replace(redirectTo);
           return;
         } catch (err) {
@@ -155,7 +156,7 @@ export default function CognitoCallbackPage() {
 
       await loginWithGoogle(tokens, updatedClaims);
 
-      const redirectTo = getGoogleRedirectAfterAuth() || "/#pricing";
+      const redirectTo = safeRedirect(getGoogleRedirectAfterAuth(), "/#pricing");
       router.replace(redirectTo);
     } catch (err) {
       console.error("Google signup failed:", err);

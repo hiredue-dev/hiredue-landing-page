@@ -93,7 +93,10 @@ export function Navbar() {
         transition={spring(0.6, 0.1)}
         className="fixed inset-x-0 top-0 z-50 py-5"
       >
-        <div className="mx-auto w-full max-w-[940px] px-[30px]">
+        {/* 1040 rather than the template's 940: measured in the browser, six
+            links need ~603px and 940 leaves the nav 533px between the logo and
+            the CTA slot, so the first link ran into the logo. */}
+        <div className="mx-auto w-full max-w-[1040px] px-[30px]">
           {/*
            * Logo stays its natural width, always left-aligned. Only the right
            * slot gets a fixed width at lg+, since that's the side whose content
