@@ -1090,3 +1090,41 @@ export const careerPage = {
     fallbackEmail: "careers@hiredue.com",
   },
 };
+
+export const atsChecker = {
+  eyebrow: "ATS Resume Checker",
+  title: "See your resume the way an ATS does",
+  description:
+    "Upload your resume for an instant ATS score and the fixes that matter most. Then optimize it, tailor it to a job, and find roles that fit — free.",
+  privacy: "Scoring runs in your browser. Your file isn't uploaded unless you optimize or tailor.",
+  tabs: {
+    optimize: {
+      label: "Optimize",
+      title: "Optimize the whole resume",
+      body: "We rewrite weak bullets to lead with action and impact and fill your skills section from your own experience, then score it again. Every number, employer and date stays exactly as you wrote it.",
+      cta: "Optimize my resume",
+    },
+    tailor: {
+      label: "Tailor to a job",
+      title: "Tailor it to a specific job",
+      body: "Paste a job and we'll find the keywords it screens for, work them into your resume where your experience supports them, and show your match before and after.",
+      cta: "Tailor to this job",
+    },
+    jobs: {
+      label: "Find jobs",
+      title: "Jobs that match your resume",
+      body: "Fresh openings from LinkedIn, Indeed, Greenhouse, Lever and more, searched by the roles and skills on your resume.",
+    },
+  },
+  stages: {
+    optimize: [
+      { id: "rewriting", label: "Rewriting your bullets" },
+      { id: "rescoring", label: "Checking every change and rescoring" },
+    ],
+    tailor: [
+      { id: "analyzing", label: "Reading the job for the keywords it screens for" },
+      { id: "rewriting", label: "Working them into your resume" },
+      { id: "rescoring", label: "Checking every change and rescoring" },
+    ],
+  },
+};

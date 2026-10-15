@@ -70,8 +70,12 @@ export function Badge({ children, tone = "surface" }) {
  * Bottom sheet on phones, centred dialog from `sm` up. Closes on Escape and
  * on a click outside the panel.
  */
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
 export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
   const [mounted, setMounted] = useState(false);
+  const panelRef = useRef(null);
   useEffect(() => setMounted(true), []);
   useBodyScrollLock(open);
 
@@ -79,10 +83,35 @@ export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
     if (!open) return undefined;
     const onKey = (event) => {
       if (event.key === "Escape") onClose();
+      // Keep Tab inside the dialog: it's modal, the page behind can't be used.
+      if (event.key !== "Tab" || !panelRef.current) return;
+      const items = [...panelRef.current.querySelectorAll(FOCUSABLE)];
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
+
+  // Focus moves into the dialog on open and back to whatever opened it on close.
+  useEffect(() => {
+    if (!open || !mounted) return undefined;
+    const opener = document.activeElement;
+    const panel = panelRef.current;
+    const target = panel?.querySelector("[autofocus]") ?? panel;
+    target?.focus({ preventScroll: true });
+    return () => {
+      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
+    };
+  }, [open, mounted]);
 
   if (!open || !mounted) return null;
 
@@ -93,12 +122,14 @@ export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
       className="fixed inset-0 z-[90] flex items-end justify-center bg-ink/40 backdrop-blur-[2px] sm:items-center sm:p-6"
     >
       <div
+        ref={panelRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
+        tabIndex={-1}
         onClick={(event) => event.stopPropagation()}
         className={clsx(
-          "relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-[0_24px_60px_rgba(0,0,0,0.2)] sm:rounded-[20px]",
+          "relative flex max-h-[92vh] w-full flex-col overflow-hidden rounded-t-[20px] outline-none bg-white shadow-[0_24px_60px_rgba(0,0,0,0.2)] sm:rounded-[20px]",
           size === "lg" ? "sm:max-w-[760px]" : "sm:max-w-[480px]",
         )}
       >
