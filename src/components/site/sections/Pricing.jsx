@@ -13,7 +13,11 @@ import { assets } from "@/lib/assets";
 import { pricing } from "@/lib/content";
 import { spring } from "@/lib/motion";
 import useCheckoutPolling from "@/features/subscription/hooks/useCheckoutPolling";
-import { createCheckout, getProducts } from "@/features/subscription/services/subscriptionService";
+import {
+  createCheckout,
+  getProducts,
+  validateCoupon,
+} from "@/features/subscription/services/subscriptionService";
 
 const CURRENCY_SYMBOLS = { INR: "₹", USD: "$", EUR: "€", GBP: "£" };
 
@@ -27,8 +31,60 @@ const BILLING_INTERVALS = {
 function formatPrice(priceMinor, currency) {
   const major = priceMinor / 100;
   const symbol = CURRENCY_SYMBOLS[currency] || `${currency} `;
-  return `${symbol}${major.toLocaleString()}`;
+  // A discounted price is often not a whole amount; show it to the paisa
+  // (₹799.20, not ₹799.2) and leave whole amounts bare.
+  const digits = Number.isInteger(major) ? 0 : 2;
+  return `${symbol}${major.toLocaleString(undefined, { minimumFractionDigits: digits, maximumFractionDigits: digits })}`;
 }
+
+/* ---- Coupons ------------------------------------------------------------
+   Our coupon codes apply to Razorpay plans (ids `plan_…`). Other plans take
+   their discount codes on the payment page itself, so the field is hidden for
+   them rather than offering a code the checkout would refuse. */
+
+const takesCoupon = (productId) => String(productId).startsWith("plan_");
+
+/** Whether the coupon may be used on this plan. No plan list means every plan. */
+function couponCovers(coupon, productId) {
+  if (!coupon || !takesCoupon(productId)) return false;
+  return !coupon.planIds?.length || coupon.planIds.includes(productId);
+}
+
+/**
+ * What a plan costs with the coupon, in minor units, or null when the coupon
+ * carries no discount details to preview. Never below zero.
+ */
+function couponPrice(baseMinor, coupon) {
+  if (!coupon?.discountType || !coupon.discountValue) return null;
+  const discounted =
+    coupon.discountType === "percent"
+      ? Math.round(baseMinor * (1 - coupon.discountValue / 100))
+      : baseMinor - coupon.discountValue;
+  return Math.max(0, discounted);
+}
+
+/** "your first payment" / "your first 3 payments" / null when it never ends. */
+function couponSpan(coupon) {
+  if (coupon.discountCycles == null) return null;
+  return coupon.discountCycles === 1
+    ? "your first payment"
+    : `your first ${coupon.discountCycles} payments`;
+}
+
+/** One line saying what the applied coupon gives. */
+function couponSummary(coupon) {
+  if (!coupon.discountType || !coupon.discountValue) {
+    return coupon.description || "Your discount is applied at payment.";
+  }
+  const amount =
+    coupon.discountType === "percent"
+      ? `${coupon.discountValue}% off`
+      : `${formatPrice(coupon.discountValue, "INR")} off`;
+  const span = couponSpan(coupon);
+  return span ? `${amount} ${span}` : `${amount} every payment`;
+}
+
+const METHOD_LABELS = { upi: "UPI", card: "a card" };
 
 function getBillingPeriod(price) {
   const parsedCount = Number(price?.payment_frequency_count);
@@ -80,6 +136,12 @@ export function Pricing() {
   const [checkoutLoadingId, setCheckoutLoadingId] = useState(null);
   const [checkoutError, setCheckoutError] = useState(null);
 
+  const [couponCode, setCouponCode] = useState("");
+  // The coupon the backend accepted, with what it knows of the discount.
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState(null);
+  const [applying, setApplying] = useState(false);
+
   const {
     polling,
     verifying,
@@ -114,7 +176,54 @@ export function Pricing() {
     return () => {
       cancelled = true;
     };
-  }, []);
+    // Reloaded on sign-in and sign-out: the price list can differ for a
+    // signed-in visitor.
+  }, [isAuthenticated]);
+
+  // A coupon belongs to the price list it was checked against.
+  useEffect(() => {
+    setAppliedCoupon(null);
+    setCouponError(null);
+  }, [isAuthenticated]);
+
+  const couponPlanId = products.find((p) => takesCoupon(p.productId))?.productId ?? null;
+
+  const applyCoupon = async (event) => {
+    event?.preventDefault();
+    const code = couponCode.trim();
+    if (!code || applying) return;
+
+    // Checking a code needs an account, as buying does.
+    if (!isAuthenticated) {
+      showModal({ view: "signup", redirectTo: "/#pricing" });
+      return;
+    }
+
+    setApplying(true);
+    setCouponError(null);
+    try {
+      const response = await validateCoupon(couponPlanId, code);
+      if (!response.success || !response.data?.valid) {
+        throw new Error(
+          (typeof response.error === "string" && response.error) ||
+            "This coupon code could not be applied.",
+        );
+      }
+      setAppliedCoupon(response.data);
+      setCouponCode(response.data.code);
+    } catch (err) {
+      setAppliedCoupon(null);
+      setCouponError(err.message);
+    } finally {
+      setApplying(false);
+    }
+  };
+
+  const removeCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponCode("");
+    setCouponError(null);
+  };
 
   const handleSelect = useCallback(
     async (product) => {
@@ -125,9 +234,21 @@ export function Pricing() {
         return;
       }
 
+      // An applied code goes with the plans it covers; a plan it doesn't cover
+      // is bought at the full price its card shows. A typed but unapplied code
+      // is still sent: the backend refuses a bad one before any payment page
+      // opens.
+      const coupon = appliedCoupon
+        ? couponCovers(appliedCoupon, product.productId)
+          ? appliedCoupon.code
+          : ""
+        : takesCoupon(product.productId)
+          ? couponCode.trim()
+          : "";
+
       setCheckoutLoadingId(product.productId);
       try {
-        const response = await createCheckout(product.productId);
+        const response = await createCheckout(product.productId, coupon);
         if (!response.success || !response.data?.checkoutUrl) {
           throw new Error(response.error || "Failed to create checkout session");
         }
@@ -138,7 +259,7 @@ export function Pricing() {
         setCheckoutLoadingId(null);
       }
     },
-    [isAuthenticated, showModal, start],
+    [isAuthenticated, showModal, start, appliedCoupon, couponCode],
   );
 
   const featuredId =
@@ -190,11 +311,28 @@ export function Pricing() {
                   />
                 )}
 
+                {couponPlanId && (
+                  <CouponBox
+                    code={couponCode}
+                    onCodeChange={(value) => {
+                      setCouponCode(value);
+                      setCouponError(null);
+                    }}
+                    applied={appliedCoupon}
+                    error={couponError}
+                    applying={applying}
+                    disabled={polling || checkoutLoadingId !== null}
+                    onApply={applyCoupon}
+                    onRemove={removeCoupon}
+                  />
+                )}
+
                 <div className="grid w-full gap-5 md:grid-cols-3">
                   {products.map((product) => (
                     <PlanCard
                       key={product.productId}
                       product={product}
+                      coupon={appliedCoupon}
                       featured={product.productId === featuredId}
                       onSelect={handleSelect}
                       loading={checkoutLoadingId === product.productId}
@@ -257,11 +395,92 @@ export function Pricing() {
 
 /* ------------------------------------------------------------------ */
 
-function PlanCard({ product, featured, onSelect, loading, disabled }) {
+/** The coupon field, and once a code is accepted, what it gives. */
+function CouponBox({ code, onCodeChange, applied, error, applying, disabled, onApply, onRemove }) {
+  if (applied) {
+    return (
+      <div className="flex flex-col items-center gap-2.5" aria-live="polite">
+        <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-[16px] bg-[rgba(16,185,129,0.12)] px-5 py-3.5">
+          <div className="flex flex-col text-center sm:text-left">
+            <span className="text-[16px] leading-[1.3] font-semibold text-success">
+              {applied.code} applied
+            </span>
+            <span className="text-[15px] leading-[1.3] font-medium text-ink">
+              {couponSummary(applied)}
+              {applied.paymentMethod && ` · Pay with ${METHOD_LABELS[applied.paymentMethod]} to get it`}
+            </span>
+          </div>
+          <button
+            type="button"
+            onClick={onRemove}
+            disabled={disabled}
+            className="rounded-full px-4 py-2 text-[14px] font-semibold text-dim ring-1 ring-line hover:text-ink disabled:opacity-60"
+          >
+            Remove
+          </button>
+        </div>
+        {/* The payment page opens on the plan's full price and only brings the
+            offer in once a payment method is being chosen. Saying so here
+            keeps the full price from reading as "the code failed". */}
+        <p className="max-w-[560px] text-center text-[14px] leading-[1.4] font-medium text-dim">
+          The payment page opens showing the full price. Your discount is applied at the payment
+          step{applied.paymentMethod ? `, when you pay with ${METHOD_LABELS[applied.paymentMethod]}` : ""},
+          before you are charged.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col items-center gap-2" aria-live="polite">
+      <form onSubmit={onApply} className="flex flex-wrap items-center justify-center gap-2.5">
+        <label htmlFor="pricing-coupon" className="text-[16px] leading-[1.3] font-medium text-dim">
+          Have a coupon code?
+        </label>
+        <input
+          id="pricing-coupon"
+          type="text"
+          value={code}
+          onChange={(e) => onCodeChange(e.target.value.toUpperCase())}
+          placeholder="Enter code"
+          autoComplete="off"
+          spellCheck={false}
+          maxLength={64}
+          aria-invalid={!!error}
+          aria-describedby={error ? "pricing-coupon-error" : undefined}
+          disabled={applying || disabled}
+          className={clsx(
+            "w-[190px] rounded-full bg-surface px-5 py-2.5 text-[16px] font-semibold tracking-wide text-ink ring-1 outline-none placeholder:font-medium placeholder:tracking-normal placeholder:text-dim focus-visible:ring-2 focus-visible:ring-ink disabled:opacity-60",
+            error ? "ring-danger/40" : "ring-line",
+          )}
+        />
+        <button
+          type="submit"
+          disabled={!code.trim() || applying || disabled}
+          className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          {applying ? "Checking…" : "Apply"}
+        </button>
+      </form>
+      {error && (
+        <p id="pricing-coupon-error" role="alert" className="text-[14px] leading-[1.3] font-medium text-danger">
+          {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function PlanCard({ product, coupon, featured, onSelect, loading, disabled }) {
   const { price } = product;
-  const priceMinor = price?.discount
+  const listMinor = price?.discount
     ? Math.round(price.price * (1 - price.discount / 100))
     : price?.price;
+  // The coupon comes off whatever the plan already costs.
+  const covered = couponCovers(coupon, product.productId);
+  const withCoupon = covered ? couponPrice(listMinor, coupon) : null;
+  const couponEnds = withCoupon !== null ? couponSpan(coupon) : null;
+  const priceMinor = withCoupon ?? listMinor;
 
   return (
     <div
@@ -307,6 +526,31 @@ function PlanCard({ product, featured, onSelect, loading, disabled }) {
           {billingLabel(price)}
         </span>
       </div>
+
+      {(withCoupon !== null || (coupon && !covered)) && (
+        <div
+          className={clsx(
+            "-mt-[18px] flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[15px] leading-[1.3] font-medium",
+            featured ? "text-grey" : "text-dim",
+          )}
+        >
+          {withCoupon !== null ? (
+            <>
+              <span className="line-through">{formatPrice(listMinor, price?.currency)}</span>
+              <span className="rounded-full bg-[rgba(16,185,129,0.16)] px-2.5 py-0.5 text-[13px] font-semibold tracking-wide text-success">
+                {coupon.code}
+              </span>
+              {couponEnds && (
+                <span className="basis-full">
+                  For {couponEnds}, then {formatPrice(listMinor, price?.currency)} {billingLabel(price)}
+                </span>
+              )}
+            </>
+          ) : (
+            <span>{coupon.code} doesn&apos;t apply to this plan.</span>
+          )}
+        </div>
+      )}
 
       <button
         type="button"

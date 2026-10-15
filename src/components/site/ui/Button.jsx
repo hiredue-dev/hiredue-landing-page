@@ -66,6 +66,7 @@ export function ArrowButton({
   size = "md",
   ring = true,
   className,
+  onClick,
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -90,6 +91,7 @@ export function ArrowButton({
   return (
     <Anchor
       href={href}
+      onClick={onClick}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       className={clsx(
