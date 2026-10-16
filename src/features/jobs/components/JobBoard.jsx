@@ -445,7 +445,7 @@ export function JobBoard() {
               <>
                 <CardGrid>
                   {board.jobs.map((job) => (
-                    <Card key={job.id} job={job} onOpen={openDetail} onApply={openApply} />
+                    <Card key={job.id} job={job} onOpen={openDetail} onApply={openApply} onAutoApply={install ? openAutoApply : undefined} />
                   ))}
                 </CardGrid>
 
