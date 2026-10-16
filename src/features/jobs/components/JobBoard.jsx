@@ -16,6 +16,7 @@ import {
   readFilters,
 } from "../filters.js";
 import { roleLabel } from "../format.js";
+import { clearApplyTimer, readApplyTimer, timerVerdict } from "../applyTimer.js";
 import { canInstall, clearIntent, loadIntent, saveIntent } from "../funnel.js";
 import { JobDialogsContext } from "../jobDialogs.js";
 import { AccountDialog } from "./AccountDialog.jsx";
@@ -26,6 +27,7 @@ import { HiringPostsStrip } from "./HiringPostsStrip.jsx";
 import { JobCard, JobCardSkeleton } from "./JobCard.jsx";
 import { JobDetailDialog } from "./JobDetailDialog.jsx";
 import { JobsHero } from "./JobsHero.jsx";
+import { ReturnDialog } from "./ReturnDialog.jsx";
 import { SourceCircles } from "./Sources.jsx";
 import { LockedPostCard, PostCard, UnlockPostsPanel } from "./PostCard.jsx";
 import { SearchBar } from "./SearchBar.jsx";
@@ -234,6 +236,26 @@ export function JobBoard() {
     },
     [isAuthenticated, openAccount, openDownload],
   );
+
+  // Back from an employer's application form: the clock started by the apply dialog is read when this tab is visible again, and anything worth saying is said once.
+  const [returnInfo, setReturnInfo] = useState(null);
+  useEffect(() => {
+    const check = () => {
+      if (document.visibilityState !== "visible") return;
+      const timer = readApplyTimer();
+      if (!timer) return;
+      clearApplyTimer();
+      const verdict = timerVerdict(timer.elapsedMs);
+      if (verdict === "quiet") return;
+      setReturnInfo({ ...timer, verdict });
+      setParams({ apply: null, tailored: null });
+    };
+    check();
+    document.addEventListener("visibilitychange", check);
+    return () => document.removeEventListener("visibilitychange", check);
+    // setParams changes with the URL; the listener only needs the latest one when it fires, and re-binding on every URL change is harmless.
+  }, [setParams]);
+  const closeReturn = useCallback(() => setReturnInfo(null), []);
 
   // Back from Google sign-in: the page reloads on /jobs?job=<id> signed in, and the button pressed before leaving is carried out.
   useEffect(() => {
@@ -469,6 +491,23 @@ export function JobBoard() {
         path={install ? "desktop" : "mobile"}
       />
       <ApplyDialog jobId={applyId} onClose={closeApply} path={install ? "desktop" : "mobile"} tailored={tailored} />
+      <ReturnDialog
+        info={returnInfo}
+        canInstall={install}
+        onClose={closeReturn}
+        onDownload={() => {
+          closeReturn();
+          openDownload();
+        }}
+        onOpenJob={(j) => {
+          closeReturn();
+          openDetail(j);
+        }}
+        onAutoApply={(j) => {
+          closeReturn();
+          openAutoApply(j);
+        }}
+      />
       <AccountDialog
         request={accountRequest}
         // Closed without signing in: forget the button they pressed, or a later log-in would act on it out of the blue.
