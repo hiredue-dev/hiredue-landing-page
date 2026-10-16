@@ -22,7 +22,7 @@ export function AtsChecker() {
   const [focusUpload, setFocusUpload] = useState(false);
 
   return (
-    <section className="relative pt-[140px] pb-[120px] min-[810px]:pt-[170px] md:pb-[200px] min-[1200px]:pt-[194px]">
+    <section id="checker" className="relative scroll-mt-24 pt-[140px] pb-[100px] min-[810px]:pt-[170px] md:pb-[130px] min-[1200px]:pt-[194px]">
       <div className="container-page">
         <div className="flex flex-col gap-[50px]">
           <Reveal className="mx-auto flex max-w-[760px] flex-col items-center gap-2.5">

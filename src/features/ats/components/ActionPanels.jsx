@@ -65,7 +65,7 @@ export function OptimizePanel({ state, signedIn, fileName, onRun }) {
             after={result.score.after.overall}
             detail={`${result.changes.length} change${result.changes.length === 1 ? "" : "s"} made. Your original file is untouched.`}
           />
-          <ResumePreview text={result.text} fileName={fileName} suffix="optimized" label="Optimized resume" />
+          <ResumePreview resume={result.resume} text={result.text} fileName={fileName} suffix="optimized" label="Optimized resume" action="optimize" />
           <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} />
           <button type="button" onClick={run} className="self-start text-[14px] font-semibold text-brand hover:underline">
             Run it again
@@ -115,10 +115,12 @@ export function TailorPanel({ state, signedIn, fileName, job, onJobChange, onRun
           <KeywordChips keywords={result.match.after.keywords} before={result.match.before.keywords} />
           {result.partial && <p className="t-body-sm">Part of the tailoring didn&apos;t finish this time. Run it again for a fuller result.</p>}
           <ResumePreview
+            resume={result.resume}
             text={result.text}
             fileName={fileName}
             suffix={`tailored for ${job.title.trim() || "job"}`.replace(/[\\/:*?"<>|]+/g, " ")}
             label={`Tailored for ${job.title.trim() || "this job"}`}
+            action="tailor"
           />
           <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} />
           <button type="button" onClick={onEdit} className="self-start text-[14px] font-semibold text-brand hover:underline">

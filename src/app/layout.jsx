@@ -1,6 +1,7 @@
 import { Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/sections/Footer";
@@ -114,6 +115,7 @@ export default function RootLayout({ children }) {
           <WhatsAppFloatingButton />
         </Providers>
         {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+        <Analytics />
       </body>
     </html>
   );

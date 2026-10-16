@@ -49,3 +49,74 @@ I was responsible for working on the website and I helped with various tasks tha
 week.
 Worked on bugs.
 `;
+
+// STRONG as the structuring call should answer it (see structure.js).
+export const STRONG_RESUME = {
+  name: "Priya Sharma",
+  headline: "Senior Frontend Engineer",
+  contact: { email: "priya.sharma@example.com", phone: "+91 98765 43210", location: "Bengaluru", links: ["linkedin.com/in/priyasharma"] },
+  summary:
+    "Frontend engineer with 8 years building fast, accessible React applications for fintech and e-commerce products used by millions. I care about performance, design systems and helping teams ship with confidence through strong testing culture and clear code reviews.",
+  experience: [
+    {
+      title: "Senior Frontend Engineer",
+      company: "Razorpay",
+      location: "",
+      dates: "Jan 2022 – Present",
+      tech: "",
+      bullets: [
+        "Led the rebuild of the merchant dashboard in React and TypeScript, cutting load time by 45% for 300,000 merchants.",
+        "Built a shared component library adopted by 12 product teams, reducing UI bugs by 30%.",
+        "Mentored 5 engineers through code reviews and pairing on GraphQL and testing practices.",
+        "Designed an experimentation framework that shipped 40 A/B tests in two quarters.",
+      ],
+    },
+    {
+      title: "Frontend Engineer",
+      company: "Flipkart",
+      location: "",
+      dates: "Jul 2019 – Dec 2021",
+      tech: "",
+      bullets: [
+        "Developed checkout flows in React and Redux serving 2 million daily users.",
+        "Improved Lighthouse performance scores from 54 to 91 by code-splitting and image optimization.",
+        "Automated visual regression testing with Jest and Playwright, saving 10 hours a week of QA.",
+      ],
+    },
+    {
+      title: "Software Engineer",
+      company: "Freshworks",
+      location: "",
+      dates: "Aug 2017 – Jun 2019",
+      tech: "",
+      bullets: [
+        "Implemented a real-time notification centre in React and WebSockets used by 40,000 support agents.",
+        "Migrated 60 legacy jQuery screens to React components, shrinking the bundle by 35%.",
+        "Partnered with designers to standardize a token-based theme system across three products.",
+        "Wrote integration tests for the ticketing UI, lifting coverage from 38% to 82%.",
+      ],
+    },
+  ],
+  projects: [
+    {
+      name: "",
+      link: "",
+      tech: "",
+      dates: "",
+      bullets: [
+        "Created an open-source accessibility linter for React with 1,200 GitHub stars and 30 contributors.",
+        "Built a personal finance tracker in Next.js and PostgreSQL that 2,000 people use every month.",
+      ],
+    },
+  ],
+  education: [{ school: "IIT Delhi", degree: "B.Tech, Computer Science", location: "", dates: "2015 – 2019", details: [] }],
+  skills: [
+    {
+      group: "",
+      items: ["React", "TypeScript", "JavaScript", "Redux", "GraphQL", "Node.js", "Jest", "Playwright", "Webpack", "CSS", "Accessibility", "Performance Optimization"],
+    },
+  ],
+  certifications: [],
+  achievements: [],
+  other: [],
+};

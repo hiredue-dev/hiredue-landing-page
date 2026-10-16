@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 /**
  * The job board's header: a live-openings pill, the headline and the
  * subtitle. The source circles used to live in here too, but that duplicated
@@ -29,6 +31,12 @@ export function JobsHero({ facets }) {
         <p className="t-body mx-auto max-w-[520px] text-balance">
           Openings from LinkedIn, Naukri, Instahyre, Foundit, Wellfound and company career pages, plus LinkedIn
           hiring posts, in one place.
+        </p>
+        <p className="text-[14px] text-dim">
+          Not hearing back?{" "}
+          <Link href="/ats-checker" className="font-semibold text-brand hover:underline">
+            Check your resume&apos;s ATS score free
+          </Link>
         </p>
       </div>
     </div>

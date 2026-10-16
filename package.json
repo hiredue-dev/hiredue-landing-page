@@ -20,6 +20,7 @@
     "@sanity/image-url": "^2.1.1",
     "@splinetool/react-spline": "^4.1.0",
     "@splinetool/runtime": "^1.12.69",
+    "@vercel/analytics": "^2.0.1",
     "clsx": "^2.1.1",
     "framer-motion": "^12.36.0",
     "lucide-react": "^0.462.0",

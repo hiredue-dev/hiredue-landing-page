@@ -10,6 +10,7 @@ import {
 import { getCognitoClient, COGNITO_CLIENT_ID } from "./cognitoClient.js";
 import { setTokens, getRefreshToken, clearTokens, setUserEmail } from "./tokenStore.js";
 import { refreshHostedUiTokens } from "./googleAuthService.js";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 
 function ok(data) {
   return { success: true, data, error: null };
@@ -32,6 +33,7 @@ export async function signUp(email, password) {
         UserAttributes: [{ Name: "email", Value: email }],
       }),
     );
+    trackEvent(EVENTS.signedUp, { method: "email" });
     return ok({ userSub: response.UserSub });
   } catch (err) {
     return fail(err, "Sign up failed");

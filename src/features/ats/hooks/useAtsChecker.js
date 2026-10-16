@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 import { toAtsError } from "../errors.js";
 import { extractText } from "../extract.js";
 import { clearPending, loadPending, RETURN_PATH, savePending } from "../pendingAction.js";
@@ -53,14 +54,18 @@ export function useAtsChecker() {
     try {
       const text = await extractText(file);
       if (id !== runId.current.parse) return;
-      setResume({ fileName: file.name, text, score: scoreResume(text) });
+      const score = scoreResume(text);
+      trackEvent(EVENTS.resumeUploaded, { file_type: fileType(file), score: score.overall });
+      setResume({ fileName: file.name, text, score });
       setOptimize(IDLE);
       setTailor(IDLE);
       setParse({ status: "idle", error: null });
       clearPending();
     } catch (err) {
       if (id !== runId.current.parse) return;
-      setParse({ status: "error", error: toAtsError(err) });
+      const error = toAtsError(err);
+      trackEvent(EVENTS.resumeUploadFailed, { file_type: fileType(file), code: error.code });
+      setParse({ status: "error", error });
     }
   }, []);
 
@@ -85,13 +90,26 @@ export function useAtsChecker() {
     const set = action === "optimize" ? setOptimize : setTailor;
     const id = ++runId.current[action];
     setTab(action);
-    set({ status: "running", stage: action === "optimize" ? "rewriting" : "analyzing", result: null, error: null });
+    set({ status: "running", stage: action === "optimize" ? "structuring" : "analyzing", result: null, error: null });
     const onStage = (stage) => id === runId.current[action] && set((s) => ({ ...s, stage }));
     try {
       const result = action === "optimize" ? await optimizeResume(text, { onStage }) : await tailorResume(text, jobInput, { onStage });
-      if (id === runId.current[action]) set({ status: "done", stage: null, result, error: null });
+      if (id !== runId.current[action]) return;
+      trackEvent(EVENTS.atsActionCompleted, {
+        action,
+        score_before: result.score?.before?.overall,
+        score_after: result.score?.after?.overall,
+        match_before: result.match?.before?.percent,
+        match_after: result.match?.after?.percent,
+        changes: result.changes?.length,
+        partial: Boolean(result.partial),
+      });
+      set({ status: "done", stage: null, result, error: null });
     } catch (err) {
-      if (id === runId.current[action]) set({ status: "error", stage: null, result: null, error: toAtsError(err) });
+      if (id !== runId.current[action]) return;
+      const error = toAtsError(err);
+      trackEvent(EVENTS.atsActionFailed, { action, code: error.code });
+      set({ status: "error", stage: null, result: null, error });
     }
   }, []);
 
@@ -105,6 +123,7 @@ export function useAtsChecker() {
   const request = useCallback(
     (action) => {
       if (!resume) return;
+      trackEvent(EVENTS.atsActionRequested, { action, signed_in: isAuthenticated });
       if (isAuthenticated) {
         execute(action, resume.text, action === "tailor" ? job : null);
         return;
@@ -168,3 +187,5 @@ export function useAtsChecker() {
     isAuthenticated,
   };
 }
+
+const fileType = (file) => file?.name?.split(".").pop()?.toLowerCase() || "unknown";

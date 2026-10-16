@@ -3,28 +3,28 @@
 import { useEffect, useState } from "react";
 
 /**
- * The resume text typeset as a PDF (see pdf/renderResumePdf.js), rebuilt when
- * the text changes. pdf-lib is imported here, on first use, not with the page.
+ * The structured resume typeset as a PDF (see pdf/renderResumePdf.js), rebuilt
+ * when the resume changes. pdf-lib is imported here, on first use, not with the page.
  * @returns {{status: "idle"|"rendering"|"ready"|"error", bytes: Uint8Array|null}}
  */
-export function useResumePdf(text) {
+export function useResumePdf(resume) {
   const [state, setState] = useState({ status: "idle", bytes: null });
 
   useEffect(() => {
-    if (!text) {
+    if (!resume) {
       setState({ status: "idle", bytes: null });
       return undefined;
     }
     let cancelled = false;
     setState({ status: "rendering", bytes: null });
     import("../pdf/renderResumePdf.js")
-      .then(({ renderResumePdf }) => renderResumePdf(text))
+      .then(({ renderResumePdf }) => renderResumePdf(resume))
       .then((bytes) => !cancelled && setState({ status: "ready", bytes }))
       .catch(() => !cancelled && setState({ status: "error", bytes: null }));
     return () => {
       cancelled = true;
     };
-  }, [text]);
+  }, [resume]);
 
   return state;
 }

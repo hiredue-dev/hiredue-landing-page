@@ -1092,10 +1092,10 @@ export const careerPage = {
 };
 
 export const atsChecker = {
-  eyebrow: "ATS Resume Checker",
-  title: "See your resume the way an ATS does",
+  eyebrow: "Instant ATS score · No sign-up",
+  title: "Free ATS Resume Checker",
   description:
-    "Upload your resume for an instant ATS score and the fixes that matter most. Then optimize it, tailor it to a job, and find roles that fit — free.",
+    "See your resume the way an applicant tracking system does. Get an instant ATS score and the fixes that matter most, then optimize it, tailor it to a job, and find roles that fit.",
   privacy: "Scoring runs in your browser. Your file isn't uploaded unless you optimize or tailor.",
   tabs: {
     optimize: {
@@ -1116,13 +1116,74 @@ export const atsChecker = {
       body: "Fresh openings from LinkedIn, Indeed, Greenhouse, Lever and more, searched by the roles and skills on your resume.",
     },
   },
+  // The guide under the checker: what the score measures, how to use it, and
+  // the questions people search for. Keep it true to scoring.js.
+  guide: {
+    scoring: {
+      title: "How your ATS score is calculated",
+      body: "The score is out of 100, across the five things applicant tracking systems and recruiters screen for. The same resume always gets the same score, so a change in score means a change in the resume.",
+      categories: [
+        { label: "Impact", points: 30, body: "Bullets that start with an action verb, show results with numbers, and avoid passive phrasing like \"responsible for\"." },
+        { label: "Formatting", points: 25, body: "Text an ATS can read, a sensible length, dates on every role, no first person, and bullets under 35 words." },
+        { label: "Sections", points: 20, body: "The headings an ATS looks for: Experience (or Projects), Education, Skills and a Summary." },
+        { label: "Skills & keywords", points: 15, body: "A full skills section, with those skills also shown in your experience, not just listed." },
+        { label: "Contact info", points: 10, body: "An email address, a phone number, and a LinkedIn or portfolio link." },
+      ],
+    },
+    steps: {
+      title: "How to check your resume for ATS",
+      items: [
+        { title: "Upload your resume", body: "Drop in a PDF or Word (.docx) file. It's read in your browser, with no sign-up." },
+        { title: "Get your ATS score", body: "See your score out of 100, how each category did, and the top issues ranked by how many points they cost you." },
+        { title: "Fix it in one click", body: "Optimize the whole resume, or tailor it to a job description, then download the improved resume as a PDF." },
+      ],
+    },
+    faq: {
+      title: "ATS resume checker FAQs",
+      items: [
+        {
+          question: "What is an ATS resume checker?",
+          answer: "An applicant tracking system (ATS) is the software most companies use to collect and filter applications before a recruiter reads them. An ATS resume checker reads your resume the way that software does and tells you what could get it filtered out: missing sections, unreadable text, weak bullets and missing keywords.",
+        },
+        {
+          question: "Is this ATS checker free?",
+          answer: "Yes. Your ATS score, the category breakdown and the list of fixes are free, with no sign-up. Optimizing your resume or tailoring it to a job needs a free HireDue account.",
+        },
+        {
+          question: "What is a good ATS score?",
+          answer: "80 or above is strong, 60–79 is good, 40–59 needs work, and below 40 is weak. Aim for 80+, then tailor the resume to each job you apply for so it also matches that job's keywords.",
+        },
+        {
+          question: "How do I make my resume ATS-friendly?",
+          answer: "Use standard section headings (Experience, Education, Skills), a single-column layout with real text rather than images, and dates on every role. Start each bullet with an action verb and back it with a number. List the skills the job asks for, and show them in your experience too.",
+        },
+        {
+          question: "How do I tailor my resume to a job description?",
+          answer: "Open the \"Tailor to a job\" tab and paste the job title and description. HireDue finds the keywords the job screens for, works them into your resume only where your experience supports them, and shows your keyword match before and after.",
+        },
+        {
+          question: "Will the AI make things up on my resume?",
+          answer: "No. Every number, employer, title and date stays exactly as you wrote it. A suggested edit that would change a number, add a figure, or add a skill neither your resume nor the job mentions is left out, and you see every change side by side before you download.",
+        },
+        {
+          question: "Is my resume stored or shared?",
+          answer: "Your ATS score is calculated in your browser, so your file isn't uploaded for it. When you optimize or tailor, only the resume's text is sent to rewrite it. The file itself is never stored.",
+        },
+        {
+          question: "Which file formats can I upload?",
+          answer: "PDF and Word (.docx), up to 5 MB and 10 pages. A scanned PDF has no text to read, so export it from the original document instead. For an old .doc file, save it as .docx first.",
+        },
+      ],
+    },
+  },
   stages: {
     optimize: [
+      { id: "structuring", label: "Reading your resume's sections, roles and bullets" },
       { id: "rewriting", label: "Rewriting your bullets" },
       { id: "rescoring", label: "Checking every change and rescoring" },
     ],
     tailor: [
-      { id: "analyzing", label: "Reading the job for the keywords it screens for" },
+      { id: "analyzing", label: "Reading your resume and the job's keywords" },
       { id: "rewriting", label: "Working them into your resume" },
       { id: "rescoring", label: "Checking every change and rescoring" },
     ],
