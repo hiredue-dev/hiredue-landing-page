@@ -1,6 +1,6 @@
 /*
- * Product analytics: one call sends an event to Vercel Analytics and, when the
- * site's Google Analytics tag is loaded, to GA as well. Page views are counted
+ * Product analytics: one call sends an event to Vercel Analytics and, when their
+ * tags are loaded, to Google Analytics and Microsoft Clarity as well. Page views are counted
  * by <Analytics /> in the root layout on their own; these events are for the
  * pages and actions we want to follow by name.
  *
@@ -60,5 +60,9 @@ export function trackEvent(name, props) {
   } catch {}
   try {
     window.gtag?.("event", name, data);
+  } catch {}
+  // Clarity takes only the event name; it can then filter recordings by it.
+  try {
+    window.clarity?.("event", name);
   } catch {}
 }
