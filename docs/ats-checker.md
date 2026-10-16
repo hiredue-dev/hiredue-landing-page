@@ -6,17 +6,26 @@ A page at `/ats-checker` (in the navbar, the footer and the sitemap) where a vis
 |---|---|---|
 | Upload (PDF/DOCX, max 5 MB, max 10 pages) | No | Text is extracted in the browser: `pdfjs-dist` for PDF, `mammoth` for DOCX. Both are imported on first use, so neither weighs on the landing page. |
 | ATS score + breakdown + top issues | No | A deterministic checklist runs in the browser (`features/ats/scoring.js`). Categories: Contact 10, Sections 20, Impact 30, Skills & keywords 15, Formatting 25. The file never leaves the visitor's machine. |
-| Optimize + rescore | Yes | One LLM call through `POST llm/generate`. The model's edits are checked locally (`patch.js`), then the result is rescored. The UI shows the score before and after, the new resume as a PDF in an in-page viewer with Download PDF (Copy text as a secondary action), and a diff of the original resume against the new one (see below). |
-| Tailor to a job + rescore | Yes | A gap analysis (one LLM call plus at most one "missed keywords" follow-up), then skills and bullet rewrites in parallel. Shows the job-keyword match (%) and the ATS score, each before and after, and the same diff. |
+| Optimize + rescore | Yes | The resume is first sorted into a fixed structure (see below), then one LLM call through `POST llm/generate` suggests edits. The model's edits are checked locally (`patch.js`), then the result is rescored. The UI shows the score before and after, the new resume as a PDF in an in-page viewer with Download PDF (Copy text as a secondary action), and a diff of the original resume against the new one (see below). |
+| Tailor to a job + rescore | Yes | The structure and a gap analysis (one LLM call plus at most one "missed keywords" follow-up) in parallel, then skills and bullet rewrites in parallel. Shows the job-keyword match (%) and the ATS score, each before and after, and the same diff. |
 | Find jobs | No (same as /jobs) | The board's role facets that the resume mentions, plus its skills, become keyword chips. Results come from the existing `useJobBoard` / `JobCard` / `JobDetailDialog`. Apply follows the board's rules, and "See all" opens `/jobs?q=…`. |
 
 There is no ATS score anywhere else in the system to reuse. The desktop app only counts job-keyword coverage, and the backend has no scoring endpoint. The score is deterministic on purpose: the same text always gets the same score, so before/after reflects the edit rather than model noise.
 
+## The structured resume
+
+Text extracted from a PDF has lost which line is a job title, a date, a location or a wrapped bullet. Guessing that back from the lines gave PDFs with every line centred, a role header merged with its tech stack, and empty bullets. So Optimize and Tailor work on a fixed structure instead (`structure.js`):
+
+- **Structuring:** one LLM call (`structurePrompt` in `prompts.js`) sorts the text into a fixed shape: name, headline, contact (email, phone, location, links), summary, experience (title, company, location, dates, tech, bullets), projects, education, skills (groups of items), certifications, achievements, and `other` for any section the shape has no field for. It is told to copy every value verbatim and drop only layout debris (icon glyphs, bullet symbols, headings).
+- **Checks** (`toResume`): every field is coerced to the shape; a field is kept only when every number on it and at least 85% of its words are on the source; icon-font glyphs are stripped. If the result carries less than 85% of the source's words, or has no experience, projects or education, it fails as `unstructured`. A failed check is asked once more, then shown as an error. The structure is kept for the last resume, so Optimize then Tailor asks once.
+- **Edits by id:** the model sees the structure with an id on each line it may change (the summary, and the bullets of roles, projects and achievements; `editableLines`) and answers `{op: "rewrite", id, after}`. Names, titles, employers, dates, schooling and contact details have no id and can't change. Added skills go into the group the model names, else an "Additional" group.
+- **One layout:** `resumeBlocks` turns the structure into typed blocks in a fixed order (Summary, Skills, Experience, Projects, Education, Certifications, Achievements, then any other sections). The PDF and the plain text (`resumeToText`, used for rescoring, the diff and Copy text) are both made from it, so the diff shows only the edits. The "before" score stays the score of the uploaded file.
+
 ## The PDF
 
-`pdf/renderResumePdf.js` builds the PDF in the browser with `pdf-lib`, loaded on demand:
+`pdf/renderResumePdf.js` builds the PDF from the structure in the browser with `pdf-lib`, loaded on demand:
 - **Format:** US Letter like the desktop template, single column, standard Helvetica, real text.
-- **Structure:** `pdf/layout.js` reads the resume text into name, contact lines, headings, role lines, dates and bullets. It re-joins bullets and summary sentences that the source PDF wrapped.
+- **Template:** name, headline and contact line centred; everything else left-aligned. Each section has a standard heading and a rule. Each role is its title in bold with the dates right-aligned on the same line, then company and location, then its tech stack, then its bullets with a hanging indent.
 - **Characters:** ones the standard font can't draw are replaced (`₹` becomes "INR") or stripped of accents (non-Latin scripts drop out).
 - **Check:** a test reads the generated PDF back with pdf.js and confirms the ATS score is unchanged.
 
@@ -28,13 +37,22 @@ There is no ATS score anywhere else in the system to reuse. The desktop app only
 
 The logic is `resumeDiff()` in `diff.js`, a line-level LCS. Inside each run of changes, the removed and added lines are compared word by word (with the same tokens as `wordDiff`). A bullet that the source PDF wrapped over two lines and the rewrite joined into one shows as two red lines and one green line, with only the new words highlighted.
 
+## SEO
+
+- **Title, description and H1:** these target "free ATS resume checker" and "ATS score". The title tag is `Free ATS Resume Checker – Instant ATS Score & Fixes`, and the description fits within Google's ~155-character snippet.
+- **Guide:** `components/AtsGuide.jsx` sits below the tool and is server-rendered. It explains how the score is calculated (the real category weights from `scoring.js`), gives three steps, and answers 8 FAQs. The FAQs use native `<details>`, so the answers stay in the HTML while closed. Its copy is in `content.js` under `atsChecker.guide`; keep it true to `scoring.js`.
+- **JSON-LD:** `getAtsCheckerJsonLd()` in `lib/seo.js` emits WebApplication (free, `price: 0`), WebPage, BreadcrumbList and FAQPage. The FAQPage is built from the same items as the visible FAQ. There is no `aggregateRating`, because there are no real reviews to back one.
+- **Social image:** a page-specific OG image at `app/ats-checker/opengraph-image.jsx`.
+- **Internal links:** the navbar, the footer and the `/jobs` hero ("Check your resume's ATS score free").
+- **`/llms.txt`:** a plain-text site map for AI assistants (`app/llms.txt/route.js`), with the checker listed first.
+
 ## What was reused rather than rebuilt
 
 - **API client:** `features/auth/services/apiClient.js`. It handles the Bearer token, refresh on 401, and the `{success, data, error}` envelope.
 - **Job search:** `useJobBoard`, `listJobs`/`getJobFilters`, `JobCard`, `JobCardSkeleton`, `JobDetailDialog`, and `filters.js` (`filtersToQuery`, `joinKeywords`).
 - **Auth UI:** the site-wide `FloatingAuthModal` (`useAuthModal().showModal`), its redirect handling, and `AuthContext`.
 - **UI primitives:** `Eyebrow`/`Reveal`, `primaryButton`/`secondaryButton`, `Field`/`FormError`, `Dialog`, and the type and colour tokens from `globals.css`. The repo has no toast or upload component, so errors are shown inline the way the job board does it.
-- **Desktop app logic, ported:** `coverage.js` and `diff.js` are ports of `electron/resumeOptimization/domain/{coverage,diff}.cjs`. `prompts.js` adapts `adapters/optimizer.adapter.cjs` to plain text, keeping the same rules: keep every fact, never change or add a number, quote lines exactly.
+- **Desktop app logic, ported:** `coverage.js` and `diff.js` are ports of `electron/resumeOptimization/domain/{coverage,diff}.cjs`. `prompts.js` adapts `adapters/optimizer.adapter.cjs` to the web's structured resume, keeping the same rules: keep every fact, never change or add a number.
 
 ## Auth gating and state restoration
 
@@ -63,9 +81,10 @@ Applying to a job from the "Find jobs" tab works the same way: signed out, it op
 `npm test` adds 56 tests to the existing 25:
 
 - `scoring.test.js`: sections and bullets, determinism, category bounds, issue order
-- `patch.test.js`: coverage and diff ports, quote matching across PDF line wraps, refusal rules
-- `services/atsService.test.js`: `llm/generate` payload; mapping of 401/413/429/502/503/timeout/network errors; optimize and tailor flows, including a partial failure
-- `pdf/renderResumePdf.test.js`: layout blocks, character substitution, wrapping, pagination, and a round-trip in which the generated PDF parses back to the same ATS score
+- `structure.test.js`: verbatim checks on the model's structure, glyph stripping, the coverage floor, the fixed section order, the plain text scoring like the source, line ids
+- `patch.test.js`: coverage and diff ports, edits by id, refusal rules, skill groups
+- `services/atsService.test.js`: `llm/generate` payload; mapping of 401/413/429/502/503/timeout/network errors; structuring (kept per resume, one retry, failures not kept); optimize and tailor flows, including a partial failure
+- `pdf/renderResumePdf.test.js`: character substitution, wrapping, pagination, and a round-trip in which the generated PDF parses back to the same ATS score
 - `pendingAction.test.js`: save/load, TTL, tampered entries
 - `hooks/useAtsChecker.test.js`: the full restore flow; a signed-out click opens the site modal with the return path; the action runs once on return (email push or Google reload) after auth settles, and the flag is stripped; returning without auth runs nothing
 - `components/AuthReturnWatcher.test.js`: the watcher fires when `?ats=resume` appears after a client-side push
@@ -90,7 +109,7 @@ POST /api/resume/tailor        authMiddleware, llmRateLimitMiddleware
   body: { resumeText: string (<= 30000), job: { title: string (<= 200), company?: string (<= 200), description: string (<= 15000) } }
   200:  { success, data: { keywords: {term, importance, evidence}[], ops: Op[] } }
 
-Op = { op: "rewrite_line", before, after, reason } | { op: "add_skill", skill, reason }
+Op = { op: "rewrite", id, after, reason } | { op: "add_skill", skill, group?, reason }
 Errors: 400 invalid body · 401 · 413 too long · 429 Retry-After · 502/503 provider
 ```
 

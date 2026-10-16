@@ -5,7 +5,10 @@ export const socialImageAlt =
 export const socialImageSize = { width: 1200, height: 630 };
 export const socialImageContentType = "image/png";
 
-export function createDefaultSocialImage() {
+export function createDefaultSocialImage({
+  title = "Your AI job search agent",
+  subtitle = "Discover, tailor, apply, and reach hiring managers faster.",
+} = {}) {
   return new ImageResponse(
     <div
       style={{
@@ -56,7 +59,7 @@ export function createDefaultSocialImage() {
             maxWidth: 950,
           }}
         >
-          Your AI job search agent
+          {title}
         </div>
         <div
           style={{
@@ -67,7 +70,7 @@ export function createDefaultSocialImage() {
             marginTop: 26,
           }}
         >
-          Discover, tailor, apply, and reach hiring managers faster.
+          {subtitle}
         </div>
       </div>
     </div>,

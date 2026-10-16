@@ -18,6 +18,7 @@ import {
   setUserEmail,
 } from "../services/tokenStore.js";
 import { createUserInCloud } from "../services/userService.js";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 import { getSubscription } from "@/features/subscription/services/subscriptionService.js";
 
 const AuthContext = createContext(null);
@@ -115,6 +116,7 @@ export function AuthProvider({ children }) {
       const derived = deriveUserFromIdToken();
       setUser(derived);
       setIsAuthenticated(true);
+      trackEvent(EVENTS.loggedIn, { method: "email" });
       await loadSubscription();
       return derived;
     },
@@ -129,6 +131,7 @@ export function AuthProvider({ children }) {
       const derived = deriveUserFromIdToken();
       setUser(derived);
       setIsAuthenticated(true);
+      trackEvent(EVENTS.loggedIn, { method: "google" });
 
       if (phoneNumber) {
         try {

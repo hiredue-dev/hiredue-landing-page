@@ -19,6 +19,10 @@ const MESSAGES = {
   rate_limited: { message: "You've made a lot of requests in a short time. Wait a minute and try again.", retry: true },
   timeout: { message: "This is taking longer than it should. Please try again.", retry: true },
   unavailable: { message: "Our AI service is busy right now. Please try again in a moment.", retry: true },
+  unstructured: {
+    message: "We couldn't reliably tell your resume's sections, roles and bullets apart. Try again, or upload a simpler single-column PDF or DOCX.",
+    retry: true,
+  },
   no_changes: { message: "We couldn't find safe improvements to make this time. Try again, or the resume may already be in good shape.", retry: true },
   failed: { message: "Something went wrong. Please try again.", retry: true },
 };

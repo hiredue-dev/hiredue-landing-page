@@ -6,6 +6,7 @@ import { Linkedin, Loader2, SearchX, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
 import { useJobBoard } from "../hooks/useJobBoard.js";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
+import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
 import { getJobFilters } from "../services/jobBoardService.js";
 import {
   EMPTY_FILTERS,
@@ -129,6 +130,10 @@ export function JobBoard() {
   const applyId = searchParams.get("apply");
   const closeApply = useCallback(() => setParams({ apply: null }), [setParams]);
   const closeDetail = useCallback(() => setDetailJob(null), []);
+  const openDetail = useCallback((job) => {
+    trackEvent(EVENTS.jobViewed, jobProps(job, "jobs"));
+    setDetailJob(job);
+  }, []);
 
   const openAccount = useCallback(
     (request = {}) => {
@@ -149,6 +154,7 @@ export function JobBoard() {
   const openApply = useCallback(
     (job) => {
       setDetailJob(null);
+      trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated });
       if (isAuthenticated) {
         setParams({ apply: job.id });
         return;
@@ -241,7 +247,7 @@ export function JobBoard() {
                 authKey={authKey}
                 onUnlock={() => unlockPosts()}
                 onSeeAll={() => setSource("posts")}
-                onOpen={setDetailJob}
+                onOpen={openDetail}
               />
             )}
 
@@ -332,7 +338,7 @@ export function JobBoard() {
               <>
                 <CardGrid>
                   {board.jobs.map((job) => (
-                    <Card key={job.id} job={job} onOpen={setDetailJob} onApply={openApply} />
+                    <Card key={job.id} job={job} onOpen={openDetail} onApply={openApply} />
                   ))}
                 </CardGrid>
 
