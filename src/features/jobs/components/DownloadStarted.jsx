@@ -3,19 +3,42 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Check, Download } from "lucide-react";
+import { Clock, Download, FileText, LayoutDashboard, Lock } from "lucide-react";
 import clsx from "clsx";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { YouTubeEmbed } from "@/components/site/ui/YouTubeEmbed";
-import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 import { assets } from "@/lib/assets";
-import { steps } from "@/lib/content";
-import { detectPlatform, PLATFORMS, SETUP } from "../downloads.js";
+import { detectPlatform, PLATFORMS } from "../downloads.js";
 import { getJob } from "../services/jobBoardService.js";
 import { darkButton, secondaryButton } from "./ui.jsx";
 
-const DEMO_VIDEO_URL = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL || "";
+// The product demo on YouTube, the same one sent with onboarding calendar invites; the env var overrides it when the video changes.
+const DEMO_VIDEO_URL = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL || "https://www.youtube.com/watch?v=Slh8o5oQRU4";
+
+/** Why install, from the job seeker's side. Benefits, not features, and nothing the app cannot do. */
+const BENEFITS = [
+  {
+    icon: Clock,
+    title: "Your evenings back",
+    body: "Each application you fill by hand takes a quarter of an hour or more. HireDue fills them from your profile while you do something else, and you review what went out.",
+  },
+  {
+    icon: FileText,
+    title: "A resume written for every posting",
+    body: "Screening software reads your resume before a person does. HireDue rewrites it for each role so the right words are there, and you keep every version.",
+  },
+  {
+    icon: LayoutDashboard,
+    title: "One place to see where you stand",
+    body: "Jobs found, resumes tailored, applications sent and recruiters contacted, in one dashboard instead of a spreadsheet and six tabs.",
+  },
+  {
+    icon: Lock,
+    title: "Your data stays on your laptop",
+    body: "Your resume, your logins and your applications live on your own computer. Nothing is stored for you on a server you cannot see.",
+  },
+];
 
 /**
  * Where "Auto-apply with HireDue" lands once the visitor is signed in. The
@@ -29,7 +52,6 @@ const DEMO_VIDEO_URL = process.env.NEXT_PUBLIC_DEMO_VIDEO_URL || "";
 export function DownloadStarted() {
   const searchParams = useSearchParams();
   const jobId = searchParams.get("job");
-  const { user } = useAuth();
   const [platformKey, setPlatformKey] = useState(null);
   const [started, setStarted] = useState(false);
   const [job, setJob] = useState(null);
@@ -89,36 +111,25 @@ export function DownloadStarted() {
             </Link>
           </Reveal>
 
-          <Reveal y={30} className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
-            <div className="rounded-[20px] bg-white p-1.5">
-              <YouTubeEmbed url={DEMO_VIDEO_URL} fallbackSrc={assets.overview.dashboard} fallbackAlt="HireDue live dashboard" className="w-full rounded-[14px]" />
-            </div>
-            <div className="flex flex-col gap-4 rounded-[20px] bg-surface p-6">
-              <h2 className="t-h5">{build ? `Set up on ${build.name}` : "Set up"}</h2>
-              <ol className="flex flex-col gap-3">
-                {[
-                  ...(build ? SETUP[build.os] : ["Download the installer for your computer above."]),
-                  user?.email ? `Sign in with ${user.email}.` : "Sign in with your HireDue account.",
-                ].map((text, index) => (
-                  <li key={text} className="flex gap-3 text-[15px] leading-[1.5] text-ink">
-                    <span className="grid size-6 shrink-0 place-items-center rounded-full bg-white text-[12px] font-semibold text-dim">{index + 1}</span>
-                    <span className="pt-px">{text}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
+          <Reveal y={30} className="mx-auto w-full max-w-[900px] rounded-[20px] bg-white p-1.5">
+            <YouTubeEmbed url={DEMO_VIDEO_URL} fallbackSrc={assets.overview.dashboard} fallbackAlt="HireDue live dashboard" className="w-full rounded-[14px]" />
           </Reveal>
 
           <Reveal delay={0.1} className="flex flex-col gap-6">
-            <h2 className="t-h3 text-center">What happens once it is running</h2>
-            <div className="grid gap-5 md:grid-cols-3">
-              {steps.items.slice(1).map((item) => (
-                <div key={item.title} className="flex flex-col gap-2 rounded-[20px] bg-white p-6">
-                  <span className="inline-flex size-8 items-center justify-center rounded-full bg-success-10 text-success">
-                    <Check size={16} aria-hidden />
+            <div className="mx-auto flex max-w-[640px] flex-col items-center gap-2 text-center">
+              <h2 className="t-h3">What changes once HireDue is running</h2>
+              <p className="t-body-lg">The app does the part of a job search that eats your time, so the part that needs you gets it.</p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2">
+              {BENEFITS.map(({ icon: Icon, title, body }) => (
+                <div key={title} className="flex gap-4 rounded-[20px] bg-white p-6">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-[12px] bg-ice text-brand">
+                    <Icon size={18} aria-hidden />
                   </span>
-                  <h3 className="text-[17px] font-semibold text-ink">{item.title}</h3>
-                  <p className="t-body">{item.description}</p>
+                  <div className="flex flex-col gap-1.5">
+                    <h3 className="text-[17px] font-semibold text-ink">{title}</h3>
+                    <p className="t-body">{body}</p>
+                  </div>
                 </div>
               ))}
             </div>

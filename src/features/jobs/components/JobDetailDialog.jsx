@@ -83,6 +83,14 @@ export function JobDetailDialog({ job, onClose, onApply, onAutoApply, path = "de
             <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
               {path === "desktop" ? (
                 <>
+                  {/* Quiet on purpose: the manual path is the one we would rather people did not take, but it stays a readable link, never hidden. */}
+                  <button
+                    type="button"
+                    onClick={() => onApply(shown)}
+                    className="shrink-0 px-3 py-2.5 text-[14px] font-medium text-dim underline-offset-4 transition-colors hover:text-ink hover:underline"
+                  >
+                    Apply manually
+                  </button>
                   {onAutoApply ? (
                     <button
                       type="button"
@@ -94,14 +102,6 @@ export function JobDetailDialog({ job, onClose, onApply, onAutoApply, path = "de
                   ) : (
                     <AutomateLink className="flex-1 sm:flex-none" />
                   )}
-                  {/* Quiet on purpose: the manual path is the one we would rather people did not take, but it stays a readable link, never hidden. */}
-                  <button
-                    type="button"
-                    onClick={() => onApply(shown)}
-                    className="shrink-0 px-3 py-2.5 text-[14px] font-medium text-dim underline-offset-4 transition-colors hover:text-ink hover:underline"
-                  >
-                    Apply manually
-                  </button>
                 </>
               ) : (
                 <button
