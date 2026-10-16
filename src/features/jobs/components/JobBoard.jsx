@@ -196,6 +196,11 @@ export function JobBoard() {
     setDownloadOpen(true);
   }, [jobId, applyId, setParams]);
   const dialogs = useMemo(() => ({ openAccount, openDownload }), [openAccount, openDownload]);
+  // Auto-apply lands on the download-started page, which starts the installer and explains the app; the dialog stays for the cards' Automate button.
+  const goToDownload = useCallback(
+    (jobId) => router.push(`/download/started${jobId ? `?job=${encodeURIComponent(jobId)}` : ""}`),
+    [router],
+  );
 
   const openApply = useCallback(
     (job) => {
@@ -221,7 +226,7 @@ export function JobBoard() {
     (job) => {
       trackEvent(EVENTS.jobAutoApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated });
       if (isAuthenticated) {
-        openDownload();
+        goToDownload(job.id);
         return;
       }
       saveIntent({ intent: "install", jobId: job.id });
@@ -230,11 +235,11 @@ export function JobBoard() {
         job,
         onSuccess: () => {
           clearIntent();
-          openDownload();
+          goToDownload(job.id);
         },
       });
     },
-    [isAuthenticated, openAccount, openDownload],
+    [isAuthenticated, openAccount, goToDownload],
   );
 
   // Back from an employer's application form: the clock started by the apply dialog is read when this tab is visible again, and anything worth saying is said once.
@@ -263,9 +268,9 @@ export function JobBoard() {
     const saved = loadIntent();
     if (!saved) return;
     clearIntent();
-    if (saved.intent === "install") openDownload();
+    if (saved.intent === "install") goToDownload(saved.jobId);
     else setParams({ job: null, apply: saved.jobId });
-  }, [authLoading, isAuthenticated, openDownload, setParams]);
+  }, [authLoading, isAuthenticated, goToDownload, setParams]);
   const unlockPosts = useCallback(
     (mode = "signup") => openAccount({ mode, reason: "posts", onSuccess: () => setSource("posts") }),
     [openAccount, setSource],
@@ -497,7 +502,7 @@ export function JobBoard() {
         onClose={closeReturn}
         onDownload={() => {
           closeReturn();
-          openDownload();
+          goToDownload(returnInfo?.jobId);
         }}
         onOpenJob={(j) => {
           closeReturn();

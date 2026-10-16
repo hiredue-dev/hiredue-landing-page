@@ -4,59 +4,9 @@ import { useEffect, useState } from "react";
 import { Clock, Download, MonitorDown } from "lucide-react";
 import clsx from "clsx";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
+import { detectPlatform, PLATFORMS, SETUP } from "../downloads.js";
 import { Steps } from "./AccountFlow.jsx";
 import { Dialog, darkButton, primaryButton, secondaryButton } from "./ui.jsx";
-
-const PLATFORMS = [
-  {
-    key: "mac-arm",
-    name: "macOS",
-    variant: "Apple Silicon (M1 and newer)",
-    url: process.env.NEXT_PUBLIC_DOWNLOAD_MAC_ARM || "",
-    file: ".dmg",
-    os: "mac",
-  },
-  {
-    key: "windows",
-    name: "Windows",
-    variant: "Windows 10 & 11, 64-bit",
-    url: process.env.NEXT_PUBLIC_DOWNLOAD_WINDOWS || "",
-    file: ".exe",
-    os: "windows",
-  },
-  {
-    key: "mac-intel",
-    name: "macOS",
-    variant: "Intel Macs",
-    url: process.env.NEXT_PUBLIC_DOWNLOAD_MAC_INTEL || "",
-    file: ".dmg",
-    os: "mac",
-    comingSoon: !process.env.NEXT_PUBLIC_DOWNLOAD_MAC_INTEL,
-  },
-];
-
-const SETUP = {
-  mac: [
-    "Open the HireDue .dmg from your Downloads.",
-    "Drag HireDue into your Applications folder.",
-    "Open HireDue from Applications. If macOS asks, confirm you want to open it.",
-  ],
-  windows: [
-    "Open the HireDue installer (.exe) from your Downloads.",
-    "Follow the installer. It takes under a minute.",
-    "Launch HireDue from the Start menu.",
-  ],
-};
-
-const STEPS = ["Download", "Set up"];
-
-/** Browsers can't tell Apple Silicon from Intel, so every Mac gets the Apple Silicon build first. */
-function detectPlatform() {
-  const ua = typeof navigator === "undefined" ? "" : navigator.userAgent;
-  if (/Windows/i.test(ua)) return "windows";
-  if (/Mac/i.test(ua)) return "mac-arm";
-  return null;
-}
 
 /**
  * "Automate with HireDue": download the desktop app, then how to set it up.

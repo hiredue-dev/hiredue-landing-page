@@ -21,6 +21,7 @@ export const EVENTS = {
   jobManualApplyStarted: "job_manual_apply_started",
   jobReturnShown: "job_return_shown",
   jobReturnAction: "job_return_action",
+  downloadStarted: "download_started",
   resumeUploaded: "ats_resume_uploaded",
   resumeUploadFailed: "ats_resume_upload_failed",
   atsActionRequested: "ats_action_requested",
