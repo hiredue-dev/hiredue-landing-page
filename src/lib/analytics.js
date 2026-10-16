@@ -16,6 +16,7 @@ export const EVENTS = {
   atsPageViewed: "ats_page_viewed",
   jobViewed: "job_viewed",
   jobApplyClicked: "job_apply_clicked",
+  jobAutoApplyClicked: "job_auto_apply_clicked",
   resumeUploaded: "ats_resume_uploaded",
   resumeUploadFailed: "ats_resume_upload_failed",
   atsActionRequested: "ats_action_requested",
