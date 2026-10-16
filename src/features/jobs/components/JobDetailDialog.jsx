@@ -1,10 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Check, Link2 } from "lucide-react";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
+import { jobLinkFor } from "../jobLink.js";
 import { getJob } from "../services/jobBoardService.js";
 import { AutomateLink, JobBadges, JobMeta } from "./JobCard.jsx";
-import { CompanyLogo, Dialog, primaryButton } from "./ui.jsx";
+import { CompanyLogo, Dialog, primaryButton, secondaryButton } from "./ui.jsx";
 
 /** Full posting. Opens instantly from the card's data; the description loads in behind it. */
 export function JobDetailDialog({ job, onClose, onApply }) {
@@ -74,6 +76,7 @@ export function JobDetailDialog({ job, onClose, onApply }) {
               {isAuthenticated ? "Opens the employer's application page." : "Free account required to apply."}
             </p>
             <div className="flex w-full gap-2 sm:w-auto">
+              <CopyLinkButton jobId={shown.id} />
               <AutomateLink className="flex-1 sm:flex-none" />
               <button
                 type="button"
@@ -87,5 +90,32 @@ export function JobDetailDialog({ job, onClose, onApply }) {
         </>
       )}
     </Dialog>
+  );
+}
+
+/** Copies this job's own address, so an ambassador can turn it into a tracked link on their dashboard. */
+function CopyLinkButton({ jobId }) {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return undefined;
+    const timer = setTimeout(() => setCopied(false), 1500);
+    return () => clearTimeout(timer);
+  }, [copied]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(jobLinkFor(window.location.origin, jobId));
+      setCopied(true);
+    } catch {
+      // Clipboard access can be refused; the address bar still holds the same link.
+    }
+  };
+
+  return (
+    <button type="button" onClick={copy} aria-label="Copy link to this job" className={`${secondaryButton} shrink-0 px-4`}>
+      {copied ? <Check size={16} aria-hidden /> : <Link2 size={16} aria-hidden />}
+      <span className="hidden sm:inline">{copied ? "Copied" : "Copy link"}</span>
+    </button>
   );
 }
