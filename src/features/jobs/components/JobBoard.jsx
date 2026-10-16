@@ -137,7 +137,9 @@ export function JobBoard() {
   const Card = showPosts ? PostCard : JobCard;
 
   const applyId = searchParams.get("apply");
-  const closeApply = useCallback(() => setParams({ apply: null }), [setParams]);
+  // Set by the ATS checker's "Continue to application", so the apply dialog does not ask for the resume a second time.
+  const tailored = searchParams.get("tailored") === "1";
+  const closeApply = useCallback(() => setParams({ apply: null, tailored: null }), [setParams]);
   const jobId = searchParams.get("job");
   const closeDetail = useCallback(() => setParams({ job: null }), [setParams]);
   const openDetail = useCallback(
@@ -466,7 +468,7 @@ export function JobBoard() {
         onAutoApply={install ? openAutoApply : undefined}
         path={install ? "desktop" : "mobile"}
       />
-      <ApplyDialog jobId={applyId} onClose={closeApply} />
+      <ApplyDialog jobId={applyId} onClose={closeApply} path={install ? "desktop" : "mobile"} tailored={tailored} />
       <AccountDialog
         request={accountRequest}
         // Closed without signing in: forget the button they pressed, or a later log-in would act on it out of the blue.
