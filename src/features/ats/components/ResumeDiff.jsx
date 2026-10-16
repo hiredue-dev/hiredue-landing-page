@@ -80,7 +80,7 @@ export function ResumeDiff({ before, after, changes = [] }) {
   const hidden = blocks.length - shown.length;
 
   return (
-    <section className="flex flex-col gap-2.5" aria-label="Changes to your resume">
+    <section className="flex flex-col gap-2.5" aria-label="Changes to your resume" data-clarity-mask="True">
       <h4 className="text-[15px] font-semibold text-ink">
         What changed ({blocks.length})
       </h4>
