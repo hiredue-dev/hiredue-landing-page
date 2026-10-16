@@ -14,6 +14,7 @@ import { EMPTY_FILTERS, filtersToQuery } from "@/features/jobs/filters.js";
 import { useJobBoard } from "@/features/jobs/hooks/useJobBoard.js";
 import { getJobFilters } from "@/features/jobs/services/jobBoardService.js";
 import { roleLabel } from "@/features/jobs/format.js";
+import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
 import { atsChecker } from "@/lib/content";
 import { keywordsToQuery, resumeKeywords } from "../jobQuery.js";
 
@@ -94,9 +95,15 @@ function Matches({ terms }) {
   const [detail, setDetail] = useState(null);
   const boardHref = `/jobs?${query}`;
 
+  const openDetail = useCallback((job) => {
+    trackEvent(EVENTS.jobViewed, jobProps(job, "ats_checker"));
+    setDetail(job);
+  }, []);
+
   const apply = useCallback(
     (job) => {
       setDetail(null);
+      trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "ats_checker"), signed_in: isAuthenticated });
       const href = `${boardHref}&apply=${encodeURIComponent(job.id)}`;
       if (isAuthenticated) {
         router.push(href);
@@ -130,7 +137,7 @@ function Matches({ terms }) {
       </p>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-5">
         {board.jobs.slice(0, SHOWN).map((job) => (
-          <JobCard key={job.id} job={job} onOpen={setDetail} onApply={apply} />
+          <JobCard key={job.id} job={job} onOpen={openDetail} onApply={apply} />
         ))}
       </div>
       <div className="flex flex-wrap items-center gap-3">

@@ -1,13 +1,57 @@
+import { TrackPageView } from "@/components/site/analytics/TrackPageView";
+import { JsonLd } from "@/components/site/seo/JsonLd";
 import { AtsChecker } from "@/features/ats/components/AtsChecker";
-import { createPageMetadata } from "@/lib/seo";
+import { AtsGuide } from "@/features/ats/components/AtsGuide";
+import { EVENTS } from "@/lib/analytics";
+import { atsChecker } from "@/lib/content";
+import { createPageMetadata, getAtsCheckerJsonLd } from "@/lib/seo";
 
-export const metadata = createPageMetadata({
+const TITLE = "Free ATS Resume Checker – Instant ATS Score & Fixes";
+const DESCRIPTION =
+  "Check your resume against ATS for free. Get an instant ATS score, the fixes that matter most, and one-click tailoring to any job description. No sign-up.";
+
+export const metadata = {
+  ...createPageMetadata({
+    title: TITLE,
+    description: DESCRIPTION,
+    path: "/ats-checker",
+    absoluteTitle: true,
+    image: "/ats-checker/opengraph-image",
+    imageAlt: "Free ATS Resume Checker by HireDue",
+  }),
+  keywords: [
+    "ATS resume checker",
+    "ATS score",
+    "free ATS checker",
+    "resume checker",
+    "ATS friendly resume",
+    "resume score",
+    "tailor resume to job description",
+  ],
+};
+
+const jsonLd = getAtsCheckerJsonLd({
   title: "Free ATS Resume Checker",
-  description:
-    "Upload your resume for an instant ATS score and the fixes that matter most. Optimize it, tailor it to a job description, and find jobs that match — free.",
-  path: "/ats-checker",
+  description: DESCRIPTION,
+  features: [
+    "Instant ATS score out of 100",
+    "Score breakdown: impact, formatting, sections, skills & keywords, contact info",
+    "Top issues ranked by points lost",
+    "AI resume optimization",
+    "Tailor your resume to a job description",
+    "Download the improved resume as a PDF",
+    "Matching job search",
+  ],
+  faq: atsChecker.guide.faq.items,
 });
 
 export default function AtsCheckerPage() {
-  return <AtsChecker />;
+  return (
+    <>
+      <JsonLd data={jsonLd} />
+      <TrackPageView event={EVENTS.atsPageViewed} />
+      <AtsChecker />
+      <AtsGuide />
+    </>
+  );
 }

@@ -28,6 +28,15 @@ There is no ATS score anywhere else in the system to reuse. The desktop app only
 
 The logic is `resumeDiff()` in `diff.js`, a line-level LCS. Inside each run of changes, the removed and added lines are compared word by word (with the same tokens as `wordDiff`). A bullet that the source PDF wrapped over two lines and the rewrite joined into one shows as two red lines and one green line, with only the new words highlighted.
 
+## SEO
+
+- **Title, description and H1:** these target "free ATS resume checker" and "ATS score". The title tag is `Free ATS Resume Checker – Instant ATS Score & Fixes`, and the description fits within Google's ~155-character snippet.
+- **Guide:** `components/AtsGuide.jsx` sits below the tool and is server-rendered. It explains how the score is calculated (the real category weights from `scoring.js`), gives three steps, and answers 8 FAQs. The FAQs use native `<details>`, so the answers stay in the HTML while closed. Its copy is in `content.js` under `atsChecker.guide`; keep it true to `scoring.js`.
+- **JSON-LD:** `getAtsCheckerJsonLd()` in `lib/seo.js` emits WebApplication (free, `price: 0`), WebPage, BreadcrumbList and FAQPage. The FAQPage is built from the same items as the visible FAQ. There is no `aggregateRating`, because there are no real reviews to back one.
+- **Social image:** a page-specific OG image at `app/ats-checker/opengraph-image.jsx`.
+- **Internal links:** the navbar, the footer and the `/jobs` hero ("Check your resume's ATS score free").
+- **`/llms.txt`:** a plain-text site map for AI assistants (`app/llms.txt/route.js`), with the checker listed first.
+
 ## What was reused rather than rebuilt
 
 - **API client:** `features/auth/services/apiClient.js`. It handles the Bearer token, refresh on 401, and the `{success, data, error}` envelope.

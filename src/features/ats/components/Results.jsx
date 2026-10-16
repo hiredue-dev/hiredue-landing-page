@@ -5,6 +5,7 @@ import { Check, Copy, Download, Loader2 } from "lucide-react";
 import clsx from "clsx";
 import { FormError } from "@/features/jobs/components/AccountFlow.jsx";
 import { primaryButton, secondaryButton } from "@/features/jobs/components/ui.jsx";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 import { downloadPdf, pdfFileName, useResumePdf } from "../hooks/useResumePdf.js";
 import { PdfViewer } from "./PdfViewer.jsx";
 import { ResumeDiff } from "./ResumeDiff.jsx";
@@ -82,7 +83,7 @@ export function ChangeList({ original, text, changes, refusedCount = 0 }) {
  * The rewritten resume as a PDF: previewed in the page, downloaded as the
  * same file. Copying the text stays for pasting into application forms.
  */
-export function ResumePreview({ text, fileName, suffix, label }) {
+export function ResumePreview({ text, fileName, suffix, label, action }) {
   const pdf = useResumePdf(text);
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
@@ -108,7 +109,10 @@ export function ResumePreview({ text, fileName, suffix, label }) {
       <div className="flex flex-wrap gap-3">
         <button
           type="button"
-          onClick={() => downloadPdf(pdf.bytes, pdfFileName(fileName, suffix))}
+          onClick={() => {
+            trackEvent(EVENTS.resumePdfDownloaded, { action });
+            downloadPdf(pdf.bytes, pdfFileName(fileName, suffix));
+          }}
           disabled={pdf.status !== "ready"}
           className={clsx(primaryButton, "h-11 px-6")}
         >
