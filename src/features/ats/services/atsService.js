@@ -2,8 +2,9 @@ import { apiClient } from "@/features/auth/services/apiClient.js";
 import { coverage } from "../coverage.js";
 import { AtsError } from "../errors.js";
 import { applyOps } from "../patch.js";
-import { analysisPrompt, bulletsPrompt, missedKeywordsPrompt, optimizePrompt, skillsPrompt } from "../prompts.js";
+import { analysisPrompt, bulletsPrompt, missedKeywordsPrompt, optimizePrompt, skillsPrompt, structurePrompt } from "../prompts.js";
 import { scoreResume } from "../scoring.js";
+import { resumeToText, toResume } from "../structure.js";
 
 /*
  * Optimising and tailoring call the backend's LLM endpoint (POST llm/generate,
@@ -57,6 +58,53 @@ function checkLength(text, job) {
 
 const opsOf = (answer) => (Array.isArray(answer?.ops) ? answer.ops : []);
 
+// A model answer that fails structure.js's checks is asked for once more.
+const STRUCTURE_ATTEMPTS = 2;
+let structured = { text: null, promise: null };
+
+/**
+ * The resume's text sorted into the fixed structure (structure.js), checked
+ * against the text. Kept for the last resume, so Optimize then Tailor asks once.
+ * @returns {Promise<object>}
+ */
+export function structureResume(text) {
+  if (structured.text === text && structured.promise) return structured.promise;
+  const promise = (async () => {
+    for (let attempt = 1; ; attempt += 1) {
+      const answer = await generateJson(structurePrompt(text));
+      try {
+        return toResume(answer, text);
+      } catch (err) {
+        if (attempt >= STRUCTURE_ATTEMPTS || err?.code !== "unstructured") throw err;
+      }
+    }
+  })();
+  structured = { text, promise };
+  promise.catch(() => {
+    if (structured.promise === promise) structured = { text: null, promise: null };
+  });
+  return promise;
+}
+
+/** Drops the kept structure (tests, or a resume that changed). */
+export function forgetStructure() {
+  structured = { text: null, promise: null };
+}
+
+// What both flows return: the resume before and after as structure and as
+// text. Both texts come from the structure, so the diff shows only the edits.
+function outcome(text, resume, patch) {
+  const after = resumeToText(patch.resume);
+  return {
+    original: resumeToText(resume),
+    text: after,
+    resume: patch.resume,
+    changes: patch.changes,
+    refused: patch.refused,
+    score: { before: scoreResume(text), after: scoreResume(after) },
+  };
+}
+
 /**
  * Improve the whole resume, then score it again.
  * @param {string} text
@@ -64,19 +112,14 @@ const opsOf = (answer) => (Array.isArray(answer?.ops) ? answer.ops : []);
  */
 export async function optimizeResume(text, { onStage } = {}) {
   checkLength(text);
-  const before = scoreResume(text);
+  onStage?.("structuring");
+  const resume = await structureResume(text);
   onStage?.("rewriting");
-  const answer = await generateJson(optimizePrompt(text, before.issues));
+  const answer = await generateJson(optimizePrompt(resume, scoreResume(text).issues));
   onStage?.("rescoring");
-  const patch = applyOps(text, opsOf(answer));
+  const patch = applyOps(resume, opsOf(answer));
   if (!patch.changes.length) throw new AtsError("no_changes");
-  return {
-    original: text,
-    text: patch.text,
-    changes: patch.changes,
-    refused: patch.refused,
-    score: { before, after: scoreResume(patch.text) },
-  };
+  return outcome(text, resume, patch);
 }
 
 /**
@@ -122,7 +165,7 @@ export async function tailorResume(text, job, { onStage } = {}) {
   const jobText = [target.title, target.company, target.description].join("\n");
 
   onStage?.("analyzing");
-  const keywords = await analyzeJob(text, target);
+  const [resume, keywords] = await Promise.all([structureResume(text), analyzeJob(text, target)]);
   if (!keywords.length) throw new AtsError("failed");
   const terms = keywords.map((k) => k.term);
   const matchBefore = coverage(terms, text);
@@ -131,8 +174,8 @@ export async function tailorResume(text, job, { onStage } = {}) {
   const analysis = keywords.map((k, i) => ({ ...k, onResume: matchBefore.keywords[i]?.covered ?? false }));
   // Skills and bullets are separate asks, in parallel; one failing still leaves the other.
   const [skills, bullets] = await Promise.allSettled([
-    generateJson(skillsPrompt(text, target, analysis)),
-    generateJson(bulletsPrompt(text, target, analysis)),
+    generateJson(skillsPrompt(resume, target, analysis)),
+    generateJson(bulletsPrompt(resume, target, analysis)),
   ]);
   if (skills.status === "rejected" && bullets.status === "rejected") throw bullets.reason;
   const ops = [
@@ -141,16 +184,13 @@ export async function tailorResume(text, job, { onStage } = {}) {
   ];
 
   onStage?.("rescoring");
-  const patch = applyOps(text, ops, { jobText });
+  const patch = applyOps(resume, ops, { jobText });
   if (!patch.changes.length) throw new AtsError("no_changes");
+  const result = outcome(text, resume, patch);
   return {
-    original: text,
-    text: patch.text,
-    changes: patch.changes,
-    refused: patch.refused,
+    ...result,
     keywords,
     partial: skills.status === "rejected" || bullets.status === "rejected",
-    match: { before: matchBefore, after: coverage(terms, patch.text) },
-    score: { before: scoreResume(text), after: scoreResume(patch.text) },
+    match: { before: matchBefore, after: coverage(terms, result.text) },
   };
 }

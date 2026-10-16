@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { STRONG } from "./__fixtures__/resumes.js";
+import { STRONG_RESUME } from "./__fixtures__/resumes.js";
 import { coverage, mentions } from "./coverage.js";
 import { isCosmetic, resumeDiff, wordDiff } from "./diff.js";
-import { applyOps, findQuote } from "./patch.js";
+import { applyOps } from "./patch.js";
 
 describe("coverage (ported from the desktop app)", () => {
   it("matches whole words, symbols included", () => {
@@ -63,49 +63,45 @@ describe("resumeDiff", () => {
   });
 });
 
-describe("findQuote", () => {
-  it("finds a bullet the PDF wrapped over two lines", () => {
-    const at = findQuote(STRONG, "• Led the rebuild of the merchant dashboard in React and TypeScript, cutting load time by 45% for 300,000 merchants.");
-    expect(at).not.toBeNull();
-    expect(STRONG.slice(at.start, at.end)).toContain("300,000\nmerchants.");
-  });
-});
-
 describe("applyOps", () => {
-  const rewrite = (before, after) => ({ op: "rewrite_line", before, after, reason: "test" });
+  const rewrite = (id, after) => ({ op: "rewrite", id, after, reason: "test" });
+  const MENTORED = "experience.0.2";
+  const LIBRARY = "experience.0.1";
 
   it("applies a real rewrite and records it with its diff and section", () => {
-    const result = applyOps(STRONG, [
-      rewrite(
-        "Mentored 5 engineers through code reviews and pairing on GraphQL and testing practices.",
-        "Mentored 5 engineers on GraphQL, TypeScript and testing practices through code reviews and pairing.",
-      ),
-    ]);
+    const result = applyOps(STRONG_RESUME, [rewrite(MENTORED, "Mentored 5 engineers on GraphQL, TypeScript and testing practices through code reviews and pairing.")]);
     expect(result.refused).toEqual([]);
-    expect(result.text).toContain("Mentored 5 engineers on GraphQL, TypeScript");
-    expect(result.changes[0]).toMatchObject({ kind: "reworded", section: "Experience" });
+    expect(result.resume.experience[0].bullets[2]).toBe("Mentored 5 engineers on GraphQL, TypeScript and testing practices through code reviews and pairing.");
+    expect(result.changes[0]).toMatchObject({ kind: "reworded", section: "Experience", where: "Senior Frontend Engineer | Razorpay" });
     expect(result.changes[0].diff.some((p) => p.op === "add")).toBe(true);
+    // The input is never modified.
+    expect(STRONG_RESUME.experience[0].bullets[2]).toBe("Mentored 5 engineers through code reviews and pairing on GraphQL and testing practices.");
   });
 
   it("refuses edits it can't verify or that change facts", () => {
-    const result = applyOps(STRONG, [
-      rewrite("A line that is not on the resume.", "Something else entirely."),
-      rewrite("Built a shared component library adopted by 12 product teams, reducing UI bugs by 30%.", "built a shared component library adopted by 12 product teams, reducing UI bugs by 30%"),
-      rewrite("Built a shared component library adopted by 12 product teams, reducing UI bugs by 30%.", "Built a shared component library adopted by 15 product teams, reducing UI bugs by 30%."),
-      rewrite("Developed checkout flows in React and Redux serving 2 million daily users.", "Developed checkout flows in React and Redux serving 2 million daily users, raising conversion 20%."),
+    const result = applyOps(STRONG_RESUME, [
+      rewrite("experience.9.0", "Something else entirely."),
+      { op: "rewrite", id: "name", after: "Priya S. Sharma" },
+      rewrite(LIBRARY, "built a shared component library adopted by 12 product teams, reducing UI bugs by 30%"),
+      rewrite(LIBRARY, "Built a shared component library adopted by 15 product teams, reducing UI bugs by 30%."),
+      rewrite("experience.1.0", "Developed checkout flows in React and Redux serving 2 million daily users, raising conversion 20%."),
+      rewrite(MENTORED, "Mentored 5 engineers in GraphQL through code reviews."),
+      rewrite(MENTORED, "Coached 5 engineers in GraphQL through code reviews."),
     ]);
-    expect(result.text).toBe(STRONG);
     expect(result.refused.map((r) => r.reason)).toEqual([
-      "the quoted line is not on the resume",
+      "not a line that can be changed",
+      "not a line that can be changed",
       "only punctuation or casing changed",
       "it changes or adds a number",
       "it changes or adds a number",
+      "that line was already changed",
     ]);
+    expect(result.changes).toHaveLength(1);
   });
 
   it("adds skills the job or the resume names, and only those", () => {
     const result = applyOps(
-      STRONG,
+      STRONG_RESUME,
       [
         { op: "add_skill", skill: "Kubernetes", reason: "job" },
         { op: "add_skill", skill: "Rust", reason: "invented" },
@@ -117,11 +113,24 @@ describe("applyOps", () => {
     );
     expect(result.changes.map((c) => c.after)).toEqual(["Kubernetes", "Lighthouse"]);
     expect(result.refused.map((r) => r.op.skill)).toEqual(["Rust", "react", "Highly scalable distributed cloud applications"]);
-    expect(result.text.trimEnd().endsWith("Performance Optimization, Kubernetes, Lighthouse")).toBe(true);
+    expect(result.resume.skills[0].items.slice(-2)).toEqual(["Kubernetes", "Lighthouse"]);
   });
 
-  it("starts a Skills section when the resume has none", () => {
-    const result = applyOps("EXPERIENCE\n• Built dashboards in Grafana for the ops team.", [{ op: "add_skill", skill: "Grafana" }]);
-    expect(result.text.endsWith("SKILLS\nGrafana\n")).toBe(true);
+  it("puts an added skill in the group the model names, else an Additional group", () => {
+    const resume = { ...STRONG_RESUME, skills: [{ group: "Languages", items: ["TypeScript"] }, { group: "Testing", items: ["Jest"] }] };
+    const result = applyOps(resume, [
+      { op: "add_skill", skill: "Playwright", group: "testing" },
+      { op: "add_skill", skill: "Redux", group: "State" },
+    ]);
+    expect(result.resume.skills).toEqual([
+      { group: "Languages", items: ["TypeScript"] },
+      { group: "Testing", items: ["Jest", "Playwright"] },
+      { group: "Additional", items: ["Redux"] },
+    ]);
+  });
+
+  it("starts a skills list when the resume has none", () => {
+    const result = applyOps({ ...STRONG_RESUME, skills: [] }, [{ op: "add_skill", skill: "Redux" }]);
+    expect(result.resume.skills).toEqual([{ group: "", items: ["Redux"] }]);
   });
 });

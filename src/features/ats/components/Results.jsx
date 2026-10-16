@@ -83,8 +83,8 @@ export function ChangeList({ original, text, changes, refusedCount = 0 }) {
  * The rewritten resume as a PDF: previewed in the page, downloaded as the
  * same file. Copying the text stays for pasting into application forms.
  */
-export function ResumePreview({ text, fileName, suffix, label, action }) {
-  const pdf = useResumePdf(text);
+export function ResumePreview({ resume, text, fileName, suffix, label, action }) {
+  const pdf = useResumePdf(resume);
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
 

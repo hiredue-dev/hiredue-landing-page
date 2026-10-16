@@ -90,7 +90,7 @@ export function useAtsChecker() {
     const set = action === "optimize" ? setOptimize : setTailor;
     const id = ++runId.current[action];
     setTab(action);
-    set({ status: "running", stage: action === "optimize" ? "rewriting" : "analyzing", result: null, error: null });
+    set({ status: "running", stage: action === "optimize" ? "structuring" : "analyzing", result: null, error: null });
     const onStage = (stage) => id === runId.current[action] && set((s) => ({ ...s, stage }));
     try {
       const result = action === "optimize" ? await optimizeResume(text, { onStage }) : await tailorResume(text, jobInput, { onStage });

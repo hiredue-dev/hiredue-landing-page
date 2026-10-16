@@ -1,12 +1,15 @@
 /*
- * Typesets a resume as a PDF in the browser: one column, standard Helvetica,
- * real text (not an image), headings in plain words. That is the layout ATS
- * parsers read most reliably, and the same shape as the desktop app's
- * "ATS single column" template. Imported on demand, with pdf-lib.
+ * Typesets a structured resume (structure.js) as a PDF in the browser, always
+ * in one fixed template: one column, standard Helvetica, real text (not an
+ * image), the header centred and everything else left-aligned, sections in a
+ * set order under standard headings, each role as title + dates, company and
+ * location, then its bullets. That is the layout ATS parsers read most
+ * reliably, and the same shape as the desktop app's "ATS single column"
+ * template. Imported on demand, with pdf-lib.
  */
 
 import { PDFDocument, StandardFonts, rgb } from "pdf-lib";
-import { resumeBlocks } from "./layout.js";
+import { resumeBlocks } from "../structure.js";
 
 const PAGE = { width: 612, height: 792 }; // US Letter, as the desktop app's template
 const MARGIN = { x: 54, top: 50, bottom: 50 };
@@ -15,14 +18,17 @@ const DIM = rgb(0.3, 0.35, 0.37);
 const RULE = rgb(0.75, 0.78, 0.8);
 
 const STYLE = {
-  name: { size: 20, bold: true, color: INK, align: "center", before: 0, after: 4 },
-  contact: { size: 9.5, bold: false, color: DIM, align: "center", before: 0, after: 1 },
-  heading: { size: 11, bold: true, color: INK, before: 12, after: 6 },
-  title: { size: 10.5, bold: true, color: INK, before: 6, after: 1 },
-  meta: { size: 9.5, bold: false, color: DIM, before: 0, after: 2 },
-  bullet: { size: 10, bold: false, color: INK, before: 0, after: 2, indent: 14 },
-  line: { size: 10, bold: false, color: INK, before: 0, after: 3 },
+  name: { size: 20, font: "bold", color: INK, align: "center", before: 0, after: 3 },
+  headline: { size: 10.5, font: "regular", color: INK, align: "center", before: 0, after: 2 },
+  contact: { size: 9.5, font: "regular", color: DIM, align: "center", before: 0, after: 1 },
+  heading: { size: 11, font: "bold", color: INK, before: 12, after: 6 },
+  entry: { size: 10.5, font: "bold", color: INK, before: 6, after: 1 },
+  sub: { size: 9.5, font: "italic", color: DIM, before: 0, after: 1 },
+  meta: { size: 9.5, font: "regular", color: DIM, before: 0, after: 2 },
+  bullet: { size: 10, font: "regular", color: INK, before: 0, after: 2, indent: 14 },
+  line: { size: 10, font: "regular", color: INK, before: 0, after: 3 },
 };
+const DATES = { size: 9.5, color: DIM, gap: 12 };
 const LEADING = 1.32;
 
 // Characters the standard fonts can't draw, spelled the way a reader (and an ATS) would.
@@ -67,15 +73,18 @@ export function wrap(text, font, size, width) {
 }
 
 /**
- * @param {string} text  the resume's plain text
+ * @param {object} resume  a structured resume (structure.js)
  * @param {{title?: string}} [options]
  * @returns {Promise<Uint8Array>} the PDF file
  */
-export async function renderResumePdf(text, { title } = {}) {
+export async function renderResumePdf(resume, { title } = {}) {
   const doc = await PDFDocument.create();
-  const regular = await doc.embedFont(StandardFonts.Helvetica);
-  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
-  const blocks = resumeBlocks(text);
+  const fonts = {
+    regular: await doc.embedFont(StandardFonts.Helvetica),
+    bold: await doc.embedFont(StandardFonts.HelveticaBold),
+    italic: await doc.embedFont(StandardFonts.HelveticaOblique),
+  };
+  const blocks = resumeBlocks(resume);
   const contentWidth = PAGE.width - 2 * MARGIN.x;
 
   let page = doc.addPage([PAGE.width, PAGE.height]);
@@ -88,16 +97,19 @@ export async function renderResumePdf(text, { title } = {}) {
 
   blocks.forEach((block, index) => {
     const style = STYLE[block.type];
-    const font = style.bold ? bold : regular;
+    const font = fonts[style.font];
     const lead = style.size * LEADING;
-    const raw = block.type === "heading" ? block.text.toUpperCase() : block.text;
     const indent = style.indent ?? 0;
-    const lines = wrap(encodable(raw, font), font, style.size, contentWidth - indent);
+    // An entry's dates sit at the right edge of its first line.
+    const dates = block.right ? encodable(block.right, fonts.regular) : "";
+    const datesWidth = dates ? fonts.regular.widthOfTextAtSize(dates, DATES.size) + DATES.gap : 0;
+    const lines = wrap(encodable(block.text, font), font, style.size, contentWidth - indent - datesWidth);
     if (!lines.length) return;
 
     if (index > 0) y -= style.before;
-    // A heading never sits alone at the foot of a page; it brings its first line along.
-    room(lead * Math.min(lines.length, 2) + (block.type === "heading" ? 24 : 0));
+    // A heading or an entry never sits alone at the foot of a page; it brings what follows along.
+    const keepWith = block.type === "heading" ? 24 : block.type === "entry" ? 28 : 0;
+    room(lead * Math.min(lines.length, 2) + keepWith);
 
     lines.forEach((line, k) => {
       if (k > 0) room(lead);
@@ -105,9 +117,13 @@ export async function renderResumePdf(text, { title } = {}) {
       const width = font.widthOfTextAtSize(line, style.size);
       const x = style.align === "center" ? (PAGE.width - width) / 2 : MARGIN.x + indent;
       if (block.type === "bullet" && k === 0) {
-        page.drawText("•", { x: MARGIN.x + 3, y, size: style.size, font: regular, color: style.color });
+        page.drawText("•", { x: MARGIN.x + 3, y, size: style.size, font: fonts.regular, color: style.color });
       }
       page.drawText(line, { x, y, size: style.size, font, color: style.color });
+      if (dates && k === 0) {
+        const w = fonts.regular.widthOfTextAtSize(dates, DATES.size);
+        page.drawText(dates, { x: PAGE.width - MARGIN.x - w, y, size: DATES.size, font: fonts.regular, color: DATES.color });
+      }
       y -= lead - style.size;
     });
 
@@ -118,8 +134,8 @@ export async function renderResumePdf(text, { title } = {}) {
     y -= style.after;
   });
 
-  const name = blocks.find((b) => b.type === "name")?.text;
-  doc.setTitle(title || (name ? `${encodable(name, regular)} - Resume` : "Resume"));
+  const name = resume?.name ? encodable(resume.name, fonts.regular) : "";
+  doc.setTitle(title || (name ? `${name} - Resume` : "Resume"));
   doc.setCreator("HireDue ATS Resume Checker");
   doc.setProducer("HireDue");
   return doc.save();

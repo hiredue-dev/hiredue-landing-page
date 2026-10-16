@@ -1178,11 +1178,12 @@ export const atsChecker = {
   },
   stages: {
     optimize: [
+      { id: "structuring", label: "Reading your resume's sections, roles and bullets" },
       { id: "rewriting", label: "Rewriting your bullets" },
       { id: "rescoring", label: "Checking every change and rescoring" },
     ],
     tailor: [
-      { id: "analyzing", label: "Reading the job for the keywords it screens for" },
+      { id: "analyzing", label: "Reading your resume and the job's keywords" },
       { id: "rewriting", label: "Working them into your resume" },
       { id: "rescoring", label: "Checking every change and rescoring" },
     ],
