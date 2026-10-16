@@ -1,8 +1,8 @@
 # Analytics
 
-`<Analytics />` from `@vercel/analytics/next` is mounted in `app/layout.jsx` and counts page views on every route. Google Analytics still loads when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set.
+`<Analytics />` from `@vercel/analytics/next` is mounted in `app/layout.jsx` and counts page views on every route. Google Analytics still loads when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is set, and Microsoft Clarity (session recordings and heatmaps) loads when `NEXT_PUBLIC_CLARITY_PROJECT_ID` is set.
 
-Named events go through `trackEvent()` in `src/lib/analytics.js`. Each event goes to Vercel Analytics, and also to GA when its tag is on the page. Properties are flat values and never personal data: no emails, names or resume text. Custom events show up in Vercel only on a Pro or Enterprise plan; page views work on every plan.
+Named events go through `trackEvent()` in `src/lib/analytics.js`. Each event goes to Vercel Analytics, and also to GA and Clarity when their tags are on the page. Clarity gets only the event name, so recordings can be filtered by it. Properties are flat values and never personal data: no emails, names or resume text. Custom events show up in Vercel only on a Pro or Enterprise plan; page views work on every plan.
 
 | Event | Fired when | Properties |
 |---|---|---|
@@ -21,3 +21,5 @@ Named events go through `trackEvent()` in `src/lib/analytics.js`. Each event goe
 | `logged_in` | an email or Google sign-in completes | `method` (`email` / `google`) |
 
 To add an event, add its name to `EVENTS` and call `trackEvent(EVENTS.x, {...})`. For a page view by name, put `<TrackPageView event={EVENTS.x} />` in the page.
+
+Clarity masks form inputs by default. The resume preview and the diff of resume changes on `/ats-checker` carry `data-clarity-mask="True"` so resume text never reaches a recording; mask any new element that shows personal data the same way.
