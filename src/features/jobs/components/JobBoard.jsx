@@ -7,7 +7,7 @@ import clsx from "clsx";
 import { useJobBoard } from "../hooks/useJobBoard.js";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
-import { getJobFilters } from "../services/jobBoardService.js";
+import { getJob, getJobFilters } from "../services/jobBoardService.js";
 import {
   EMPTY_FILTERS,
   filtersToParams,
@@ -48,7 +48,10 @@ export function JobBoard() {
   const board = useJobBoard(filterQuery, showPosts ? authKey : "public", filters.source);
 
   const [facets, setFacets] = useState(null);
+  // Which job's detail is open lives in the URL (?job=<id>), so a job has an address an ambassador can share; this holds the data for it.
   const [detailJob, setDetailJob] = useState(null);
+  // Cards the visitor has seen, so opening one shows instantly instead of waiting on a fetch by id.
+  const knownJobs = useRef(new Map());
   const [filtersOpen, setFiltersOpen] = useState(false);
   // In-page sign-up / log-in and app download (instead of leaving for /signup or /download).
   const [accountRequest, setAccountRequest] = useState(null);
@@ -129,34 +132,66 @@ export function JobBoard() {
 
   const applyId = searchParams.get("apply");
   const closeApply = useCallback(() => setParams({ apply: null }), [setParams]);
-  const closeDetail = useCallback(() => setDetailJob(null), []);
-  const openDetail = useCallback((job) => {
-    trackEvent(EVENTS.jobViewed, jobProps(job, "jobs"));
-    setDetailJob(job);
-  }, []);
+  const jobId = searchParams.get("job");
+  const closeDetail = useCallback(() => setParams({ job: null }), [setParams]);
+  const openDetail = useCallback(
+    (job) => {
+      trackEvent(EVENTS.jobViewed, jobProps(job, "jobs"));
+      knownJobs.current.set(job.id, job);
+      setParams({ job: job.id });
+    },
+    [setParams],
+  );
+
+  useEffect(() => {
+    if (!jobId) {
+      setDetailJob(null);
+      return undefined;
+    }
+    const known = knownJobs.current.get(jobId);
+    if (known) {
+      setDetailJob(known);
+      return undefined;
+    }
+    // A shared link can name a job the loaded list does not contain, so it is fetched by id rather than looked for. A dead id clears itself so the page is not stuck on it.
+    let cancelled = false;
+    getJob(jobId)
+      .then((response) => {
+        if (cancelled) return;
+        if (response.success && response.data) {
+          trackEvent(EVENTS.jobViewed, jobProps(response.data, "jobs"));
+          knownJobs.current.set(jobId, response.data);
+          setDetailJob(response.data);
+        } else {
+          setParams({ job: null });
+        }
+      })
+      .catch(() => !cancelled && setParams({ job: null }));
+    return () => {
+      cancelled = true;
+    };
+  }, [jobId, setParams]);
 
   const openAccount = useCallback(
     (request = {}) => {
-      setDetailJob(null);
+      if (jobId) closeDetail();
       setDownloadOpen(false);
       setAccountRequest({ mode: "signup", ...request });
     },
-    [],
+    [jobId, closeDetail],
   );
   const openDownload = useCallback(() => {
-    setDetailJob(null);
     setAccountRequest(null);
-    if (applyId) closeApply();
+    if (jobId || applyId) setParams({ job: null, apply: null });
     setDownloadOpen(true);
-  }, [applyId, closeApply]);
+  }, [jobId, applyId, setParams]);
   const dialogs = useMemo(() => ({ openAccount, openDownload }), [openAccount, openDownload]);
 
   const openApply = useCallback(
     (job) => {
-      setDetailJob(null);
       trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated });
       if (isAuthenticated) {
-        setParams({ apply: job.id });
+        setParams({ job: null, apply: job.id });
         return;
       }
       // Signed out: sign up right here, then the application link opens.
