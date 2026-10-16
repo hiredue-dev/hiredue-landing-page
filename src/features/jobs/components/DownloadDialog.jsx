@@ -8,6 +8,8 @@ import { detectPlatform, PLATFORMS, SETUP } from "../downloads.js";
 import { Steps } from "./AccountFlow.jsx";
 import { Dialog, darkButton, primaryButton, secondaryButton } from "./ui.jsx";
 
+const STEPS = ["Download", "Set up"];
+
 /**
  * "Automate with HireDue": download the desktop app, then how to set it up.
  * Deliberately doesn't ask for a HireDue account first — that's a separate
