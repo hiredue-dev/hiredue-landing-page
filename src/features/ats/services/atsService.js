@@ -91,17 +91,55 @@ export function forgetStructure() {
   structured = { text: null, promise: null };
 }
 
+/**
+ * Applies the model's edits, then drops any that lower the ATS score: each
+ * accepted edit is left out in turn, and stays out when the resume scores
+ * higher without it. Scoring is local and deterministic, so this is cheap.
+ * With a `floor`, it stops once the score reaches it (tailoring keeps keyword
+ * edits that cost a point, as long as the resume doesn't end up below where it began).
+ * @returns {ReturnType<typeof applyOps> & {dropped: object[]}}
+ */
+export function applyGains(resume, ops, { floor = Infinity, ...context } = {}) {
+  const first = applyOps(resume, ops, context);
+  let kept = first.applied;
+  let patch = first;
+  let best = scoreResume(resumeToText(patch.resume)).overall;
+  const dropped = [];
+  for (const op of first.applied) {
+    if (best >= floor) break;
+    const without = kept.filter((o) => o !== op);
+    const trial = applyOps(resume, without, context);
+    const score = scoreResume(resumeToText(trial.resume)).overall;
+    if (score > best) {
+      kept = without;
+      patch = trial;
+      best = score;
+      dropped.push(op);
+    }
+  }
+  return { ...patch, refused: first.refused, dropped };
+}
+
 // What both flows return: the resume before and after as structure and as
 // text. Both texts come from the structure, so the diff shows only the edits.
-function outcome(text, resume, patch) {
+// `unchanged` means the edits wouldn't raise the score: the visitor is shown
+// their original resume instead, and `resume`/`text` are the original's.
+function outcome(text, resume, patch, { unchanged = false } = {}) {
+  const original = resumeToText(resume);
+  const before = scoreResume(text);
+  if (unchanged) {
+    return { unchanged: true, original, text: original, resume, changes: [], refused: patch.refused, dropped: patch.dropped, score: { before, after: before } };
+  }
   const after = resumeToText(patch.resume);
   return {
-    original: resumeToText(resume),
+    unchanged: false,
+    original,
     text: after,
     resume: patch.resume,
     changes: patch.changes,
     refused: patch.refused,
-    score: { before: scoreResume(text), after: scoreResume(after) },
+    dropped: patch.dropped,
+    score: { before, after: scoreResume(after) },
   };
 }
 
@@ -117,9 +155,10 @@ export async function optimizeResume(text, { onStage } = {}) {
   onStage?.("rewriting");
   const answer = await generateJson(optimizePrompt(resume, scoreResume(text).issues));
   onStage?.("rescoring");
-  const patch = applyOps(resume, opsOf(answer));
-  if (!patch.changes.length) throw new AtsError("no_changes");
-  return outcome(text, resume, patch);
+  const patch = applyGains(resume, opsOf(answer));
+  // An already strong resume can come back no better, or worse: keep the original.
+  const gained = patch.changes.length > 0 && scoreResume(resumeToText(patch.resume)).overall > scoreResume(text).overall;
+  return outcome(text, resume, patch, { unchanged: !gained });
 }
 
 /**
@@ -184,13 +223,18 @@ export async function tailorResume(text, job, { onStage } = {}) {
   ];
 
   onStage?.("rescoring");
-  const patch = applyOps(resume, ops, { jobText });
-  if (!patch.changes.length) throw new AtsError("no_changes");
-  const result = outcome(text, resume, patch);
+  // Tailoring must not cost ATS score, and must raise the match or the score;
+  // otherwise the original is the better resume to send.
+  const scoreBefore = scoreResume(text).overall;
+  const patch = applyGains(resume, ops, { jobText, floor: scoreBefore });
+  const scoreAfter = scoreResume(resumeToText(patch.resume)).overall;
+  const matchAfter = coverage(terms, resumeToText(patch.resume));
+  const gained = patch.changes.length > 0 && scoreAfter >= scoreBefore && (matchAfter.percent > matchBefore.percent || scoreAfter > scoreBefore);
+  const result = outcome(text, resume, patch, { unchanged: !gained });
   return {
     ...result,
     keywords,
     partial: skills.status === "rejected" || bullets.status === "rejected",
-    match: { before: matchBefore, after: coverage(terms, result.text) },
+    match: { before: matchBefore, after: gained ? matchAfter : matchBefore },
   };
 }
