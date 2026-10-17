@@ -115,6 +115,11 @@ function UnlockedApply({ jobId, path, tailored }) {
       {isPost ? "Open LinkedIn post" : "Continue to application"} <ExternalLink size={16} aria-hidden />
     </a>
   );
+  // "Download and apply": the PDF saves and the employer's page opens in one click, which browsers allow because it is the visitor's own click.
+  const downloadAndApply = () => {
+    openEmployer();
+    window.open(job.applyUrl, "_blank", "noopener,noreferrer");
+  };
   return (
     <>
       <div className="flex flex-col gap-2 pr-8">
@@ -147,10 +152,19 @@ function UnlockedApply({ jobId, path, tailored }) {
                 </p>
               </>
             )}
-            {canTailor ? <TailorHere job={tailorJob} onDone={onTailored} /> : <Pending label="Reading the posting…" />}
+            {canTailor ? <TailorHere job={tailorJob} onDone={onTailored} onDownloadAndApply={downloadAndApply} /> : <Pending label="Reading the posting…" />}
           </div>
           {tailoredHere ? (
-            external
+            // Already downloaded, or chose not to: the plain way on, quiet, under the preview.
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={openEmployer}
+              className="inline-flex items-center justify-center gap-1.5 self-center py-1 text-[14px] font-medium text-dim underline-offset-4 transition-colors hover:text-ink hover:underline"
+            >
+              Continue to application without downloading <ExternalLink size={14} aria-hidden />
+            </a>
           ) : (
             // Quiet on purpose, but a real link: people who want the form now should get it on one click.
             <a

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { ArrowRight, MonitorDown, Sparkles } from "lucide-react";
 import clsx from "clsx";
 import { EVENTS, trackEvent } from "@/lib/analytics";
-import { formatElapsed } from "../applyTimer.js";
+import { describeElapsed } from "../applyTimer.js";
 import { postedLabel } from "../format.js";
 import { getJob, listJobs } from "../services/jobBoardService.js";
 import { SIMILAR_COUNT, similarSearches } from "../similarJobs.js";
@@ -27,8 +27,8 @@ async function findSimilar(title, excludeId) {
 
 /**
  * Shown when our tab is visible again after someone left for an employer's
- * application form. `info` is {jobId, elapsedMs, verdict} from the apply clock,
- * verdict "measured" or "capped"; the board never opens this for "quiet".
+ * application form. `info` is {jobId, elapsedMs, verdict} from the apply clock;
+ * the board never opens this for "quiet", and the words for the time come from the clock.
  *
  * Says what the clock measured, offers the desktop app where it can be
  * installed, and lists a few fresh roles like the one just applied to, each a
@@ -69,7 +69,7 @@ export function ReturnDialog({ info, canInstall, onClose, onDownload, onOpenJob,
     then();
   };
 
-  const spent = info ? (info.verdict === "capped" ? "over 35 minutes" : formatElapsed(info.elapsedMs)) : "";
+  const spent = info ? describeElapsed(info.elapsedMs) : "";
 
   return (
     <Dialog open={!!info} onClose={onClose} labelledBy="return-dialog-title" size="lg">
@@ -78,7 +78,7 @@ export function ReturnDialog({ info, canInstall, onClose, onDownload, onOpenJob,
           <div className="flex flex-col gap-2 pr-8">
             <p className="text-[13px] leading-none font-medium tracking-[0.03em] text-brand uppercase">Welcome back</p>
             <h2 id="return-dialog-title" className="t-h5">
-              You spent {spent} on that application.
+              You spent {spent} on that application. HireDue could have automated that.
             </h2>
             {job && (
               <p className="t-body">
@@ -88,22 +88,23 @@ export function ReturnDialog({ info, canInstall, onClose, onDownload, onOpenJob,
             )}
           </div>
 
-          <div className="flex flex-col gap-3 rounded-[15px] bg-ink p-5 text-white">
+          <div className="flex flex-col gap-4 rounded-[15px] bg-ink p-5 text-white">
             <div className="flex items-center gap-3">
               <span className="grid size-10 shrink-0 place-items-center rounded-full bg-white/10">
                 <MonitorDown size={18} aria-hidden />
               </span>
-              <p className="text-[15px] leading-[1.45] font-medium">
-                {canInstall
-                  ? "The HireDue desktop app fills forms like that one for you, in the background, while you get on with your day."
-                  : "On a Mac or Windows laptop, the HireDue desktop app fills forms like that one for you while you get on with your day."}
-              </p>
+              <p className="text-[18px] leading-[1.3] font-semibold">Download HireDue to automate your job hunt</p>
             </div>
             {canInstall && (
               <button type="button" onClick={act("download", onDownload)} className={clsx(primaryButton, "h-12 text-[15px]")}>
-                Download HireDue
+                Download HireDue now
               </button>
             )}
+            <p className="text-[13.5px] leading-[1.45] text-white/70">
+              {canInstall
+                ? "The desktop app fills forms like that one for you in the background while you get on with your day."
+                : "The desktop app, on a Mac or Windows laptop, fills forms like that one for you while you get on with your day."}
+            </p>
           </div>
 
           {similar.jobs.length > 0 && (

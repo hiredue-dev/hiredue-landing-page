@@ -88,7 +88,7 @@ export function ChangeList({ original, text, changes, refusedCount = 0, droppedC
  * The rewritten resume as a PDF: previewed in the page, downloaded as the
  * same file. Copying the text stays for pasting into application forms.
  */
-export function ResumePreview({ resume, text, fileName, suffix, label, action }) {
+export function ResumePreview({ resume, text, fileName, suffix, label, action, downloadLabel = "Download PDF", onDownload, viewerClassName }) {
   const pdf = useResumePdf(resume);
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
@@ -117,12 +117,14 @@ export function ResumePreview({ resume, text, fileName, suffix, label, action })
           onClick={() => {
             trackEvent(EVENTS.resumePdfDownloaded, { action });
             downloadPdf(pdf.bytes, pdfFileName(fileName, suffix));
+            // Same click, so a window the caller opens still counts as asked for by the visitor.
+            onDownload?.();
           }}
           disabled={pdf.status !== "ready"}
           className={clsx(primaryButton, "h-11 px-6")}
         >
           {pdf.status === "rendering" ? <Loader2 size={16} className="animate-spin" aria-hidden /> : <Download size={16} aria-hidden />}
-          Download PDF
+          {downloadLabel}
         </button>
         <button type="button" onClick={copy} className={clsx(secondaryButton, "h-11")}>
           {copied ? <Check size={16} className="text-success" aria-hidden /> : <Copy size={16} aria-hidden />}
@@ -136,7 +138,7 @@ export function ResumePreview({ resume, text, fileName, suffix, label, action })
       {pdf.status === "error" ? (
         <FormError>We couldn&apos;t build the PDF. Copy the text instead, or run it again.</FormError>
       ) : (
-        <PdfViewer bytes={pdf.bytes} label={label} />
+        <PdfViewer bytes={pdf.bytes} label={label} frameClassName={viewerClassName} />
       )}
     </div>
   );

@@ -12,7 +12,8 @@ const ZOOMS = [0.75, 1, 1.25, 1.5];
  * viewer's width. Not an <iframe>: phone browsers don't show PDFs inside one,
  * and this looks the same everywhere.
  */
-export function PdfViewer({ bytes, label }) {
+/** `frameClassName` replaces the frame's default height limits, for a viewer inside a dialog that scrolls on its own. */
+export function PdfViewer({ bytes, label, frameClassName }) {
   const frameRef = useRef(null);
   const [doc, setDoc] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -82,7 +83,10 @@ export function PdfViewer({ bytes, label }) {
         aria-label={label}
         aria-busy={!doc && !failed}
         tabIndex={0}
-        className="max-h-[78vh] min-h-[320px] overflow-auto p-3 outline-none focus-visible:ring-2 focus-visible:ring-brand/40 sm:max-h-[860px] sm:p-5"
+        className={clsx(
+          "overflow-auto p-3 outline-none focus-visible:ring-2 focus-visible:ring-brand/40 sm:p-5",
+          frameClassName ?? "max-h-[78vh] min-h-[320px] sm:max-h-[860px]",
+        )}
       >
         {failed ? (
           <p className="t-body-sm p-6 text-center">The preview couldn&apos;t load. The download still works.</p>

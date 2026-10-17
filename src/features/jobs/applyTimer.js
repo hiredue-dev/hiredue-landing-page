@@ -10,8 +10,10 @@
 export const TIMER_KEY = "hd_apply_timer";
 // Under this the person bounced, hit a dead link or only looked; there is no application to talk about.
 export const FLOOR_MS = 90 * 1000;
-// Above this we say "over 35 minutes": a real number, never "19 hours" from a tab left open overnight.
+// Above this the exact seconds stop meaning much, so the time is rounded to five minutes.
 export const CAP_MS = 35 * 60 * 1000;
+// Above this the tab was almost certainly left open, so the number is no longer about the application.
+export const CEILING_MS = 3 * 60 * 60 * 1000;
 
 const storage = () => {
   try {
@@ -53,14 +55,34 @@ export function clearApplyTimer() {
   storage()?.removeItem(TIMER_KEY);
 }
 
-/** What the return screen may say: nothing, the measured time, or the capped phrase. */
+/** What the return screen may say: nothing, the measured time to the second, a rounded time, or the ceiling phrase. */
 export function timerVerdict(elapsedMs) {
   if (elapsedMs < FLOOR_MS) return "quiet";
-  if (elapsedMs > CAP_MS) return "capped";
+  if (elapsedMs > CEILING_MS) return "capped";
+  if (elapsedMs > CAP_MS) return "rounded";
   return "measured";
 }
 
-/** "8 min 37 s"; whole minutes read as "12 min". Only called for a measured verdict. */
+/**
+ * The words for the heading. Measured: "8 min 37 s". Rounded: "about 50 minutes" or
+ * "about 1 hour 15 minutes", to the nearest five minutes. Capped: "over 3 hours".
+ * Every value is the real elapsed time; nothing here is made up.
+ */
+export function describeElapsed(elapsedMs) {
+  const verdict = timerVerdict(elapsedMs);
+  if (verdict === "capped") return "over 3 hours";
+  if (verdict === "rounded") {
+    const minutes = Math.round(elapsedMs / 300_000) * 5;
+    const hours = Math.floor(minutes / 60);
+    const rest = minutes % 60;
+    if (hours === 0) return `about ${minutes} minutes`;
+    const h = `${hours} hour${hours === 1 ? "" : "s"}`;
+    return rest ? `about ${h} ${rest} minutes` : `about ${h}`;
+  }
+  return formatElapsed(elapsedMs);
+}
+
+/** "8 min 37 s"; whole minutes read as "12 min". For the measured band. */
 export function formatElapsed(elapsedMs) {
   const total = Math.round(elapsedMs / 1000);
   const minutes = Math.floor(total / 60);
