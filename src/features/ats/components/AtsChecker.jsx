@@ -167,13 +167,14 @@ function Workspace({ ats, onReplace, continueHref }) {
         <Tabs current={ats.tab} onChange={ats.setTab} />
         <div role="tabpanel" id={`ats-panel-${ats.tab}`} aria-labelledby={`ats-tab-${ats.tab}`} tabIndex={0} className="outline-none">
           {ats.tab === "optimize" && (
-            <OptimizePanel state={ats.optimize} signedIn={ats.isAuthenticated} fileName={resume.fileName} onRun={ats.request} />
+            <OptimizePanel state={ats.optimize} signedIn={ats.isAuthenticated} fileName={resume.fileName} bytes={resume.bytes} onRun={ats.request} />
           )}
           {ats.tab === "tailor" && (
             <TailorPanel
               state={ats.tailor}
               signedIn={ats.isAuthenticated}
               fileName={resume.fileName}
+              bytes={resume.bytes}
               job={ats.job}
               onJobChange={ats.setJob}
               onRun={ats.request}

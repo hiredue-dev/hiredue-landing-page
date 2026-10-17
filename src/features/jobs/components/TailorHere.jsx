@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Progress, ResumePreview, RunError } from "@/features/ats/components/Results.jsx";
+import { Progress, ResumePreview, RunError, UnchangedResult } from "@/features/ats/components/Results.jsx";
 import { ResumeDropzone } from "@/features/ats/components/ResumeDropzone.jsx";
 import { ScoreDelta } from "@/features/ats/components/Score.jsx";
 import { toAtsError } from "@/features/ats/errors.js";
@@ -10,7 +10,7 @@ import { tailorResume } from "@/features/ats/services/atsService.js";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 import { atsChecker } from "@/lib/content";
 
-const IDLE = { status: "idle", stage: null, result: null, error: null, fileName: "" };
+const IDLE = { status: "idle", stage: null, result: null, error: null, fileName: "", bytes: null };
 
 /**
  * Tailoring inside the apply dialog: drop a resume, it is rewritten for this
@@ -39,6 +39,8 @@ export function TailorHere({ job, onDone }) {
     trackEvent(EVENTS.jobOptimizeClicked, { from: "apply_dialog" });
     try {
       const text = await extractText(file);
+      // Kept in memory to show the PDF as it is if tailoring wouldn't improve it.
+      const bytes = /\.pdf$/i.test(file.name) ? new Uint8Array(await file.arrayBuffer()) : null;
       if (id !== runId.current) return;
       trackEvent(EVENTS.atsActionRequested, { action: "tailor", signed_in: true, from: "apply_dialog" });
       setState({ ...IDLE, status: "running", stage: "analyzing", fileName: file.name });
@@ -52,8 +54,9 @@ export function TailorHere({ job, onDone }) {
         match_after: result.match?.after?.percent,
         changes: result.changes?.length,
         partial: Boolean(result.partial),
+        unchanged: Boolean(result.unchanged),
       });
-      setState({ status: "done", stage: null, result, error: null, fileName: file.name });
+      setState({ status: "done", stage: null, result, error: null, fileName: file.name, bytes });
     } catch (err) {
       if (id !== runId.current) return;
       const error = toAtsError(err);
@@ -67,7 +70,19 @@ export function TailorHere({ job, onDone }) {
   if (state.status === "error") return <RunError error={state.error} onRetry={() => setState(IDLE)} />;
 
   if (state.status === "done") {
-    const { result, fileName } = state;
+    const { result, fileName, bytes } = state;
+    if (result.unchanged) {
+      return (
+        <UnchangedResult
+          title={`Your resume already fits ${job.title.trim() || "this job"} well`}
+          detail={`It matches ${result.match.before.percent}% of the posting's keywords with an ATS score of ${result.score.before.overall}. None of the changes we tried would raise your match without lowering your ATS score, so send it as it is.`}
+          result={result}
+          bytes={bytes}
+          fileName={fileName}
+          action="tailor"
+        />
+      );
+    }
     return (
       <div className="flex flex-col gap-4">
         <ScoreDelta

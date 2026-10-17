@@ -23,7 +23,6 @@ const MESSAGES = {
     message: "We couldn't reliably tell your resume's sections, roles and bullets apart. Try again, or upload a simpler single-column PDF or DOCX.",
     retry: true,
   },
-  no_changes: { message: "We couldn't find safe improvements to make this time. Try again, or the resume may already be in good shape.", retry: true },
   failed: { message: "Something went wrong. Please try again.", retry: true },
 };
 
