@@ -140,10 +140,10 @@ function UnlockedApply({ jobId, path, tailored }) {
           <div className="flex flex-col gap-3 rounded-[15px] bg-ice/60 p-4">
             {!tailoredHere && (
               <>
-                <p className="text-[16px] font-semibold text-ink">Match your resume to this job in 60 seconds</p>
+                <p className="text-[16px] font-semibold text-ink">Tailored resumes get 3x more responses</p>
                 <p className="text-[14px] leading-[1.5] text-dim">
-                  Drop your resume. We rewrite it for the {job.jobTitle} role{job.hiringCompany ? ` at ${job.hiringCompany}` : ""}, show
-                  your match before and after, and give you the PDF to apply with. Free.
+                  Drop your resume. We rewrite it for the {job.jobTitle} role{job.hiringCompany ? ` at ${job.hiringCompany}` : ""} and
+                  hand you the PDF in 60 seconds.
                 </p>
               </>
             )}

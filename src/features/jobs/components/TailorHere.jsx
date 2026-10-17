@@ -110,6 +110,7 @@ export function TailorHere({ job, onDone }) {
       parsing={state.status === "parsing"}
       error={null}
       onFile={run}
+      title="One-click resume tailoring. Free."
       privacyNote="We keep only the text of your resume, never the file, and only to write this version."
     />
   );
