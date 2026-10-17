@@ -11,7 +11,7 @@ import { ACCEPT } from "../extract.js";
  * Drag a file onto it or use the button. The whole area is the drop target;
  * the button is the keyboard and screen-reader path.
  */
-export function ResumeDropzone({ parsing, error, onFile, privacyNote, autoFocus = false }) {
+export function ResumeDropzone({ parsing, error, onFile, privacyNote, autoFocus = false, title = "Drop your resume here" }) {
   const inputRef = useRef(null);
   const buttonRef = useRef(null);
 
@@ -51,7 +51,7 @@ export function ResumeDropzone({ parsing, error, onFile, privacyNote, autoFocus 
           {parsing ? <Loader2 size={24} className="animate-spin" aria-hidden /> : <FileUp size={24} aria-hidden />}
         </span>
         <div className="flex flex-col gap-1.5" aria-live="polite">
-          <p className="t-h5">{parsing ? "Reading your resume…" : dragging ? "Drop it here" : "Drop your resume here"}</p>
+          <p className="t-h5">{parsing ? "Reading your resume…" : dragging ? "Drop it here" : title}</p>
           <p id={hintId} className="t-body">
             PDF or DOCX, up to 5 MB.
           </p>
