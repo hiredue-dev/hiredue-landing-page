@@ -5,7 +5,7 @@ import { Banknote, BriefcaseBusiness, Clock, MapPin } from "lucide-react";
 import clsx from "clsx";
 import { experienceLabel, platformLabel, postedLabel, workModeOf } from "../format.js";
 import { useJobDialogs } from "../jobDialogs.js";
-import { Badge, CompanyLogo, darkButton, primaryButton } from "./ui.jsx";
+import { Badge, CompanyLogo, darkButton, primaryButton, secondaryButton } from "./ui.jsx";
 
 /** Location / pay / age line — used in the detail dialog header. */
 export function JobMeta({ job }) {
@@ -86,7 +86,8 @@ export function AutomateLink({ className }) {
   );
 }
 
-export function JobCard({ job, onOpen, onApply }) {
+/** `onAutoApply` is passed only where the desktop app can be installed; without it the card has a single Apply. */
+export function JobCard({ job, onOpen, onApply, onAutoApply }) {
   const chips = [experienceLabel(job), placeLabel(job), job.compensation].filter(Boolean);
   const posted = postedLabel(job);
 
@@ -129,10 +130,20 @@ export function JobCard({ job, onOpen, onApply }) {
 
       {/* Side by side when the card has room; stacked on narrow phones. */}
       <div className="relative z-10 mt-auto flex flex-col gap-2 border-t border-line pt-4 @min-[268px]:flex-row">
-        <AutomateLink className="min-w-0 flex-1" />
-        <button type="button" onClick={() => onApply(job)} className={clsx(primaryButton, "shrink-0")}>
-          Apply
-        </button>
+        {onAutoApply ? (
+          <>
+            <button type="button" onClick={() => onApply(job)} className={clsx(secondaryButton, "min-w-0 flex-1")}>
+              Apply manually
+            </button>
+            <button type="button" onClick={() => onAutoApply(job)} className={clsx(primaryButton, "min-w-0 flex-1")}>
+              Auto-apply
+            </button>
+          </>
+        ) : (
+          <button type="button" onClick={() => onApply(job)} className={clsx(primaryButton, "min-w-0 flex-1")}>
+            Apply
+          </button>
+        )}
       </div>
     </article>
   );

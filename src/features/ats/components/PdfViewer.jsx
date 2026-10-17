@@ -52,7 +52,7 @@ export function PdfViewer({ bytes, label }) {
   const zoomIndex = ZOOMS.indexOf(zoom);
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-[18px] border border-line bg-surface">
+    <div className="flex flex-col overflow-hidden rounded-[18px] border border-line bg-surface" data-clarity-mask="True">
       <div className="flex items-center justify-between gap-3 border-b border-line bg-white px-4 py-2.5">
         <p className="truncate text-[13.5px] font-semibold text-ink">
           {label}

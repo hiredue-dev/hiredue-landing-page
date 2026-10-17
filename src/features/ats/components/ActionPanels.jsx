@@ -1,7 +1,8 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Lock, Sparkles, Target } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Lock, Sparkles, Target } from "lucide-react";
 import clsx from "clsx";
 import { Field, fieldClass } from "@/features/jobs/components/AccountFlow.jsx";
 import { primaryButton } from "@/features/jobs/components/ui.jsx";
@@ -91,7 +92,7 @@ export function OptimizePanel({ state, signedIn, fileName, bytes, onRun }) {
   );
 }
 
-export function TailorPanel({ state, signedIn, fileName, bytes, job, onJobChange, onRun, onEdit }) {
+export function TailorPanel({ state, signedIn, fileName, bytes, job, onJobChange, onRun, onEdit, continueHref = null }) {
   const { status, stage, result, error } = state;
   const [touched, setTouched] = useState(false);
   const errors = jobFormErrors(job);
@@ -126,6 +127,11 @@ export function TailorPanel({ state, signedIn, fileName, bytes, job, onJobChange
             action="tailor"
           />
           <KeywordChips keywords={result.match.before.keywords} before={result.match.before.keywords} />
+          {continueHref && (
+            <Link href={continueHref} className={clsx(primaryButton, "h-12 self-start px-6")}>
+              Continue to application <ArrowRight size={16} aria-hidden />
+            </Link>
+          )}
           <button type="button" onClick={onEdit} className="self-start text-[14px] font-semibold text-brand hover:underline">
             Tailor to another job
           </button>
@@ -153,6 +159,12 @@ export function TailorPanel({ state, signedIn, fileName, bytes, job, onJobChange
             action="tailor"
           />
           <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} droppedCount={result.dropped?.length ?? 0} />
+          {continueHref && (
+            // Came from a job's apply dialog: the tailored PDF is above, and this is the way on to the employer's form.
+            <Link href={continueHref} className={clsx(primaryButton, "h-12 self-start px-6")}>
+              Continue to application <ArrowRight size={16} aria-hidden />
+            </Link>
+          )}
           <button type="button" onClick={onEdit} className="self-start text-[14px] font-semibold text-brand hover:underline">
             Tailor to another job
           </button>
