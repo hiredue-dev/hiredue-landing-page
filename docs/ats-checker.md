@@ -6,7 +6,7 @@ A page at `/ats-checker` (in the navbar, the footer and the sitemap) where a vis
 |---|---|---|
 | Upload (PDF/DOCX, max 5 MB, max 10 pages) | No | Text is extracted in the browser: `pdfjs-dist` for PDF, `mammoth` for DOCX. Both are imported on first use, so neither weighs on the landing page. |
 | ATS score + breakdown + top issues | No | A deterministic checklist runs in the browser (`features/ats/scoring.js`). Categories: Contact 10, Sections 20, Impact 30, Skills & keywords 15, Formatting 25. The file never leaves the visitor's machine. |
-| Optimize + rescore | Yes | The resume is first sorted into a fixed structure (see below), then one LLM call through `POST llm/generate` suggests edits. The model's edits are checked locally (`patch.js`), then the result is rescored. The UI shows the score before and after, the new resume as a PDF in an in-page viewer with Download PDF (Copy text as a secondary action), and a diff of the original resume against the new one (see below). |
+| Optimize + rescore | Yes | The resume is first sorted into a fixed structure (see below), then one LLM call through `POST llm/generate` suggests edits. The model's edits are checked locally (`patch.js`), then the result is rescored (and kept only if it scores higher; see "Never worse than the original"). The UI shows the score before and after, the new resume as a PDF in an in-page viewer with Download PDF (Copy text as a secondary action), and a diff of the original resume against the new one (see below). |
 | Tailor to a job + rescore | Yes | The structure and a gap analysis (one LLM call plus at most one "missed keywords" follow-up) in parallel, then skills and bullet rewrites in parallel. Shows the job-keyword match (%) and the ATS score, each before and after, and the same diff. |
 | Find jobs | No (same as /jobs) | The board's role facets that the resume mentions, plus its skills, become keyword chips. Results come from the existing `useJobBoard` / `JobCard` / `JobDetailDialog`. Apply follows the board's rules, and "See all" opens `/jobs?q=…`. |
 
@@ -20,6 +20,15 @@ Text extracted from a PDF has lost which line is a job title, a date, a location
 - **Checks** (`toResume`): every field is coerced to the shape; a field is kept only when every number on it and at least 85% of its words are on the source; icon-font glyphs are stripped. If the result carries less than 85% of the source's words, or has no experience, projects or education, it fails as `unstructured`. A failed check is asked once more, then shown as an error. The structure is kept for the last resume, so Optimize then Tailor asks once.
 - **Edits by id:** the model sees the structure with an id on each line it may change (the summary, and the bullets of roles, projects and achievements; `editableLines`) and answers `{op: "rewrite", id, after}`. Names, titles, employers, dates, schooling and contact details have no id and can't change. Added skills go into the group the model names, else an "Additional" group.
 - **One layout:** `resumeBlocks` turns the structure into typed blocks in a fixed order (Summary, Skills, Experience, Projects, Education, Certifications, Achievements, then any other sections). The PDF and the plain text (`resumeToText`, used for rescoring, the diff and Copy text) are both made from it, so the diff shows only the edits. The "before" score stays the score of the uploaded file.
+
+## Never worse than the original
+
+A resume that is already strong can come back from the model no better, or lower: rewrites that drop a leading verb, add a weak phrase or push a bullet past 35 words all cost points. So the edits are scored before they're shown (`applyGains` in `atsService.js`):
+
+- **Edit by edit:** after the model's edits pass `patch.js`, each one is left out in turn, and stays out if the resume scores higher without it. Scoring is local and deterministic, so this costs milliseconds. The dropped edits are counted under the diff ("N more changes were left out because they would have lowered your ATS score").
+- **Optimize** keeps the result only when its score is above the uploaded file's.
+- **Tailor** keeps the result only when its ATS score is not below the uploaded file's and the keyword match or the score went up. It drops harmful edits only until the score is back at the original, so a keyword edit that costs nothing is kept.
+- **Otherwise** the run returns `unchanged: true` instead of an error, and the panel says the resume is already in good shape and shows the original: the uploaded PDF itself (kept in memory for the session, never stored), or, for a DOCX or after a sign-in reload, the same content typeset. Download gives back the original file.
 
 ## The PDF
 

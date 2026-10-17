@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Copy, Download, Loader2 } from "lucide-react";
+import { BadgeCheck, Check, Copy, Download, Loader2 } from "lucide-react";
 import clsx from "clsx";
 import { FormError } from "@/features/jobs/components/AccountFlow.jsx";
 import { primaryButton, secondaryButton } from "@/features/jobs/components/ui.jsx";
@@ -53,7 +53,7 @@ export function RunError({ error, onRetry }) {
 }
 
 /** What changed: the skills added, then each changed line, old against new. */
-export function ChangeList({ original, text, changes, refusedCount = 0 }) {
+export function ChangeList({ original, text, changes, refusedCount = 0, droppedCount = 0 }) {
   const skills = changes.filter((c) => c.kind === "added");
   return (
     <div className="flex flex-col gap-5">
@@ -73,6 +73,11 @@ export function ChangeList({ original, text, changes, refusedCount = 0 }) {
       {refusedCount > 0 && (
         <p className="t-body-sm">
           {refusedCount} suggestion{refusedCount === 1 ? " was" : "s were"} left out because {refusedCount === 1 ? "it" : "they"} would have changed a fact, a number, or added a claim your resume doesn&apos;t back.
+        </p>
+      )}
+      {droppedCount > 0 && (
+        <p className="t-body-sm">
+          {droppedCount} more change{droppedCount === 1 ? " was" : "s were"} left out because {droppedCount === 1 ? "it" : "they"} would have lowered your ATS score.
         </p>
       )}
     </div>
@@ -132,6 +137,43 @@ export function ResumePreview({ resume, text, fileName, suffix, label, action })
         <FormError>We couldn&apos;t build the PDF. Copy the text instead, or run it again.</FormError>
       ) : (
         <PdfViewer bytes={pdf.bytes} label={label} />
+      )}
+    </div>
+  );
+}
+
+/**
+ * Optimizing or tailoring found nothing that would raise the score: say so,
+ * and show the visitor's own resume. The uploaded PDF when we still have it,
+ * else (a DOCX, or a page reloaded by sign-in) the same content typeset.
+ */
+export function UnchangedResult({ title, detail, result, bytes, fileName, action }) {
+  return (
+    <div className="flex flex-col gap-6">
+      <div role="status" className="flex gap-3 rounded-[18px] bg-success-10 p-5">
+        <BadgeCheck size={22} className="mt-0.5 shrink-0 text-success" aria-hidden />
+        <div className="flex flex-col gap-1">
+          <p className="text-[15px] font-semibold text-ink">{title}</p>
+          <p className="t-body-sm">{detail}</p>
+        </div>
+      </div>
+      {bytes ? (
+        <div className="flex flex-col gap-4">
+          <button
+            type="button"
+            onClick={() => {
+              trackEvent(EVENTS.resumePdfDownloaded, { action, unchanged: true });
+              downloadPdf(bytes, fileName || "resume.pdf");
+            }}
+            className={clsx(primaryButton, "h-11 self-start px-6")}
+          >
+            <Download size={16} aria-hidden />
+            Download your resume
+          </button>
+          <PdfViewer bytes={bytes} label={fileName || "Your resume"} />
+        </div>
+      ) : (
+        <ResumePreview resume={result.resume} text={result.text} fileName={fileName} suffix="original" label="Your resume" action={action} />
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Linkedin, Lock } from "lucide-react";
+import { Linkedin, Lock, MonitorDown } from "lucide-react";
 import clsx from "clsx";
 import {
   DoneStep,
@@ -25,6 +25,15 @@ const REASONS = {
     body: (job) =>
       job ? `Get the application link for ${job.jobTitle}${job.hiringCompany ? ` at ${job.hiringCompany}` : ""}.` : "Get the application link in one step.",
     finish: "Show the application link",
+  },
+  install: {
+    icon: MonitorDown,
+    title: "Create a free account to install HireDue",
+    body: (job) =>
+      job
+        ? `HireDue finds roles like ${job.jobTitle}${job.hiringCompany ? ` at ${job.hiringCompany}` : ""} and applies for you. Free to install.`
+        : "HireDue finds jobs that fit you and applies for you. Free to install.",
+    finish: "Download HireDue",
   },
   posts: {
     icon: Linkedin,

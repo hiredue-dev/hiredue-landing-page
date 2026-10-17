@@ -1,14 +1,15 @@
 "use client";
 
 import { useId, useState } from "react";
-import { Lock, Sparkles, Target } from "lucide-react";
+import Link from "next/link";
+import { ArrowRight, Lock, Sparkles, Target } from "lucide-react";
 import clsx from "clsx";
 import { Field, fieldClass } from "@/features/jobs/components/AccountFlow.jsx";
 import { primaryButton } from "@/features/jobs/components/ui.jsx";
 import { atsChecker } from "@/lib/content";
 import { MAX_JOB_CHARS } from "../services/atsService.js";
 import { jobFormErrors } from "../hooks/useAtsChecker.js";
-import { ChangeList, Progress, ResumePreview, RunError } from "./Results.jsx";
+import { ChangeList, Progress, ResumePreview, RunError, UnchangedResult } from "./Results.jsx";
 import { ScoreDelta } from "./Score.jsx";
 
 const copy = atsChecker.tabs;
@@ -39,7 +40,7 @@ function PanelIntro({ title, body }) {
   );
 }
 
-export function OptimizePanel({ state, signedIn, fileName, onRun }) {
+export function OptimizePanel({ state, signedIn, fileName, bytes, onRun }) {
   const { status, stage, result, error } = state;
   const run = () => onRun("optimize");
   return (
@@ -57,7 +58,22 @@ export function OptimizePanel({ state, signedIn, fileName, onRun }) {
           )}
         </>
       )}
-      {status === "done" && result && (
+      {status === "done" && result?.unchanged && (
+        <div className="flex flex-col gap-6">
+          <UnchangedResult
+            title={`Your resume is already well optimized (ATS score ${result.score.before.overall})`}
+            detail="None of the changes we tried would raise your score, so we've kept your resume exactly as it is."
+            result={result}
+            bytes={bytes}
+            fileName={fileName}
+            action="optimize"
+          />
+          <button type="button" onClick={run} className="self-start text-[14px] font-semibold text-brand hover:underline">
+            Try again
+          </button>
+        </div>
+      )}
+      {status === "done" && result && !result.unchanged && (
         <div className="flex flex-col gap-6">
           <ScoreDelta
             label="ATS score"
@@ -66,7 +82,7 @@ export function OptimizePanel({ state, signedIn, fileName, onRun }) {
             detail={`${result.changes.length} change${result.changes.length === 1 ? "" : "s"} made. Your original file is untouched.`}
           />
           <ResumePreview resume={result.resume} text={result.text} fileName={fileName} suffix="optimized" label="Optimized resume" action="optimize" />
-          <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} />
+          <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} droppedCount={result.dropped?.length ?? 0} />
           <button type="button" onClick={run} className="self-start text-[14px] font-semibold text-brand hover:underline">
             Run it again
           </button>
@@ -76,7 +92,7 @@ export function OptimizePanel({ state, signedIn, fileName, onRun }) {
   );
 }
 
-export function TailorPanel({ state, signedIn, fileName, job, onJobChange, onRun, onEdit }) {
+export function TailorPanel({ state, signedIn, fileName, bytes, job, onJobChange, onRun, onEdit, continueHref = null }) {
   const { status, stage, result, error } = state;
   const [touched, setTouched] = useState(false);
   const errors = jobFormErrors(job);
@@ -100,6 +116,26 @@ export function TailorPanel({ state, signedIn, fileName, job, onJobChange, onRun
       <PanelIntro title={copy.tailor.title} body={copy.tailor.body} />
       {status === "running" ? (
         <Progress stages={atsChecker.stages.tailor} current={stage} />
+      ) : status === "done" && result?.unchanged ? (
+        <div className="flex flex-col gap-6">
+          <UnchangedResult
+            title={`Your resume already fits ${job.title.trim() || "this job"} well`}
+            detail={`It matches ${result.match.before.percent}% of the job's keywords with an ATS score of ${result.score.before.overall}. None of the changes we tried would raise your match without lowering your ATS score, so we've kept it exactly as it is.`}
+            result={result}
+            bytes={bytes}
+            fileName={fileName}
+            action="tailor"
+          />
+          <KeywordChips keywords={result.match.before.keywords} before={result.match.before.keywords} />
+          {continueHref && (
+            <Link href={continueHref} className={clsx(primaryButton, "h-12 self-start px-6")}>
+              Continue to application <ArrowRight size={16} aria-hidden />
+            </Link>
+          )}
+          <button type="button" onClick={onEdit} className="self-start text-[14px] font-semibold text-brand hover:underline">
+            Tailor to another job
+          </button>
+        </div>
       ) : status === "done" && result ? (
         <div className="flex flex-col gap-6">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -122,7 +158,13 @@ export function TailorPanel({ state, signedIn, fileName, job, onJobChange, onRun
             label={`Tailored for ${job.title.trim() || "this job"}`}
             action="tailor"
           />
-          <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} />
+          <ChangeList original={result.original} text={result.text} changes={result.changes} refusedCount={result.refused.length} droppedCount={result.dropped?.length ?? 0} />
+          {continueHref && (
+            // Came from a job's apply dialog: the tailored PDF is above, and this is the way on to the employer's form.
+            <Link href={continueHref} className={clsx(primaryButton, "h-12 self-start px-6")}>
+              Continue to application <ArrowRight size={16} aria-hidden />
+            </Link>
+          )}
           <button type="button" onClick={onEdit} className="self-start text-[14px] font-semibold text-brand hover:underline">
             Tailor to another job
           </button>

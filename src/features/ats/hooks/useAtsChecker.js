@@ -37,7 +37,7 @@ export function useAtsChecker() {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const { showModal } = useAuthModal();
 
-  const [resume, setResume] = useState(null); // {fileName, text, score}
+  const [resume, setResume] = useState(null); // {fileName, text, score, bytes}
   const [parse, setParse] = useState({ status: "idle", error: null });
   const [job, setJob] = useState(EMPTY_JOB);
   const [optimize, setOptimize] = useState(IDLE);
@@ -53,10 +53,13 @@ export function useAtsChecker() {
     setParse({ status: "parsing", error: null });
     try {
       const text = await extractText(file);
+      // A PDF is kept in memory (never stored) so it can be shown as it is
+      // when optimizing or tailoring wouldn't improve it.
+      const bytes = fileType(file) === "pdf" ? new Uint8Array(await file.arrayBuffer()) : null;
       if (id !== runId.current.parse) return;
       const score = scoreResume(text);
       trackEvent(EVENTS.resumeUploaded, { file_type: fileType(file), score: score.overall });
-      setResume({ fileName: file.name, text, score });
+      setResume({ fileName: file.name, text, score, bytes });
       setOptimize(IDLE);
       setTailor(IDLE);
       setParse({ status: "idle", error: null });
@@ -103,6 +106,7 @@ export function useAtsChecker() {
         match_after: result.match?.after?.percent,
         changes: result.changes?.length,
         partial: Boolean(result.partial),
+        unchanged: Boolean(result.unchanged),
       });
       set({ status: "done", stage: null, result, error: null });
     } catch (err) {
@@ -138,7 +142,8 @@ export function useAtsChecker() {
   const restore = useCallback(() => {
     const pending = loadPending();
     if (!pending) return null;
-    setResume({ fileName: pending.fileName, text: pending.text, score: scoreResume(pending.text) });
+    // An email sign-in pushes back to this page without a reload: the PDF is still here.
+    setResume((prev) => ({ fileName: pending.fileName, text: pending.text, score: scoreResume(pending.text), bytes: prev?.text === pending.text ? prev.bytes : null }));
     if (pending.job) setJob(pending.job);
     setTab(pending.action);
     return pending.action;

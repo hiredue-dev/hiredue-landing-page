@@ -1,10 +1,11 @@
 "use client";
 
-import { Suspense, useEffect, useId, useRef, useState } from "react";
+import { Suspense, useCallback, useEffect, useId, useRef, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { FileText, RefreshCw } from "lucide-react";
+import { BriefcaseBusiness, FileText, RefreshCw } from "lucide-react";
 import clsx from "clsx";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { getJob } from "@/features/jobs/services/jobBoardService.js";
 import { atsChecker } from "@/lib/content";
 import { useAtsChecker } from "../hooks/useAtsChecker.js";
 import { isReturnFromAuth } from "../pendingAction.js";
@@ -20,6 +21,24 @@ export function AtsChecker() {
   const ats = useAtsChecker();
   // After "Replace", focus lands back on the file button rather than the page top.
   const [focusUpload, setFocusUpload] = useState(false);
+  // The job board's apply dialog sends people here with ?job=<id>: the posting fills the tailor form, and the result links back to the application.
+  const [linkedJob, setLinkedJob] = useState(null);
+  const { setJob, setTab } = ats;
+  const prefillJob = useCallback(
+    async (id) => {
+      try {
+        const response = await getJob(id);
+        if (!response.success || !response.data) return;
+        const data = response.data;
+        setJob({ title: data.jobTitle ?? "", company: data.hiringCompany ?? "", description: data.description ?? "" });
+        setTab("tailor");
+        setLinkedJob({ id, title: data.jobTitle ?? "", company: data.hiringCompany ?? "" });
+      } catch {
+        // The form stays empty and the visitor fills it in, as without the link.
+      }
+    },
+    [setJob, setTab],
+  );
 
   return (
     <section id="checker" className="relative scroll-mt-24 pt-[140px] pb-[100px] min-[810px]:pt-[170px] md:pb-[130px] min-[1200px]:pt-[194px]">
@@ -35,9 +54,19 @@ export function AtsChecker() {
             <p className="sr-only" aria-live="polite">
               {ats.resume ? `Your ATS score is ${ats.resume.score.overall} out of 100.` : ""}
             </p>
+            {linkedJob && !ats.resume && (
+              <p className="mb-2.5 flex items-center gap-2.5 rounded-[16px] bg-white px-4 py-3 text-[14px] text-ink sm:mb-5">
+                <BriefcaseBusiness size={16} className="shrink-0 text-brand" aria-hidden />
+                <span>
+                  Upload your resume and we will tailor it for <b>{linkedJob.title || "this job"}</b>
+                  {linkedJob.company ? ` at ${linkedJob.company}` : ""}.
+                </span>
+              </p>
+            )}
             {ats.resume ? (
               <Workspace
                 ats={ats}
+                continueHref={linkedJob ? `/jobs?apply=${encodeURIComponent(linkedJob.id)}&tailored=1` : null}
                 onReplace={() => {
                   setFocusUpload(true);
                   ats.reset();
@@ -60,6 +89,7 @@ export function AtsChecker() {
           Suspense; this keeps that to the watcher, not the section. */}
       <Suspense fallback={null}>
         <AuthReturnWatcher onReturn={ats.handleReturn} />
+        <JobPrefillWatcher onJob={prefillJob} />
       </Suspense>
     </section>
   );
@@ -80,7 +110,20 @@ export function AuthReturnWatcher({ onReturn }) {
   return null;
 }
 
-function Workspace({ ats, onReplace }) {
+/** `?job=<id>` from the job board: fetched once per id, so a reload after sign-in does not wipe what the visitor typed. */
+export function JobPrefillWatcher({ onJob }) {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("job");
+  const seen = useRef(null);
+  useEffect(() => {
+    if (!id || seen.current === id) return;
+    seen.current = id;
+    onJob(id);
+  }, [id, onJob]);
+  return null;
+}
+
+function Workspace({ ats, onReplace, continueHref }) {
   const { resume } = ats;
 
   return (
@@ -124,17 +167,19 @@ function Workspace({ ats, onReplace }) {
         <Tabs current={ats.tab} onChange={ats.setTab} />
         <div role="tabpanel" id={`ats-panel-${ats.tab}`} aria-labelledby={`ats-tab-${ats.tab}`} tabIndex={0} className="outline-none">
           {ats.tab === "optimize" && (
-            <OptimizePanel state={ats.optimize} signedIn={ats.isAuthenticated} fileName={resume.fileName} onRun={ats.request} />
+            <OptimizePanel state={ats.optimize} signedIn={ats.isAuthenticated} fileName={resume.fileName} bytes={resume.bytes} onRun={ats.request} />
           )}
           {ats.tab === "tailor" && (
             <TailorPanel
               state={ats.tailor}
               signedIn={ats.isAuthenticated}
               fileName={resume.fileName}
+              bytes={resume.bytes}
               job={ats.job}
               onJobChange={ats.setJob}
               onRun={ats.request}
               onEdit={() => ats.clearRun("tailor")}
+              continueHref={continueHref}
             />
           )}
           {ats.tab === "jobs" && <JobsPanel text={resume.text} />}
