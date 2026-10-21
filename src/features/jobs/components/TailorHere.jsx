@@ -20,9 +20,11 @@ const IDLE = { status: "idle", stage: null, result: null, error: null, fileName:
  * apply dialog only opens signed in, so no sign-up detour is needed here.
  *
  * `job` is {title, company, description}; the caller only renders this when
- * the description is long enough to tailor against.
+ * the description is long enough to tailor against. `onDownloadAndApply` runs
+ * in the download click, so the caller can open the employer's page in the
+ * same gesture.
  */
-export function TailorHere({ job, onDone }) {
+export function TailorHere({ job, onDone, onDownloadAndApply }) {
   const [state, setState] = useState(IDLE);
   // A newer drop makes an older run's answer moot.
   const runId = useRef(0);
@@ -100,6 +102,9 @@ export function TailorHere({ job, onDone }) {
           suffix={`tailored for ${job.title.trim() || "job"}`.replace(/[\\/:*?"<>|]+/g, " ")}
           label={`Tailored for ${job.title.trim() || "this job"}`}
           action="tailor"
+          downloadLabel="Download and apply"
+          onDownload={onDownloadAndApply}
+          viewerClassName="max-h-[45vh] min-h-[240px]"
         />
       </div>
     );
@@ -110,6 +115,7 @@ export function TailorHere({ job, onDone }) {
       parsing={state.status === "parsing"}
       error={null}
       onFile={run}
+      title="One-click resume tailoring. Free."
       privacyNote="We keep only the text of your resume, never the file, and only to write this version."
     />
   );

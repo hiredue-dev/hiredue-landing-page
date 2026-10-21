@@ -115,6 +115,11 @@ function UnlockedApply({ jobId, path, tailored }) {
       {isPost ? "Open LinkedIn post" : "Continue to application"} <ExternalLink size={16} aria-hidden />
     </a>
   );
+  // "Download and apply": the PDF saves and the employer's page opens in one click, which browsers allow because it is the visitor's own click.
+  const downloadAndApply = () => {
+    openEmployer();
+    window.open(job.applyUrl, "_blank", "noopener,noreferrer");
+  };
   return (
     <>
       <div className="flex flex-col gap-2 pr-8">
@@ -140,17 +145,26 @@ function UnlockedApply({ jobId, path, tailored }) {
           <div className="flex flex-col gap-3 rounded-[15px] bg-ice/60 p-4">
             {!tailoredHere && (
               <>
-                <p className="text-[15px] font-semibold text-ink">Tailor your resume to this posting first</p>
+                <p className="text-[16px] font-semibold text-ink">Tailored resumes get 3x more responses</p>
                 <p className="text-[14px] leading-[1.5] text-dim">
-                  A resume written for the posting gets past the screening software and in front of a person more often.
-                  Drop yours below and it is rewritten for this role in about a minute. Free.
+                  Drop your resume. We rewrite it for the {job.jobTitle} role{job.hiringCompany ? ` at ${job.hiringCompany}` : ""} and
+                  hand you the PDF in 60 seconds.
                 </p>
               </>
             )}
-            {canTailor ? <TailorHere job={tailorJob} onDone={onTailored} /> : <Pending label="Reading the posting…" />}
+            {canTailor ? <TailorHere job={tailorJob} onDone={onTailored} onDownloadAndApply={downloadAndApply} /> : <Pending label="Reading the posting…" />}
           </div>
           {tailoredHere ? (
-            external
+            // Already downloaded, or chose not to: the plain way on, quiet, under the preview.
+            <a
+              href={job.applyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={openEmployer}
+              className="inline-flex items-center justify-center gap-1.5 self-center py-1 text-[14px] font-medium text-dim underline-offset-4 transition-colors hover:text-ink hover:underline"
+            >
+              Continue to application without downloading <ExternalLink size={14} aria-hidden />
+            </a>
           ) : (
             // Quiet on purpose, but a real link: people who want the form now should get it on one click.
             <a

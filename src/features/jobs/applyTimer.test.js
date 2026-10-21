@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { CAP_MS, clearApplyTimer, FLOOR_MS, formatElapsed, readApplyTimer, startApplyTimer, timerVerdict } from "./applyTimer.js";
+import { CAP_MS, CEILING_MS, clearApplyTimer, describeElapsed, FLOOR_MS, formatElapsed, readApplyTimer, startApplyTimer, timerVerdict } from "./applyTimer.js";
 
 describe("the apply timer", () => {
   beforeEach(() => window.sessionStorage.clear());
@@ -32,12 +32,22 @@ describe("the apply timer", () => {
 });
 
 describe("what the return screen may say", () => {
-  // The three bands from the plan: say nothing under 90 s, the measured time up to 35 min, "over 35 minutes" beyond.
-  it("is quiet under the floor, measured in between, capped above", () => {
+  // Say nothing under 90 s, the exact time up to 35 min, a rounded time up to 3 h, "over 3 hours" beyond: always the real number, never the same phrase for everyone.
+  it("is quiet under the floor, measured, then rounded, then capped", () => {
     expect(timerVerdict(FLOOR_MS - 1)).toBe("quiet");
     expect(timerVerdict(FLOOR_MS)).toBe("measured");
     expect(timerVerdict(CAP_MS)).toBe("measured");
-    expect(timerVerdict(CAP_MS + 1)).toBe("capped");
+    expect(timerVerdict(CAP_MS + 1)).toBe("rounded");
+    expect(timerVerdict(CEILING_MS)).toBe("rounded");
+    expect(timerVerdict(CEILING_MS + 1)).toBe("capped");
+  });
+
+  it("describes each band in words a person would use", () => {
+    expect(describeElapsed(517_000)).toBe("8 min 37 s");
+    expect(describeElapsed(48 * 60_000)).toBe("about 50 minutes");
+    expect(describeElapsed(62 * 60_000)).toBe("about 1 hour");
+    expect(describeElapsed(76 * 60_000)).toBe("about 1 hour 15 minutes");
+    expect(describeElapsed(4 * 60 * 60_000)).toBe("over 3 hours");
   });
 
   it("formats the way a person would say it", () => {
