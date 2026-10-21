@@ -173,8 +173,8 @@ export default function SignupForm() {
         <p className={styles.eyebrow}>Get started</p>
         <h1 className={styles.title}>Create your account</h1>
         <p className={styles.subtitle}>
-          Join HireDue and start your 2-days free trial. No credit card
-          required.
+          Join HireDue and get a 2-day free trial. It starts when you set up
+          your job profile in the desktop app. No credit card required.
         </p>
 
         <form

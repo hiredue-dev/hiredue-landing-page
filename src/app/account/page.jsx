@@ -134,6 +134,10 @@ export default function AccountPage() {
   const accessType = subscription?.accessType ?? "none";
   const isPaid = accessType === "paid";
   const isTrial = accessType === "trial";
+  // Signed up, but the trial's clock hasn't started: it starts once the job
+  // profile is set up in the desktop app, not at signup.
+  const isTrialPending = !isPaid && !isTrial && !!subscription?.trialPending;
+  const pendingTrialDays = subscription?.trialDays;
 
   // Razorpay has no customer portal, so a plan it bills is managed here: this
   // page is where "Manage subscription" in the desktop app lands. Asking the
@@ -152,13 +156,17 @@ export default function AccountPage() {
       : { label: "Active", className: "bg-[rgba(16,185,129,0.18)] text-[#34d399]" }
     : isTrial
       ? { label: "Free trial", className: "bg-[rgba(64,106,228,0.12)] text-brand" }
-      : { label: "No plan", className: "bg-white text-dim" };
+      : isTrialPending
+        ? { label: "Trial not started", className: "bg-[rgba(64,106,228,0.12)] text-brand" }
+        : { label: "No plan", className: "bg-white text-dim" };
 
   const planTitle = isPaid
     ? subscription?.productName || "HireDue Pro"
     : isTrial
       ? "Free trial"
-      : "You're not subscribed";
+      : isTrialPending
+        ? "Your free trial is waiting"
+        : "You're not subscribed";
 
   const planBlurb = isPaid
     ? endsAtPeriodEnd
@@ -166,7 +174,9 @@ export default function AccountPage() {
       : "Your agent is searching, applying and reaching out every day."
     : isTrial
       ? "You have full access while your trial runs. Upgrade anytime to keep your agent working once it ends."
-      : "Pick a plan to switch your agent on: daily applications, recruiter outreach and tracking.";
+      : isTrialPending
+        ? `Your ${pendingTrialDays ? `${pendingTrialDays}-day ` : ""}free trial starts when you download the desktop app and set up your job profile, so you don't lose any days before you're ready.`
+        : "Pick a plan to switch your agent on: daily applications, recruiter outreach and tracking.";
 
   return (
     <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[140px] min-[1200px]:pt-[194px]">
@@ -268,6 +278,15 @@ export default function AccountPage() {
                     <Pill tone="white" onClick={handlePortal} disabled={portalLoading}>
                       {portalLoading ? "Opening portal…" : "Manage subscription"}
                     </Pill>
+                  ) : isTrialPending ? (
+                    <>
+                      <Pill tone="primary" onClick={() => router.push("/download")}>
+                        Download the app
+                      </Pill>
+                      <Pill tone="outline" onClick={() => router.push("/#pricing")}>
+                        View plans
+                      </Pill>
+                    </>
                   ) : (
                     <Pill tone="primary" onClick={() => router.push("/#pricing")}>
                       {isTrial ? "Upgrade plan" : "View plans"}
