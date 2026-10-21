@@ -99,3 +99,58 @@ export function getOrganizationJsonLd() {
     ],
   };
 }
+
+/**
+ * Structured data for /ats-checker: the tool as a free web application, its
+ * place in the site, and its FAQ (the same questions shown on the page).
+ */
+export function getAtsCheckerJsonLd({ title, description, features, faq }) {
+  const url = absoluteUrl("/ats-checker");
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": `${url}#app`,
+        name: `${SITE_NAME} ${title}`,
+        url,
+        description,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "Any (runs in the browser)",
+        browserRequirements: "Requires JavaScript",
+        isAccessibleForFree: true,
+        offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+        featureList: features,
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+      {
+        "@type": "WebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: title,
+        description,
+        isPartOf: { "@id": `${SITE_URL}/#website` },
+        mainEntity: { "@id": `${url}#app` },
+        breadcrumb: { "@id": `${url}#breadcrumb` },
+        inLanguage: "en",
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `${url}#breadcrumb`,
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+          { "@type": "ListItem", position: 2, name: title, item: url },
+        ],
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${url}#faq`,
+        mainEntity: faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      },
+    ],
+  };
+}

@@ -1,9 +1,11 @@
 import { Bricolage_Grotesque } from "next/font/google";
 import localFont from "next/font/local";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { Analytics } from "@vercel/analytics/next";
 
 import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/sections/Footer";
+import { MicrosoftClarity } from "@/components/site/analytics/MicrosoftClarity";
 import { JsonLd } from "@/components/site/seo/JsonLd";
 import { WhatsAppFloatingButton } from "@/components/site/ui/WhatsAppFloatingButton";
 import {
@@ -99,6 +101,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
+  const clarityId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
 
   return (
     <html
@@ -114,6 +117,8 @@ export default function RootLayout({ children }) {
           <WhatsAppFloatingButton />
         </Providers>
         {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+        {clarityId ? <MicrosoftClarity projectId={clarityId} /> : null}
+        <Analytics />
       </body>
     </html>
   );

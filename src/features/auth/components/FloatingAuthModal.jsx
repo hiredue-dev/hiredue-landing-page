@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
+import { EVENTS, trackEvent } from "@/lib/analytics";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { X, Eye, EyeOff, ArrowLeft } from "lucide-react";
@@ -23,6 +24,7 @@ export function AuthModalProvider({ children }) {
   const [redirectTo, setRedirectTo] = useState(null);
 
   const showModal = useCallback((opts = {}) => {
+    trackEvent(EVENTS.authModalOpened, { view: opts.view || "signin", path: window.location.pathname });
     setView(opts.view || "signin");
     setRedirectTo(opts.redirectTo || null);
     setOpen(true);

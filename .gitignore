@@ -53,3 +53,7 @@ seo_report.md
 
 # playwright mcp screenshots/traces
 .playwright-mcp/
+
+# editor swap files
+*.swp
+*.swo

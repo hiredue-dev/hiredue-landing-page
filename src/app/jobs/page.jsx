@@ -1,5 +1,7 @@
 import { Suspense } from "react";
 import { JobBoard, JobBoardFallback } from "@/features/jobs/components/JobBoard";
+import { TrackPageView } from "@/components/site/analytics/TrackPageView";
+import { EVENTS } from "@/lib/analytics";
 import { createPageMetadata } from "@/lib/seo";
 
 export const metadata = createPageMetadata({
@@ -22,6 +24,7 @@ const API_ORIGIN = (() => {
 export default function JobsPage() {
   return (
     <>
+      <TrackPageView event={EVENTS.jobsPageViewed} />
       {API_ORIGIN && <link rel="preconnect" href={API_ORIGIN} crossOrigin="anonymous" />}
       {/* The board reads filters from the URL (useSearchParams), which needs a Suspense boundary. */}
       <Suspense fallback={<JobBoardFallback />}>

@@ -6,7 +6,8 @@ import { Linkedin, Loader2, SearchX, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
 import { useJobBoard } from "../hooks/useJobBoard.js";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
-import { getJobFilters } from "../services/jobBoardService.js";
+import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
+import { getJob, getJobFilters } from "../services/jobBoardService.js";
 import {
   EMPTY_FILTERS,
   filtersToParams,
@@ -15,6 +16,8 @@ import {
   readFilters,
 } from "../filters.js";
 import { roleLabel } from "../format.js";
+import { clearApplyTimer, readApplyTimer, timerVerdict } from "../applyTimer.js";
+import { canInstall, clearIntent, loadIntent, saveIntent } from "../funnel.js";
 import { JobDialogsContext } from "../jobDialogs.js";
 import { AccountDialog } from "./AccountDialog.jsx";
 import { ApplyDialog } from "./ApplyDialog.jsx";
@@ -24,6 +27,7 @@ import { HiringPostsStrip } from "./HiringPostsStrip.jsx";
 import { JobCard, JobCardSkeleton } from "./JobCard.jsx";
 import { JobDetailDialog } from "./JobDetailDialog.jsx";
 import { JobsHero } from "./JobsHero.jsx";
+import { ReturnDialog } from "./ReturnDialog.jsx";
 import { SourceCircles } from "./Sources.jsx";
 import { LockedPostCard, PostCard, UnlockPostsPanel } from "./PostCard.jsx";
 import { SearchBar } from "./SearchBar.jsx";
@@ -36,7 +40,7 @@ export function JobBoard() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
 
   const filters = useMemo(() => readFilters(searchParams), [searchParams]);
   const filterQuery = useMemo(() => filtersToQuery(filters), [filters]);
@@ -47,7 +51,15 @@ export function JobBoard() {
   const board = useJobBoard(filterQuery, showPosts ? authKey : "public", filters.source);
 
   const [facets, setFacets] = useState(null);
+  // Which job's detail is open lives in the URL (?job=<id>), so a job has an address an ambassador can share; this holds the data for it.
   const [detailJob, setDetailJob] = useState(null);
+  // Cards the visitor has seen, so opening one shows instantly instead of waiting on a fetch by id.
+  const knownJobs = useRef(new Map());
+  // Mac and Windows get "Auto-apply with HireDue"; everything else has nothing to install and gets one Apply button. Decided on the client, since the server does not know the device.
+  const [install, setInstall] = useState(true);
+  useEffect(() => {
+    setInstall(canInstall(navigator.userAgent, navigator.maxTouchPoints));
+  }, []);
   const [filtersOpen, setFiltersOpen] = useState(false);
   // In-page sign-up / log-in and app download (instead of leaving for /signup or /download).
   const [accountRequest, setAccountRequest] = useState(null);
@@ -127,37 +139,138 @@ export function JobBoard() {
   const Card = showPosts ? PostCard : JobCard;
 
   const applyId = searchParams.get("apply");
-  const closeApply = useCallback(() => setParams({ apply: null }), [setParams]);
-  const closeDetail = useCallback(() => setDetailJob(null), []);
+  // Set by the ATS checker's "Continue to application", so the apply dialog does not ask for the resume a second time.
+  const tailored = searchParams.get("tailored") === "1";
+  const closeApply = useCallback(() => setParams({ apply: null, tailored: null }), [setParams]);
+  const jobId = searchParams.get("job");
+  const closeDetail = useCallback(() => setParams({ job: null }), [setParams]);
+  const openDetail = useCallback(
+    (job) => {
+      trackEvent(EVENTS.jobViewed, jobProps(job, "jobs"));
+      knownJobs.current.set(job.id, job);
+      setParams({ job: job.id });
+    },
+    [setParams],
+  );
+
+  useEffect(() => {
+    if (!jobId) {
+      setDetailJob(null);
+      return undefined;
+    }
+    const known = knownJobs.current.get(jobId);
+    if (known) {
+      setDetailJob(known);
+      return undefined;
+    }
+    // A shared link can name a job the loaded list does not contain, so it is fetched by id rather than looked for. A dead id clears itself so the page is not stuck on it.
+    let cancelled = false;
+    getJob(jobId)
+      .then((response) => {
+        if (cancelled) return;
+        if (response.success && response.data) {
+          trackEvent(EVENTS.jobViewed, jobProps(response.data, "jobs"));
+          knownJobs.current.set(jobId, response.data);
+          setDetailJob(response.data);
+        } else {
+          setParams({ job: null });
+        }
+      })
+      .catch(() => !cancelled && setParams({ job: null }));
+    return () => {
+      cancelled = true;
+    };
+  }, [jobId, setParams]);
 
   const openAccount = useCallback(
     (request = {}) => {
-      setDetailJob(null);
+      if (jobId) closeDetail();
       setDownloadOpen(false);
       setAccountRequest({ mode: "signup", ...request });
     },
-    [],
+    [jobId, closeDetail],
   );
   const openDownload = useCallback(() => {
-    setDetailJob(null);
     setAccountRequest(null);
-    if (applyId) closeApply();
+    if (jobId || applyId) setParams({ job: null, apply: null });
     setDownloadOpen(true);
-  }, [applyId, closeApply]);
+  }, [jobId, applyId, setParams]);
   const dialogs = useMemo(() => ({ openAccount, openDownload }), [openAccount, openDownload]);
+  // Auto-apply lands on the download-started page, which starts the installer and explains the app; the dialog stays for the cards' Automate button.
+  const goToDownload = useCallback(
+    (jobId) => router.push(`/download/started${jobId ? `?job=${encodeURIComponent(jobId)}` : ""}`),
+    [router],
+  );
 
   const openApply = useCallback(
     (job) => {
-      setDetailJob(null);
+      trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated, path: install ? "desktop" : "mobile" });
       if (isAuthenticated) {
-        setParams({ apply: job.id });
+        setParams({ job: null, apply: job.id });
         return;
       }
-      // Signed out: sign up right here, then the application link opens.
-      openAccount({ reason: "apply", job, onSuccess: () => setParams({ apply: job.id }) });
+      // Signed out: sign up right here, then the application link opens. Google sign-in leaves the page, so the choice is kept for the return.
+      saveIntent({ intent: "apply", jobId: job.id });
+      openAccount({
+        reason: "apply",
+        job,
+        onSuccess: () => {
+          clearIntent();
+          setParams({ apply: job.id });
+        },
+      });
     },
-    [isAuthenticated, setParams, openAccount],
+    [isAuthenticated, install, setParams, openAccount],
   );
+  const openAutoApply = useCallback(
+    (job) => {
+      trackEvent(EVENTS.jobAutoApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated });
+      if (isAuthenticated) {
+        goToDownload(job.id);
+        return;
+      }
+      saveIntent({ intent: "install", jobId: job.id });
+      openAccount({
+        reason: "install",
+        job,
+        onSuccess: () => {
+          clearIntent();
+          goToDownload(job.id);
+        },
+      });
+    },
+    [isAuthenticated, openAccount, goToDownload],
+  );
+
+  // Back from an employer's application form: the clock started by the apply dialog is read when this tab is visible again, and anything worth saying is said once.
+  const [returnInfo, setReturnInfo] = useState(null);
+  useEffect(() => {
+    const check = () => {
+      if (document.visibilityState !== "visible") return;
+      const timer = readApplyTimer();
+      if (!timer) return;
+      clearApplyTimer();
+      const verdict = timerVerdict(timer.elapsedMs);
+      if (verdict === "quiet") return;
+      setReturnInfo({ ...timer, verdict });
+      setParams({ apply: null, tailored: null });
+    };
+    check();
+    document.addEventListener("visibilitychange", check);
+    return () => document.removeEventListener("visibilitychange", check);
+    // setParams changes with the URL; the listener only needs the latest one when it fires, and re-binding on every URL change is harmless.
+  }, [setParams]);
+  const closeReturn = useCallback(() => setReturnInfo(null), []);
+
+  // Back from Google sign-in: the page reloads on /jobs?job=<id> signed in, and the button pressed before leaving is carried out.
+  useEffect(() => {
+    if (authLoading || !isAuthenticated) return;
+    const saved = loadIntent();
+    if (!saved) return;
+    clearIntent();
+    if (saved.intent === "install") goToDownload(saved.jobId);
+    else setParams({ job: null, apply: saved.jobId });
+  }, [authLoading, isAuthenticated, goToDownload, setParams]);
   const unlockPosts = useCallback(
     (mode = "signup") => openAccount({ mode, reason: "posts", onSuccess: () => setSource("posts") }),
     [openAccount, setSource],
@@ -241,7 +354,7 @@ export function JobBoard() {
                 authKey={authKey}
                 onUnlock={() => unlockPosts()}
                 onSeeAll={() => setSource("posts")}
-                onOpen={setDetailJob}
+                onOpen={openDetail}
               />
             )}
 
@@ -332,7 +445,7 @@ export function JobBoard() {
               <>
                 <CardGrid>
                   {board.jobs.map((job) => (
-                    <Card key={job.id} job={job} onOpen={setDetailJob} onApply={openApply} />
+                    <Card key={job.id} job={job} onOpen={openDetail} onApply={openApply} onAutoApply={install ? openAutoApply : undefined} />
                   ))}
                 </CardGrid>
 
@@ -375,11 +488,38 @@ export function JobBoard() {
         </div>
       </Dialog>
 
-      <JobDetailDialog job={detailJob} onClose={closeDetail} onApply={openApply} />
-      <ApplyDialog jobId={applyId} onClose={closeApply} />
+      <JobDetailDialog
+        job={detailJob}
+        onClose={closeDetail}
+        onApply={openApply}
+        onAutoApply={install ? openAutoApply : undefined}
+        path={install ? "desktop" : "mobile"}
+      />
+      <ApplyDialog jobId={applyId} onClose={closeApply} path={install ? "desktop" : "mobile"} tailored={tailored} />
+      <ReturnDialog
+        info={returnInfo}
+        canInstall={install}
+        onClose={closeReturn}
+        onDownload={() => {
+          closeReturn();
+          goToDownload(returnInfo?.jobId);
+        }}
+        onOpenJob={(j) => {
+          closeReturn();
+          openDetail(j);
+        }}
+        onAutoApply={(j) => {
+          closeReturn();
+          openAutoApply(j);
+        }}
+      />
       <AccountDialog
         request={accountRequest}
-        onClose={() => setAccountRequest(null)}
+        // Closed without signing in: forget the button they pressed, or a later log-in would act on it out of the blue.
+        onClose={() => {
+          clearIntent();
+          setAccountRequest(null);
+        }}
         onSuccess={accountRequest?.onSuccess}
       />
       <DownloadDialog open={downloadOpen} onClose={() => setDownloadOpen(false)} />

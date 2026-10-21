@@ -6,8 +6,13 @@ import { getJob } from "../services/jobBoardService.js";
 import { AutomateLink, JobBadges, JobMeta } from "./JobCard.jsx";
 import { CompanyLogo, Dialog, primaryButton } from "./ui.jsx";
 
-/** Full posting. Opens instantly from the card's data; the description loads in behind it. */
-export function JobDetailDialog({ job, onClose, onApply }) {
+/**
+ * Full posting. Opens instantly from the card's data; the description loads in behind it.
+ * `path` is "desktop" (Auto-apply with HireDue first, Apply manually as a quiet link) or
+ * "mobile" (one Apply button, since there is nothing to install). Without `onAutoApply`
+ * the install button is the plain Automate link, which is what the ATS checker's job list uses.
+ */
+export function JobDetailDialog({ job, onClose, onApply, onAutoApply, path = "desktop" }) {
   const { isAuthenticated } = useAuth();
   const [detail, setDetail] = useState(null);
   const [failed, setFailed] = useState(false);
@@ -70,18 +75,43 @@ export function JobDetailDialog({ job, onClose, onApply }) {
           </div>
 
           <div className="flex items-center justify-between gap-3 border-t border-line p-4 sm:px-6">
-            <p className="hidden text-[13px] text-dim sm:block">
-              {isAuthenticated ? "Opens the employer's application page." : "Free account required to apply."}
-            </p>
-            <div className="flex w-full gap-2 sm:w-auto">
-              <AutomateLink className="flex-1 sm:flex-none" />
-              <button
-                type="button"
-                onClick={() => onApply(shown)}
-                className={`${primaryButton} flex-1 sm:flex-none sm:px-8`}
-              >
-                Apply
-              </button>
+            {path !== "desktop" && (
+              <p className="hidden text-[13px] text-dim sm:block">
+                {isAuthenticated ? "Opens the employer's application page." : "Free account required to apply."}
+              </p>
+            )}
+            <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
+              {path === "desktop" ? (
+                <>
+                  {/* Quiet on purpose: the manual path is the one we would rather people did not take, but it stays a readable link, never hidden. */}
+                  <button
+                    type="button"
+                    onClick={() => onApply(shown)}
+                    className="shrink-0 px-3 py-2.5 text-[14px] font-medium text-dim underline-offset-4 transition-colors hover:text-ink hover:underline"
+                  >
+                    Apply manually
+                  </button>
+                  {onAutoApply ? (
+                    <button
+                      type="button"
+                      onClick={() => onAutoApply(shown)}
+                      className={`${primaryButton} flex-1 sm:flex-none sm:px-6`}
+                    >
+                      Auto-apply with HireDue
+                    </button>
+                  ) : (
+                    <AutomateLink className="flex-1 sm:flex-none" />
+                  )}
+                </>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => onApply(shown)}
+                  className={`${primaryButton} flex-1 sm:flex-none sm:px-8`}
+                >
+                  Apply
+                </button>
+              )}
             </div>
           </div>
         </>
