@@ -75,10 +75,20 @@ export function weekdayLabel(date) {
   );
 }
 
-export async function fetchTodayStats({ revalidate = 60 } = {}) {
+/**
+ * On the server, `revalidate` lets one backend call serve a minute of renders.
+ * In the browser pass `fresh`: the endpoint's `max-age=60,
+ * stale-while-revalidate=300` would otherwise let the browser answer a poll
+ * from its own cache, minutes behind. The backend's one-minute cache still
+ * spares the database.
+ */
+export async function fetchTodayStats({ revalidate = 60, fresh = false } = {}) {
   try {
     const base = BACKEND_API_URL.replace(/\/$/, "");
-    const response = await fetch(`${base}/public/today`, { next: { revalidate } });
+    const response = await fetch(
+      `${base}/public/today`,
+      fresh ? { cache: "no-store" } : { next: { revalidate } },
+    );
     if (!response.ok) return null;
     const body = await response.json();
     return parseTodayStats(body?.data);

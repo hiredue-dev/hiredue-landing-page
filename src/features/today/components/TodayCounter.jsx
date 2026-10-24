@@ -32,7 +32,7 @@ export function TodayCounter({ initial }) {
   useEffect(() => {
     let cancelled = false;
     const refresh = async () => {
-      const next = await fetchTodayStats({ revalidate: 0 });
+      const next = await fetchTodayStats({ fresh: true });
       // A failed refresh keeps the last good numbers rather than blanking them.
       if (cancelled || !next) return;
       const prev = latest.current;
