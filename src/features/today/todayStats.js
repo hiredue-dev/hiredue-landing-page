@@ -53,19 +53,11 @@ export function dayPace(stats) {
   return { progress, everySeconds: elapsed / stats.applicationsToday };
 }
 
-/** "38 seconds", "4.2 minutes", "2 hours": the gap between applications, said plainly. */
+/** "58 sec", "4.2 min", "1.5 hr": the gap between applications, short enough for a chip. */
 export function formatEvery(seconds) {
-  if (seconds < 1) return "second";
-  if (seconds < 60) {
-    const s = Math.round(seconds);
-    return s === 1 ? "second" : `${s} seconds`;
-  }
-  if (seconds < 3600) {
-    const m = Math.round(seconds / 6) / 10;
-    return m === 1 ? "minute" : `${m} minutes`;
-  }
-  const h = Math.round(seconds / 360) / 10;
-  return h === 1 ? "hour" : `${h} hours`;
+  if (seconds < 90) return `${Math.max(1, Math.round(seconds))} sec`;
+  if (seconds < 5400) return `${(seconds / 60).toFixed(1)} min`;
+  return `${(seconds / 3600).toFixed(1)} hr`;
 }
 
 /** "Mon" for a YYYY-MM-DD date. Parsed as UTC noon so no timezone moves it to the next day. */
@@ -75,10 +67,20 @@ export function weekdayLabel(date) {
   );
 }
 
-export async function fetchTodayStats({ revalidate = 60 } = {}) {
+/**
+ * On the server, `revalidate` lets one backend call serve a minute of renders.
+ * In the browser pass `fresh`: the endpoint's `max-age=60,
+ * stale-while-revalidate=300` would otherwise let the browser answer a poll
+ * from its own cache, minutes behind. The backend's one-minute cache still
+ * spares the database.
+ */
+export async function fetchTodayStats({ revalidate = 60, fresh = false } = {}) {
   try {
     const base = BACKEND_API_URL.replace(/\/$/, "");
-    const response = await fetch(`${base}/public/today`, { next: { revalidate } });
+    const response = await fetch(
+      `${base}/public/today`,
+      fresh ? { cache: "no-store" } : { next: { revalidate } },
+    );
     if (!response.ok) return null;
     const body = await response.json();
     return parseTodayStats(body?.data);

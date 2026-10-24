@@ -72,12 +72,12 @@ describe("formatting", () => {
     expect(formatCount(86.6)).toBe("87");
   });
 
-  it("says the gap plainly", () => {
-    expect(formatEvery(0.4)).toBe("second");
-    expect(formatEvery(58.9)).toBe("59 seconds");
-    expect(formatEvery(60)).toBe("minute");
-    expect(formatEvery(252)).toBe("4.2 minutes");
-    expect(formatEvery(7200)).toBe("2 hours");
+  it("says the gap short enough for a chip", () => {
+    expect(formatEvery(0.4)).toBe("1 sec");
+    expect(formatEvery(58.9)).toBe("59 sec");
+    expect(formatEvery(89)).toBe("89 sec");
+    expect(formatEvery(252)).toBe("4.2 min");
+    expect(formatEvery(7200)).toBe("2.0 hr");
   });
 
   it("labels each day by its own date, whatever the browser's timezone", () => {

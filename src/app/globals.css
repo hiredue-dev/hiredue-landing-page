@@ -530,6 +530,76 @@
   }
 }
 
+/* /today's sky: stars, a shooting star, clouds, chimney smoke, a lit window, fireflies */
+@keyframes today-twinkle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+@keyframes today-shoot {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(-20deg);
+  }
+  3% {
+    opacity: 1;
+  }
+  12%,
+  100% {
+    opacity: 0;
+    transform: translate(-320px, 120px) rotate(-20deg);
+  }
+}
+@keyframes today-cloud {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(36px);
+  }
+}
+@keyframes today-smoke {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.6);
+  }
+  20% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(14px, -46px) scale(1.8);
+  }
+}
+@keyframes today-flicker {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  45% {
+    opacity: 0.86;
+  }
+  55% {
+    opacity: 0.95;
+  }
+}
+@keyframes today-fly {
+  0%,
+  100% {
+    transform: translate(0, 0);
+    opacity: 0.2;
+  }
+  50% {
+    transform: translate(10px, -14px);
+    opacity: 1;
+  }
+}
+
 /* Digit roll used by the pricing number flow */
 @keyframes digit-in {
   from {
