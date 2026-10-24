@@ -2,10 +2,14 @@
 
 import { useEffect, useRef, useState } from "react";
 
-/** Eases a number up to `target` whenever it changes. */
-export function useCountUp(target, duration = 900) {
+/**
+ * Eases a number up to `target` whenever it changes. With `from`, the first
+ * run starts there instead (0 for a count-up on arrival); the server still
+ * renders `target`, so the real number is in the HTML.
+ */
+export function useCountUp(target, duration = 900, { from: start } = {}) {
   const [value, setValue] = useState(target);
-  const from = useRef(target);
+  const from = useRef(start ?? target);
 
   useEffect(() => {
     const start = performance.now();
