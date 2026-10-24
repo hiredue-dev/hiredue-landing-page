@@ -18,6 +18,6 @@ export default async function OpenGraphImage() {
   }
   return createDefaultSocialImage({
     title: `${formatCount(stats.applicationsToday)} applications sent today`,
-    subtitle: `${formatCount(stats.recruiterReplies7d)} recruiter replies this week, ${formatCount(stats.companiesReplied7d)} companies writing back. Live at hiredue.com/today`,
+    subtitle: `${formatCount(stats.applications7d)} applications and ${formatCount(stats.recruiterReplies7d)} recruiter replies in the last 7 days. Live at hiredue.com/today`,
   });
 }
