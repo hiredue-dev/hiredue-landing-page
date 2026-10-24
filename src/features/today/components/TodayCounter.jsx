@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Activity } from "lucide-react";
 import clsx from "clsx";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { ArrowButton } from "@/components/site/ui/Button";
@@ -19,9 +20,9 @@ import {
 
 /*
  * The server renders the page with real numbers, so a screenshot or a link
- * preview never shows zeros. In the browser the numbers count up on arrival,
- * then refresh once a minute while the page is on screen; when today's count
- * moves, the gain floats off the number.
+ * preview never shows zeros. In the browser the numbers roll and count up on
+ * arrival, then refresh once a minute while the page is on screen; when
+ * today's count moves, its digits roll on, it glows, and the gain floats off.
  */
 export function TodayCounter({ initial }) {
   const [stats, setStats] = useState(initial);
@@ -82,12 +83,17 @@ export function TodayCounter({ initial }) {
           </p>
         </Reveal>
 
-        <Reveal delay={0.08}>
-          <TodayHero value={stats?.applicationsToday} pace={pace} asOf={asOf} gain={gain} />
-        </Reveal>
+        <div className="flex flex-wrap gap-6">
+          <Reveal delay={0.08} className="min-w-0 flex-[2_1_600px]">
+            <TodayHero value={stats?.applicationsToday} pace={pace} asOf={asOf} gain={gain} />
+          </Reveal>
+          <Reveal delay={0.16} className="min-w-0 flex-[1_1_300px]">
+            <PaceCard pace={pace} />
+          </Reveal>
+        </div>
 
-        <div className="grid gap-6 min-[900px]:grid-cols-2">
-          <Reveal delay={0.16} className="h-full">
+        <div className="flex flex-wrap gap-6">
+          <Reveal delay={0.24} className="min-w-0 flex-[7_1_440px]">
             <WeekCard
               eyebrow="This week"
               value={stats?.applications7d}
@@ -97,7 +103,7 @@ export function TodayCounter({ initial }) {
               chartLabel="Applications per day, last 7 days"
             />
           </Reveal>
-          <Reveal delay={0.24} className="h-full">
+          <Reveal delay={0.32} className="min-w-0 flex-[5_1_340px]">
             <WeekCard
               eyebrow="Recruiters wrote back"
               value={stats?.recruiterReplies7d}
@@ -124,57 +130,129 @@ export function TodayCounter({ initial }) {
   );
 }
 
+const cardLift =
+  "transition-transform duration-[350ms] ease-[cubic-bezier(.2,.7,.2,1)] hover:-translate-y-1 motion-reduce:transition-none motion-reduce:hover:translate-y-0";
+
 function useArrivalCount(value) {
   const reduce = useReducedMotion();
   return useCountUp(value ?? 0, 1400, { from: reduce ? undefined : 0 });
 }
 
+/*
+ * Odometer: each digit is a 0–9 column slid to its value. Server and first
+ * client render both sit at zero (so hydration matches); the roll starts on
+ * mount, right-hand digit first. Columns are keyed from the right so a new
+ * leading digit (999 → 1,000) doesn't reroll the others. Screen readers get
+ * the plain number.
+ */
+function Odometer({ value }) {
+  const [rolled, setRolled] = useState(false);
+  const firstRoll = useRef(true);
+
+  useEffect(() => {
+    const t = setTimeout(() => setRolled(true), 250);
+    return () => clearTimeout(t);
+  }, []);
+  useEffect(() => {
+    if (!rolled) return;
+    // Stagger only the arrival; later updates roll together.
+    const t = setTimeout(() => (firstRoll.current = false), 2000);
+    return () => clearTimeout(t);
+  }, [rolled]);
+
+  const text = formatCount(value);
+  const chars = text.split("");
+  const digitCount = chars.filter((c) => /\d/.test(c)).length;
+  let fromRight = digitCount;
+
+  return (
+    <>
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true" className="inline-flex">
+        {chars.map((c, i) => {
+          const key = `${chars.length - i}`;
+          if (!/\d/.test(c)) {
+            return (
+              <span key={key} className="inline-block w-[0.26em] text-center">
+                {c}
+              </span>
+            );
+          }
+          fromRight -= 1;
+          const digit = rolled ? Number(c) : 0;
+          return (
+            <span key={key} className="inline-block h-[1em] w-[0.6em] overflow-hidden align-top">
+              <span
+                className="flex flex-col transition-transform duration-[1400ms] ease-[cubic-bezier(.16,1,.3,1)] motion-reduce:transition-none"
+                style={{
+                  transform: `translateY(${-digit * 10}%)`,
+                  transitionDelay: firstRoll.current ? `${fromRight * 0.12}s` : "0s",
+                }}
+              >
+                {"0123456789".split("").map((d) => (
+                  <span key={d} className="block h-[1em] text-center leading-[1em]">
+                    {d}
+                  </span>
+                ))}
+              </span>
+            </span>
+          );
+        })}
+      </span>
+    </>
+  );
+}
+
 function TodayHero({ value, pace, asOf, gain }) {
-  const shown = useArrivalCount(value);
   const reduce = useReducedMotion();
   const progress = pace ? `${(pace.progress * 100).toFixed(2)}%` : "0%";
 
   return (
-    <div className="relative flex flex-col gap-7 overflow-hidden rounded-[32px] bg-[linear-gradient(115deg,#406ae4_0%,#2f55d4_100%)] p-8 text-white shadow-[0_24px_60px_rgba(47,85,212,0.28)] min-[810px]:p-14">
-      <div className="flex flex-wrap items-end justify-between gap-6">
-        <div className="flex min-w-0 flex-col gap-2">
-          <span className="text-[14px] font-semibold tracking-[0.4px] text-white/90 uppercase min-[810px]:text-[16px]">
-            Applications sent today
-          </span>
-          <div className="relative inline-flex items-start">
-            <span className="font-display text-[88px] leading-[0.95] font-bold tracking-[-4px] tabular-nums min-[810px]:text-[128px] min-[1200px]:text-[168px] min-[1200px]:tracking-[-5px]">
-              {value == null ? "—" : formatCount(shown)}
-            </span>
-            <AnimatePresence>
-              {gain && !reduce && (
-                <motion.span
-                  key={gain.id}
-                  aria-hidden="true"
-                  className="font-display absolute -top-1 -right-2 translate-x-full text-[28px] font-bold min-[810px]:text-[32px]"
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: [0, 1, 1, 0], y: -36 }}
-                  transition={{ duration: 1.1, ease: "easeOut" }}
-                >
-                  +{formatCount(gain.delta)}
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
+    <div className="relative flex h-full flex-col justify-between gap-10 overflow-hidden rounded-[32px] bg-[linear-gradient(115deg,#406ae4_0%,#2f55d4_100%)] p-8 text-white shadow-[0_24px_60px_rgba(47,85,212,0.28)] min-[810px]:p-14">
+      <svg
+        viewBox="0 0 400 400"
+        aria-hidden="true"
+        className="pointer-events-none absolute -top-[140px] -right-[140px] size-[440px] animate-[spin_60s_linear_infinite] motion-reduce:animate-none"
+      >
+        <circle cx="200" cy="200" r="198" fill="none" stroke="rgba(255,255,255,0.14)" strokeWidth="1.5" strokeDasharray="3 9" />
+        <circle cx="200" cy="200" r="150" fill="none" stroke="rgba(255,255,255,0.1)" strokeWidth="1.5" />
+        <circle cx="200" cy="200" r="100" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="1.5" />
+        <circle cx="200" cy="2" r="5" fill="rgba(255,255,255,0.6)" />
+      </svg>
 
-        {pace?.everySeconds != null && (
-          <div className="flex min-w-[240px] flex-col gap-1.5 rounded-[20px] bg-white/[0.14] px-6 py-5">
-            <span className="text-[14px] font-medium text-white/90">Right now, that&apos;s</span>
-            <span className="font-display text-[28px] leading-[1.1] font-bold min-[810px]:text-[30px]">
-              one every {formatEvery(pace.everySeconds)}
-            </span>
-            <span className="text-[14px] font-medium text-white/90">averaged since midnight IST</span>
-          </div>
-        )}
+      <div className="relative flex flex-col gap-2.5">
+        <span className="text-[14px] font-semibold tracking-[0.4px] text-white/90 uppercase min-[810px]:text-[16px]">
+          Applications sent today
+        </span>
+        <div className="relative inline-flex items-start self-start">
+          <span
+            className={clsx(
+              "font-display inline-flex text-[72px] leading-none font-bold tracking-[-3px] min-[480px]:text-[88px] min-[810px]:text-[128px] min-[1200px]:text-[168px] min-[1200px]:tracking-[-4px]",
+              // Two identical keyframes, alternated, so each update restarts the glow.
+              gain && !reduce && (gain.id % 2 ? "animate-[today-flash-a_.9s_ease-out]" : "animate-[today-flash-b_.9s_ease-out]"),
+            )}
+          >
+            {value == null ? "—" : <Odometer value={value} />}
+          </span>
+          <AnimatePresence>
+            {gain && !reduce && (
+              <motion.span
+                key={gain.id}
+                aria-hidden="true"
+                className="font-display absolute -top-1.5 -right-2 translate-x-full text-[28px] font-bold min-[810px]:text-[32px]"
+                initial={{ opacity: 0, y: 10, scale: 0.8 }}
+                animate={{ opacity: [0, 1, 1, 0], y: [10, 0, -20, -40], scale: [0.8, 1, 1, 1] }}
+                transition={{ duration: 1.1, ease: "easeOut" }}
+              >
+                +{formatCount(gain.delta)}
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {pace && (
-        <div className="flex flex-col gap-2.5">
+        <div className="relative flex flex-col gap-2.5">
           <div className="relative h-2.5 rounded-full bg-white/20">
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full bg-white"
@@ -201,6 +279,42 @@ function TodayHero({ value, pace, asOf, gain }) {
   );
 }
 
+function PaceCard({ pace }) {
+  return (
+    <div
+      className={clsx(
+        "flex h-full flex-col justify-between gap-8 rounded-[32px] bg-ink p-7 text-white min-[810px]:p-10",
+        cardLift,
+      )}
+    >
+      <div className="relative grid size-[120px] place-items-center">
+        <span
+          aria-hidden="true"
+          className="absolute inset-0 rounded-full bg-brand/35 motion-safe:animate-[today-breathe_3.2s_ease-in-out_infinite]"
+        />
+        <span aria-hidden="true" className="absolute inset-[22px] rounded-full bg-brand" />
+        <Activity aria-hidden="true" className="relative size-[34px]" strokeWidth={2} />
+      </div>
+      {pace?.everySeconds != null ? (
+        <div className="flex flex-col gap-2">
+          <span className="text-[15px] font-medium text-white/80">Right now, that&apos;s</span>
+          <span className="font-display text-[36px] leading-[1.05] font-bold tracking-[-1.2px] min-[1200px]:text-[48px]">
+            one every {formatEvery(pace.everySeconds)}
+          </span>
+          <span className="text-[14px] font-medium text-white/80">averaged since midnight IST</span>
+        </div>
+      ) : (
+        <div className="flex flex-col gap-2">
+          <span className="font-display text-[32px] leading-[1.1] font-bold tracking-[-1px]">
+            The day&apos;s count has just begun
+          </span>
+          <span className="text-[14px] font-medium text-white/80">counting since midnight IST</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
 function WeekCard({ eyebrow, value, label, days, pick, chartLabel }) {
   const shown = useArrivalCount(value);
   const reduce = useReducedMotion();
@@ -208,7 +322,7 @@ function WeekCard({ eyebrow, value, label, days, pick, chartLabel }) {
   const max = Math.max(1, ...values);
 
   return (
-    <div className="flex h-full flex-col gap-7 rounded-[32px] bg-surface p-7 min-[810px]:p-11">
+    <div className={clsx("flex h-full flex-col gap-7 rounded-[32px] bg-surface p-7 min-[810px]:p-11", cardLift)}>
       <div className="flex flex-col gap-1.5">
         <span className="text-[14px] font-semibold tracking-[0.4px] text-dim uppercase">{eyebrow}</span>
         <span className="font-display text-[56px] leading-none font-bold tracking-[-2px] text-ink tabular-nums min-[1200px]:text-[84px] min-[1200px]:tracking-[-2.5px]">
@@ -224,7 +338,7 @@ function WeekCard({ eyebrow, value, label, days, pick, chartLabel }) {
           aria-label={`${chartLabel}: ${days
             .map((d, i) => `${i === days.length - 1 ? "today" : weekdayLabel(d.date)} ${values[i]}`)
             .join(", ")}`}
-          className="mt-auto grid h-[150px] grid-cols-7 items-end gap-2.5"
+          className="mt-auto grid h-[150px] grid-cols-7 items-end gap-2"
           variants={{ hidden: {}, visible: { transition: { staggerChildren: reduce ? 0 : 0.06 } } }}
         >
           {days.map((d, i) => {

@@ -530,6 +530,39 @@
   }
 }
 
+/* /today's count glows when it moves; two copies so each update restarts it */
+@keyframes today-flash-a {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  30% {
+    text-shadow: 0 0 36px rgba(255, 255, 255, 0.75);
+  }
+}
+@keyframes today-flash-b {
+  0%,
+  100% {
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+  }
+  30% {
+    text-shadow: 0 0 36px rgba(255, 255, 255, 0.75);
+  }
+}
+
+/* The halo behind /today's pace icon */
+@keyframes today-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.9;
+  }
+}
+
 /* Digit roll used by the pricing number flow */
 @keyframes digit-in {
   from {
