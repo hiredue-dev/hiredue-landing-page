@@ -14,6 +14,7 @@ import { track } from "@vercel/analytics";
 export const EVENTS = {
   jobsPageViewed: "jobs_page_viewed",
   atsPageViewed: "ats_page_viewed",
+  todayPageViewed: "today_page_viewed",
   jobViewed: "job_viewed",
   jobApplyClicked: "job_apply_clicked",
   jobAutoApplyClicked: "job_auto_apply_clicked",
