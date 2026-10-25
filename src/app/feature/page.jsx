@@ -27,18 +27,37 @@ export default function FeaturePage() {
 
       <FeatureAbout
         {...featurePage.signals}
-        visual={<JobSearchWorkflowVisual />}
+        visual={
+          <Illustration label="Animated mockup: HireDue finding a role, then sending a LinkedIn message and an email to the hiring team">
+            <JobSearchWorkflowVisual />
+          </Illustration>
+        }
       />
 
       <FeatureSteps />
 
       <FeatureAbout
         {...featurePage.depth}
-        visual={<ResumeTailoringVisual />}
+        visual={
+          <Illustration label="Animated mockup: a resume being tailored to a job, its ATS score rising from 68 to 96">
+            <ResumeTailoringVisual />
+          </Illustration>
+        }
         reverse
       />
 
       <FeatureIntegrations />
     </>
+  );
+}
+
+/* The product mockups are drawn in miniature (7-11px UI text), like a
+   screenshot. Read as one image with a description, rather than as dozens
+   of tiny fragments. */
+function Illustration({ label, children }) {
+  return (
+    <div role="img" aria-label={label}>
+      {children}
+    </div>
   );
 }

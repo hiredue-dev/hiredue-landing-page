@@ -83,7 +83,10 @@ export function FeatureHeroVisual() {
             <p className={clsx("t-h5 text-center", slide.dark ? "text-white" : "text-ink")}>
               {slide.label}
             </p>
-            <slide.Visual />
+            {/* a miniature mockup: one image to assistive tech, its label above */}
+            <div role="img" aria-label={`Animated mockup: ${slide.label}`} className="w-full">
+              <slide.Visual />
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>
