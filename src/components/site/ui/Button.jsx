@@ -137,6 +137,33 @@ export function ArrowButton({
 }
 
 /**
+ * The pill as a real <button>, for actions that open something rather than
+ * navigate (the sign-up modal, mostly). Same surfaces as ArrowButton.
+ * `ring` adds the faint halo the hero and footer CTAs sit in; `size="sm"` is
+ * the navbar's. Extra classes (e.g. `w-full`) go on the outer element.
+ */
+export function PillButton({ children, onClick, tone = "primary", size = "md", ring = false, className }) {
+  const pill = clsx(
+    "inline-flex items-center justify-center rounded-full font-semibold leading-[1.3] whitespace-nowrap transition-opacity hover:opacity-90",
+    size === "md" ? "px-[30px] py-3 text-[18px]" : "px-5 py-2.5 text-[14px]",
+    surface[tone],
+  );
+
+  if (!ring) {
+    return (
+      <button type="button" onClick={onClick} className={clsx(pill, "shrink-0", className)}>
+        {children}
+      </button>
+    );
+  }
+  return (
+    <button type="button" onClick={onClick} className={clsx("inline-flex shrink-0 rounded-full bg-white/10 p-1.5", className)}>
+      <span className={clsx(pill, "w-full")}>{children}</span>
+    </button>
+  );
+}
+
+/**
  * Plain pill button. The label sits in a two-deep stack that slides up on
  * hover so a second copy takes its place.
  */

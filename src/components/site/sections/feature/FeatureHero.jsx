@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { SlideButton } from "@/components/site/ui/Button";
+import { PillButton, SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { FeatureHeroVisual } from "@/components/site/sections/feature/FeatureHeroVisual";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -55,15 +55,9 @@ export function FeatureHero() {
             </div>
 
             <div className="flex flex-wrap items-center gap-5">
-              <button
-                type="button"
-                onClick={() => showModal({ view: "signup" })}
-                className="inline-flex shrink-0 rounded-full bg-white/10 p-1.5"
-              >
-                <span className="relative flex items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] px-[30px] py-3 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)] transition-opacity hover:opacity-90">
-                  {hero.cta.label}
-                </span>
-              </button>
+              <PillButton ring onClick={() => showModal({ view: "signup" })}>
+                {hero.cta.label}
+              </PillButton>
               {hero.secondaryCta && (
                 <SlideButton
                   label={hero.secondaryCta.label}

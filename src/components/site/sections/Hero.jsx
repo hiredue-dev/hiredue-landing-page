@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
+import { ArrowButton, PillButton, SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -121,15 +121,9 @@ export function Hero() {
                   {isAuthenticated ? (
                     <ArrowButton label={hero.signedIn.label} href={hero.signedIn.href} />
                   ) : (
-                    <button
-                      type="button"
-                      onClick={() => showModal({ view: "signup" })}
-                      className="inline-flex shrink-0 rounded-full bg-white/10 p-1.5"
-                    >
-                      <span className="relative flex items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-3 px-[30px] text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]">
-                        {hero.primary.label}
-                      </span>
-                    </button>
+                    <PillButton ring onClick={() => showModal({ view: "signup" })}>
+                      {hero.primary.label}
+                    </PillButton>
                   )}
                 </div>
                 <div style={appear(0.6)} className="appear">

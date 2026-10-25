@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { nav } from "@/lib/navigation-content";
+import { PillButton } from "@/components/site/ui/Button";
 import { spring } from "@/lib/motion";
 
 const sectionIds = ["features", "how-it-works", "overview", "pricing"];
@@ -214,13 +215,9 @@ export function Navbar() {
                   >
                     {nav.login.label}
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => showModal({ view: "signup" })}
-                    className="inline-flex shrink-0 rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-2.5 px-5 text-[14px] font-semibold leading-[1.3] whitespace-nowrap text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)] transition-opacity hover:opacity-90"
-                  >
+                  <PillButton size="sm" onClick={() => showModal({ view: "signup" })}>
                     {nav.cta.label}
-                  </button>
+                  </PillButton>
                 </div>
               )}
             </div>
@@ -308,16 +305,16 @@ export function Navbar() {
                     >
                       {nav.login.label}
                     </button>
-                    <button
-                      type="button"
+                    <PillButton
+                      size="sm"
+                      className="w-full"
                       onClick={() => {
                         setOpen(false);
                         showModal({ view: "signup" });
                       }}
-                      className="inline-flex w-full shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-3 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]"
                     >
                       {nav.cta.label}
-                    </button>
+                    </PillButton>
                   </div>
                 )}
               </motion.nav>
