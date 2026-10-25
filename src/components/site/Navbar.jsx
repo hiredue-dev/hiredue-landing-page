@@ -18,6 +18,7 @@ export function Navbar() {
   const [active, setActive] = useState(null);
   const [open, setOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [scrolledAway, setScrolledAway] = useState(false);
   const userMenuRef = useRef(null);
 
   const router = useRouter();
@@ -52,6 +53,42 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /* Slide the bar away while scrolling down, back as soon as the visitor
+     scrolls up. Small moves (trackpad jitter, momentum settling) are ignored,
+     and it always shows near the top of the page. */
+  useEffect(() => {
+    const TOP = 80;
+    const JITTER = 8;
+    let lastY = window.scrollY;
+    let frame = 0;
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const y = window.scrollY;
+        if (y < TOP) {
+          setScrolledAway(false);
+          lastY = y;
+          return;
+        }
+        const delta = y - lastY;
+        if (Math.abs(delta) < JITTER) return;
+        setScrolledAway(delta > 0);
+        lastY = y;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  /* never hide with a menu open */
+  const hidden = scrolledAway && !open && !userMenuOpen;
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -100,17 +137,27 @@ export function Navbar() {
 
   return (
     <>
-      {/* CSS load-in (globals.css `.appear`), so the bar is never invisible
-          before hydration */}
+      {/* The header slides out of view on scroll-down (transform); the load-in
+          animation lives on the wrapper below, since a CSS animation on the
+          same element would pin its transform. Keyboard focus landing in the
+          bar brings it back. */}
       <header
-        style={{ "--appear-delay": "0.1s", "--appear-y": "10px", "--appear-duration": "0.6s" }}
-        className="appear fixed inset-x-0 top-0 z-50 py-5"
+        onFocusCapture={() => setScrolledAway(false)}
+        className={clsx(
+          "fixed inset-x-0 top-0 z-50 py-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+          hidden && "-translate-y-full",
+        )}
       >
         {/* 1120 rather than the template's 940: the old six links measured
             ~603px in the browser and ran into the logo at 940. The five now
             come to roughly 440px (estimated from the old measurement), which
             leaves room for "Log in" + the CTA from lg up. */}
-        <div className="mx-auto w-full max-w-[1120px] px-[30px]">
+        {/* CSS load-in (globals.css `.appear`), so the bar is never invisible
+            before hydration */}
+        <div
+          style={{ "--appear-delay": "0.1s", "--appear-y": "10px", "--appear-duration": "0.6s" }}
+          className="appear mx-auto w-full max-w-[1120px] px-[30px]"
+        >
           {/*
            * Logo stays its natural width, always left-aligned. Only the right
            * slot gets a fixed width at lg+, since that's the side whose content
