@@ -110,9 +110,18 @@ export default function RootLayout({ children }) {
     >
       <body className="antialiased">
         <JsonLd data={getOrganizationJsonLd()} />
+        {/* first Tab stop: jump past the fixed navbar */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-[14px] focus:font-semibold focus:text-white"
+        >
+          Skip to content
+        </a>
         <Providers>
           <Navbar />
-          <main>{children}</main>
+          <main id="main" tabIndex={-1} className="outline-none">
+            {children}
+          </main>
           <Footer />
           <WhatsAppFloatingButton />
         </Providers>

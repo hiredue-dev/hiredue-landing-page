@@ -56,7 +56,7 @@ export function Testimonials({ items = testimonials.items }) {
             {items.map((item) => (
               <figure
                 key={item.name}
-                className="flex h-[300px] w-[400px] shrink-0 flex-col justify-between overflow-hidden rounded-[30px] bg-white p-10"
+                className="flex min-h-[300px] w-[min(400px,calc(100vw-48px))] shrink-0 flex-col justify-between overflow-hidden rounded-[30px] bg-white p-7 sm:p-10"
               >
                 <div className="flex flex-col gap-4 pb-10">
                   <Image
