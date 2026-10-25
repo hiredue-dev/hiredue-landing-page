@@ -17,11 +17,12 @@ export const hero = {
   tagline: "while you sleep",
   description:
     "HireDue scours 50,000+ career pages and top job boards, pitches the right decision-makers, and auto-submits your applications. You just focus on the interview.",
-  primary: { label: "Sign Up Free", href: "/signup" },
+  primary: { label: "Get Started Free", href: "/signup" },
+  signedIn: { label: "Download the App", href: "/download" },
   secondary: { label: "Join Live Onboarding", href: "/onboarding-call" },
   proof: [
     { icon: assets.icons.star, label: "1000+ active users" },
-    { icon: assets.icons.shield, label: "Privacy-first, data store locally" },
+    { icon: assets.icons.shield, label: "Your data stays on your device" },
     { icon: assets.icons.bolt, label: "Be the first one to apply" },
   ],
 };

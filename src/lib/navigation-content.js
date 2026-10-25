@@ -10,7 +10,8 @@ export const nav = {
     { label: "ATS Checker", href: "/ats-checker" },
     { label: "Jobs", href: "/jobs" },
   ],
-  cta: { label: "Download the App", href: "/download" },
+  cta: { label: "Get Started Free", href: "/signup" },
+  login: { label: "Log in" },
 };
 
 export const cta = {

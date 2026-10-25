@@ -93,16 +93,18 @@ export function Navbar() {
         transition={spring(0.6, 0.1)}
         className="fixed inset-x-0 top-0 z-50 py-5"
       >
-        {/* 1040 rather than the template's 940: measured in the browser, six
+        {/* 1120 rather than the template's 940: measured in the browser, six
             links need ~603px and 940 leaves the nav 533px between the logo and
-            the CTA slot, so the first link ran into the logo. */}
-        <div className="mx-auto w-full max-w-[1040px] px-[30px]">
+            the CTA slot, so the first link ran into the logo. The extra width
+            over the old 1040 makes room for "Log in" at xl+. */}
+        <div className="mx-auto w-full max-w-[1120px] px-[30px]">
           {/*
            * Logo stays its natural width, always left-aligned. Only the right
            * slot gets a fixed width at lg+, since that's the side whose content
-           * actually changes (the "Download the App" CTA vs. the signed-in
-           * avatar, ~178px vs ~70px) — reserving its widest footprint keeps the
-           * bar from resizing when auth state flips.
+           * actually changes ("Log in" + the CTA vs. the signed-in avatar,
+           * ~258px vs ~70px; "Log in" drops into the hamburger menu below xl,
+           * where the six links leave no room for it) — reserving its widest
+           * footprint keeps the bar from resizing when auth state flips.
            *
            * The nav sits between them as a flex-1 track and centers itself
            * within whatever room that leaves. Centering it on the bar's full
@@ -147,7 +149,7 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="hidden lg:flex lg:w-[184px] lg:shrink-0 lg:items-center lg:justify-end">
+            <div className="hidden lg:flex lg:w-[184px] xl:w-[264px] lg:shrink-0 lg:items-center lg:justify-end">
               {isAuthenticated ? (
                 <div ref={userMenuRef} className="relative">
                   <button
@@ -191,13 +193,23 @@ export function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signup" })}
-                  className="inline-flex shrink-0 rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] py-2.5 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
-                >
-                  {nav.cta.label}
-                </button>
+                <div className="flex items-center gap-1">
+                  {/* returning users get their own way in — the CTA only opens sign-up */}
+                  <button
+                    type="button"
+                    onClick={() => showModal({ view: "signin" })}
+                    className="hidden rounded-full px-3.5 py-2.5 text-[14px] leading-[1.3] font-semibold whitespace-nowrap text-ink transition-colors duration-300 hover:bg-surface xl:inline-flex"
+                  >
+                    {nav.login.label}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => showModal({ view: "signup" })}
+                    className="inline-flex shrink-0 rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-2.5 px-5 text-[14px] font-semibold leading-[1.3] whitespace-nowrap text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)] transition-opacity hover:opacity-90"
+                  >
+                    {nav.cta.label}
+                  </button>
+                </div>
               )}
             </div>
 
@@ -273,14 +285,24 @@ export function Navbar() {
                     </button>
                   </>
                 ) : (
-                  <div className="pt-1.5">
+                  <div className="flex flex-col gap-1.5 pt-1.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOpen(false);
+                        showModal({ view: "signin" });
+                      }}
+                      className="inline-flex w-full items-center justify-center rounded-full bg-surface py-3 px-6 text-[14px] font-semibold leading-[1.3] text-ink"
+                    >
+                      {nav.login.label}
+                    </button>
                     <button
                       type="button"
                       onClick={() => {
                         setOpen(false);
                         showModal({ view: "signup" });
                       }}
-                      className="inline-flex w-full shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] py-2.5 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)]"
+                      className="inline-flex w-full shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-3 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]"
                     >
                       {nav.cta.label}
                     </button>
