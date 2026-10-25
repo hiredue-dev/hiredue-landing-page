@@ -1,7 +1,16 @@
 import { PortableText } from "next-sanity";
 import { Eyebrow } from "@/components/site/ui/Primitives";
 
+/* Section anchors use the block's Sanity _key: unique and stable, and the
+   same value the contents list reads, so the two can't drift apart. */
+const sectionId = (block) => `section-${block._key}`;
+
+const blockText = (block) => (block.children ?? []).map((child) => child.text ?? "").join("");
+
 const components = {
+  block: {
+    h2: ({ children, value }) => <h2 id={sectionId(value)}>{children}</h2>,
+  },
   marks: {
     link: ({ children, value }) => (
       <a href={value?.href} target="_blank" rel="noopener noreferrer">
@@ -20,6 +29,8 @@ const formatDate = (iso) =>
   });
 
 export function LegalPage({ eyebrow, title, effectiveDate, lastUpdated, body }) {
+  const sections = (body ?? []).filter((block) => block._type === "block" && block.style === "h2" && block._key);
+
   return (
     <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
       <div className="mx-auto w-full max-w-[760px] px-[30px]">
@@ -34,6 +45,25 @@ export function LegalPage({ eyebrow, title, effectiveDate, lastUpdated, body }) 
             </p>
           )}
         </div>
+
+        {/* these run to fifteen-odd sections: give readers a way to jump */}
+        {sections.length >= 3 && (
+          <nav aria-label="On this page" className="mt-[50px] rounded-[20px] bg-surface p-6 sm:p-8">
+            <p className="text-[14px] leading-[1.3] font-semibold text-ink">On this page</p>
+            <ol className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
+              {sections.map((block) => (
+                <li key={block._key}>
+                  <a
+                    href={`#${sectionId(block)}`}
+                    className="text-[15px] leading-[1.4] font-medium text-dim transition-colors duration-200 hover:text-ink"
+                  >
+                    {blockText(block)}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
 
         <div className="legal-body mt-[50px] border-t border-line pt-[50px]">
           <PortableText value={body} components={components} />

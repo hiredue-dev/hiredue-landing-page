@@ -328,6 +328,8 @@
     line-height: 1.2;
     color: var(--color-ink);
     margin-top: 50px;
+    /* clear the fixed navbar when jumped to from the contents list */
+    scroll-margin-top: 118px;
   }
 
   .legal-body h3 {
