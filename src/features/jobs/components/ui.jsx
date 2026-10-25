@@ -5,6 +5,7 @@ import { createPortal } from "react-dom";
 import { Check, ChevronDown, X } from "lucide-react";
 import clsx from "clsx";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
+import useDialogFocus from "@/hooks/useDialogFocus.js";
 
 export const primaryButton =
   "inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] px-5 py-2.5 text-[14px] leading-[1.3] font-semibold text-white shadow-[0_6px_14px_0_rgba(58,119,229,0.35)] transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60";
@@ -70,48 +71,11 @@ export function Badge({ children, tone = "surface" }) {
  * Bottom sheet on phones, centred dialog from `sm` up. Closes on Escape and
  * on a click outside the panel.
  */
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
 export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
   const [mounted, setMounted] = useState(false);
-  const panelRef = useRef(null);
   useEffect(() => setMounted(true), []);
   useBodyScrollLock(open);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const onKey = (event) => {
-      if (event.key === "Escape") onClose();
-      // Keep Tab inside the dialog: it's modal, the page behind can't be used.
-      if (event.key !== "Tab" || !panelRef.current) return;
-      const items = [...panelRef.current.querySelectorAll(FOCUSABLE)];
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  // Focus moves into the dialog on open and back to whatever opened it on close.
-  useEffect(() => {
-    if (!open || !mounted) return undefined;
-    const opener = document.activeElement;
-    const panel = panelRef.current;
-    const target = panel?.querySelector("[autofocus]") ?? panel;
-    target?.focus({ preventScroll: true });
-    return () => {
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
-    };
-  }, [open, mounted]);
+  const panelRef = useDialogFocus(open && mounted, onClose);
 
   if (!open || !mounted) return null;
 

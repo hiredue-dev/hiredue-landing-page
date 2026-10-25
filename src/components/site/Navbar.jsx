@@ -59,6 +59,18 @@ export function Navbar() {
     };
   }, [open]);
 
+  /* Escape closes whichever menu is open */
+  useEffect(() => {
+    if (!open && !userMenuOpen) return;
+    const onKey = (event) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      setUserMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, userMenuOpen]);
+
   /* close both menus whenever the route changes */
   useEffect(() => {
     setOpen(false);

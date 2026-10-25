@@ -15,6 +15,7 @@ import {
 } from "@/features/auth/validators.js";
 import { friendlyAuthError } from "@/features/auth/errorMessages.js";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
+import useDialogFocus from "@/hooks/useDialogFocus.js";
 
 const AuthModalContext = createContext(null);
 
@@ -148,6 +149,7 @@ function HeaderIcon({ children }) {
 function FloatingAuthModal({ isOpen, view, setView, redirectTo, onClose }) {
   const router = useRouter();
   useBodyScrollLock(isOpen);
+  const panelRef = useDialogFocus(isOpen, onClose);
 
   const isBrowser = typeof document !== "undefined";
   if (!isBrowser) return null;
@@ -181,9 +183,11 @@ function FloatingAuthModal({ isOpen, view, setView, redirectTo, onClose }) {
             className={clsx(
               "relative z-10 flex w-full max-w-[440px] flex-col overflow-hidden rounded-t-[28px] bg-white",
               "sm:rounded-[24px]",
-              "max-h-[92dvh] overflow-y-auto overscroll-contain",
+              "max-h-[92dvh] overflow-y-auto overscroll-contain outline-none",
               "ring-1 ring-black/[0.06] shadow-[0_-12px_48px_rgba(15,23,42,0.18)] sm:shadow-[0_24px_80px_rgba(15,23,42,0.25)]",
             )}
+            ref={panelRef}
+            tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"

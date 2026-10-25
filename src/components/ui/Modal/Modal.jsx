@@ -3,10 +3,12 @@
 import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
+import useDialogFocus from "@/hooks/useDialogFocus.js";
 import styles from "./Modal.module.css";
 
 const Modal = ({ children, isOpen, onClose, title, eyebrow }) => {
   useBodyScrollLock(isOpen);
+  const panelRef = useDialogFocus(isOpen, onClose);
 
   if (!isOpen) {
     return null;
@@ -14,7 +16,15 @@ const Modal = ({ children, isOpen, onClose, title, eyebrow }) => {
 
   return createPortal(
     <div className={styles.overlay} onClick={onClose} role="presentation">
-      <div className={styles.dialog} onClick={(event) => event.stopPropagation()} role="dialog" aria-modal="true" aria-label={title}>
+      <div
+        ref={panelRef}
+        tabIndex={-1}
+        className={styles.dialog}
+        onClick={(event) => event.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label={title}
+      >
         <div className={styles.header}>
           <div>
             {eyebrow ? <p className={styles.eyebrow}>{eyebrow}</p> : null}
