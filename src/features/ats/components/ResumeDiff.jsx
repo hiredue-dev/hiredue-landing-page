@@ -9,8 +9,9 @@ import { SECTION_LABELS, readResume } from "../resumeText.js";
 const FIRST_SHOWN = 4;
 
 const ROW = {
-  del: { row: "bg-danger-05", mark: "rounded-[3px] bg-danger/15 text-ink no-underline", sign: "−", label: "Removed: ", text: "text-dim" },
-  add: { row: "bg-success-10", mark: "rounded-[3px] bg-success/25 text-ink no-underline", sign: "+", label: "Added: ", text: "text-ink" },
+  // Removed words are struck through, not just tinted, so the change reads without relying on colour.
+  del: { row: "bg-danger-05", mark: "rounded-[3px] bg-danger/15 text-ink line-through decoration-[#b91c1c]/70", sign: "−", signColor: "text-[#b91c1c]", label: "Removed: ", text: "text-dim" },
+  add: { row: "bg-success-10", mark: "rounded-[3px] bg-success/25 text-ink no-underline", sign: "+", signColor: "text-[#047857]", label: "Added: ", text: "text-ink" },
 };
 
 /** One removed or added line, with the words that changed marked. */
@@ -19,7 +20,7 @@ function DiffLine({ line }) {
   const Mark = line.op === "del" ? "del" : "ins";
   return (
     <p className={clsx("flex gap-2.5 px-3 py-1.5 text-[14px] leading-[1.55]", style.row, style.text)}>
-      <span className="w-2 shrink-0 select-none font-semibold text-dim/70" aria-hidden>
+      <span className={clsx("w-2 shrink-0 select-none font-semibold", style.signColor)} aria-hidden>
         {style.sign}
       </span>
       <span className="min-w-0 break-words">
