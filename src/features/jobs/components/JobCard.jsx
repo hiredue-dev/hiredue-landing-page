@@ -135,7 +135,12 @@ export function JobCard({ job, onOpen, onApply, onAutoApply }) {
             <button type="button" onClick={() => onApply(job)} className={clsx(secondaryButton, "min-w-0 flex-1")}>
               Apply manually
             </button>
-            <button type="button" onClick={() => onAutoApply(job)} className={clsx(primaryButton, "min-w-0 flex-1")}>
+            <button
+              type="button"
+              onClick={() => onAutoApply(job)}
+              aria-describedby={`auto-apply-note-${job.id}`}
+              className={clsx(primaryButton, "min-w-0 flex-1")}
+            >
               Auto-apply
             </button>
           </>
@@ -145,6 +150,12 @@ export function JobCard({ job, onOpen, onApply, onAutoApply }) {
           </button>
         )}
       </div>
+      {/* "Auto-apply" installs the desktop app rather than applying here — say so before the click, not after the download starts. */}
+      {onAutoApply && (
+        <p id={`auto-apply-note-${job.id}`} className="-mt-2 text-[12.5px] leading-[1.35] text-dim">
+          Auto-apply runs in the free HireDue desktop app.
+        </p>
+      )}
     </article>
   );
 }

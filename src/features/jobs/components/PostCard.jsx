@@ -28,7 +28,8 @@ export function HiringPostBadge({ className }) {
  * reaches a job board. Only what the scraper extracted is shown — never the
  * author or the post text.
  */
-export function PostCard({ job, onOpen, onApply }) {
+/** `onAutoApply` is passed only where the desktop app can be installed — the same signal hides the Automate upsell on phones and Linux. */
+export function PostCard({ job, onOpen, onApply, onAutoApply }) {
   const chips = [experienceLabel(job), placeLabel(job), job.compensation].filter(Boolean);
   const posted = postedLabel(job);
 
@@ -64,8 +65,8 @@ export function PostCard({ job, onOpen, onApply }) {
 
       {/* Side by side when the card has room; stacked in narrow cards (the swipeable strip on phones). */}
       <div className="relative z-10 mt-auto flex flex-col gap-2 border-t border-[#0a66c2]/15 pt-4 @min-[268px]:flex-row">
-        <AutomateLink className="min-w-0 flex-1" />
-        <button type="button" onClick={() => onApply(job)} className={clsx(primaryButton, "shrink-0")}>
+        {onAutoApply && <AutomateLink className="min-w-0 flex-1" />}
+        <button type="button" onClick={() => onApply(job)} className={clsx(primaryButton, onAutoApply ? "shrink-0" : "min-w-0 flex-1")}>
           Apply
         </button>
       </div>
