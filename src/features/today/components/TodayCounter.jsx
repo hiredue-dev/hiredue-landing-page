@@ -78,12 +78,17 @@ export function TodayCounter({ initial }) {
               Every application sent and every recruiter reply, counted as it happens.
             </p>
           </div>
+          {/* With no numbers at all (the stats service down on first load),
+              don't claim "Live" over a row of dashes: say so, and stop the
+              pulse. A refresh that later succeeds flips it back. */}
           <span className="inline-flex items-center gap-2.5 rounded-full bg-surface px-4 py-2 text-[14px] font-medium text-ink">
             <span className="relative flex size-2">
-              <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
-              <span className="relative inline-flex size-2 rounded-full bg-success" />
+              {stats && (
+                <span className="absolute inline-flex size-full animate-ping rounded-full bg-success opacity-60 motion-reduce:hidden" />
+              )}
+              <span className={clsx("relative inline-flex size-2 rounded-full", stats ? "bg-success" : "bg-dim")} />
             </span>
-            Live · {clock} IST
+            {stats ? `Live · ${clock} IST` : "Live numbers unavailable · retrying"}
           </span>
         </Reveal>
 
@@ -201,7 +206,7 @@ function WeekCard({ eyebrow, value, label, days, pick, chartLabel }) {
                     visible: { scaleY: 1, transition: spring(0.9) },
                   }}
                 />
-                <span className={clsx("text-[11px]", isToday ? "font-semibold text-ink" : "font-medium text-dim")}>
+                <span className={clsx("text-[12px]", isToday ? "font-semibold text-ink" : "font-medium text-dim")}>
                   {isToday ? "Today" : weekdayLabel(d.date)}
                 </span>
               </div>
