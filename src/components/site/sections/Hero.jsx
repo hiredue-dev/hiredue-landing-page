@@ -105,7 +105,10 @@ export function Hero() {
                       words={hero.rotatingWords}
                       className="rounded-[0.2em] bg-white px-[0.16em] pt-[0.06em] pb-[0.1em] text-brand shadow-[0_8px_24px_rgba(29,29,29,0.08)]"
                     />{" "}
-                    {hero.tagline}
+                    {/* its own line, always: left inline, the chip's width
+                        change would pull "while" up onto the first line for
+                        short words and push it back down for long ones */}
+                    <span className="block">{hero.tagline}</span>
                   </h1>
                 </div>
 
