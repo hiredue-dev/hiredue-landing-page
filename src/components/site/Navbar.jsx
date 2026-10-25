@@ -87,11 +87,11 @@ export function Navbar() {
 
   return (
     <>
-      <motion.header
-        initial={{ opacity: 0.001, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={spring(0.6, 0.1)}
-        className="fixed inset-x-0 top-0 z-50 py-5"
+      {/* CSS load-in (globals.css `.appear`), so the bar is never invisible
+          before hydration */}
+      <header
+        style={{ "--appear-delay": "0.1s", "--appear-y": "10px", "--appear-duration": "0.6s" }}
+        className="appear fixed inset-x-0 top-0 z-50 py-5"
       >
         {/* 1120 rather than the template's 940: measured in the browser, six
             links need ~603px and 940 leaves the nav 533px between the logo and
@@ -312,7 +312,7 @@ export function Navbar() {
             )}
           </AnimatePresence>
         </div>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {open && (

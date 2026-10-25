@@ -129,6 +129,28 @@
   }
 }
 
+/* Above-the-fold load-in. Plain CSS rather than framer-motion so the server
+   HTML is already animating — a motion `initial` ships the hero at opacity
+   0.001 and leaves it blank until the JS bundle hydrates. Per element:
+   --appear-delay, --appear-y. */
+@keyframes appear-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--appear-y, 20px));
+  }
+}
+
+.appear {
+  animation: appear-up var(--appear-duration, 1s) cubic-bezier(0.22, 1, 0.36, 1)
+    var(--appear-delay, 0s) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appear {
+    animation: none;
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /*  Base                                                                */
 /* ------------------------------------------------------------------ */

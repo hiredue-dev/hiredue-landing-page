@@ -2,21 +2,24 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
-import { spring } from "@/lib/motion";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 
-/** Load-in: fade up, with the same delay ladder the original uses. */
+/**
+ * Load-in: fade up, with the same delay ladder the original uses. Pair with
+ * the `appear` class — it's CSS (globals.css), so the copy is never stuck
+ * invisible waiting for hydration.
+ */
 const appear = (delay, y = 20, duration = 1) => ({
-  initial: { opacity: 0.001, y },
-  animate: { opacity: 1, y: 0 },
-  transition: spring(duration, delay),
+  "--appear-delay": `${delay}s`,
+  "--appear-y": `${y}px`,
+  "--appear-duration": `${duration}s`,
 });
 
 /*
@@ -43,8 +46,12 @@ const HILL_FADE = [250, 820];
 const COPY_BLOCK = 420;
 
 export function Hero() {
-  /* Both effects belong to the desktop layout only, same as the original. */
+  /* Both effects belong to the desktop layout only, same as the original.
+     With reduced motion the dashboard sits at full size and the hills only
+     fade — no scroll-linked zoom or slide. */
   const desktop = useMediaQuery("(min-width: 1200px)");
+  const reduced = useReducedMotion();
+  const zoom = desktop && !reduced;
   const { isAuthenticated } = useAuth();
 
   const { showModal } = useAuthModal();
@@ -53,14 +60,18 @@ export function Hero() {
   const dashScale = useTransform(
     scrollY,
     [DASH_FROM, DASH_TO],
-    desktop ? [0.64, 1] : [1, 1],
+    zoom ? [0.64, 1] : [1, 1],
     { clamp: true },
   );
-  const dashY = useTransform(scrollY, [DASH_FROM, DASH_TO], desktop ? [-190, 0] : [0, 0], {
+  const dashY = useTransform(scrollY, [DASH_FROM, DASH_TO], zoom ? [-190, 0] : [0, 0], {
     clamp: true,
   });
-  const hillScale = useTransform(scrollY, [0, HILL_RANGE], [1, 2], { clamp: true });
-  const hillY = useTransform(scrollY, [0, HILL_RANGE], [0, 1400], { clamp: true });
+  const hillScale = useTransform(scrollY, [0, HILL_RANGE], reduced ? [1, 1] : [1, 2], {
+    clamp: true,
+  });
+  const hillY = useTransform(scrollY, [0, HILL_RANGE], reduced ? [0, 0] : [0, 1400], {
+    clamp: true,
+  });
   const hillOpacity = useTransform(scrollY, HILL_FADE, [1, 0], { clamp: true });
 
   return (
@@ -96,26 +107,26 @@ export function Hero() {
             >
               <div className="flex flex-col items-center gap-5">
                 <div className="flex flex-col items-center gap-2.5">
-                  <motion.h1 {...appear(0.3)} className="t-h1 max-w-[1200px] text-center">
+                  <h1 style={appear(0.3)} className="appear t-h1 max-w-[1200px] text-center">
                     HireDue{" "}
                     <RotatingWord
                       words={hero.rotatingWords}
                       className="text-white drop-shadow-[0_4px_20px_rgba(29,29,29,0.25)]"
                     />{" "}
                     {hero.tagline}
-                  </motion.h1>
+                  </h1>
                 </div>
 
-                <motion.p
-                  {...appear(0.4)}
-                  className="max-w-[600px] text-center text-[20px] leading-[1.3] font-medium text-dim"
+                <p
+                  style={appear(0.4)}
+                  className="appear max-w-[600px] text-center text-[20px] leading-[1.3] font-medium text-dim"
                 >
                   {hero.description}
-                </motion.p>
+                </p>
               </div>
 
               <div className="flex flex-wrap items-center justify-center gap-5">
-                <motion.div {...appear(0.5)}>
+                <div style={appear(0.5)} className="appear">
                   {/* signed in, sign-up is moot — the next step is the app */}
                   {isAuthenticated ? (
                     <ArrowButton label={hero.signedIn.label} href={hero.signedIn.href} />
@@ -130,19 +141,19 @@ export function Hero() {
                       </span>
                     </button>
                   )}
-                </motion.div>
-                <motion.div {...appear(0.6)}>
+                </div>
+                <div style={appear(0.6)} className="appear">
                   <SlideButton
                     label={hero.secondary.label}
                     href={hero.secondary.href}
                     tone="white"
                   />
-                </motion.div>
+                </div>
               </div>
 
-              <motion.ul
-                {...appear(0.7)}
-                className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5"
+              <ul
+                style={appear(0.7)}
+                className="appear flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5"
               >
                 {hero.proof.map((item, i) => (
                   <li key={item.label} className="flex items-center gap-x-5">
@@ -159,16 +170,11 @@ export function Hero() {
                     </span>
                   </li>
                 ))}
-              </motion.ul>
+              </ul>
             </div>
 
             {/* product shot */}
-            <motion.div
-              initial={{ opacity: 0.001, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={spring(1, 1.2)}
-              className="mx-auto w-full max-w-[1060px]"
-            >
+            <div style={appear(1.2, 50)} className="appear mx-auto w-full max-w-[1060px]">
               <motion.div
                 style={{ scale: dashScale, y: dashY }}
                 className="origin-center will-change-transform"
@@ -184,7 +190,7 @@ export function Hero() {
                   className="w-full rounded-[20px]"
                 />
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
