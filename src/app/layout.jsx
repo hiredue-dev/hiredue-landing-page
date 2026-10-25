@@ -108,6 +108,15 @@ export default function RootLayout({ children }) {
       lang="en"
       className={`${bricolage.variable} ${interDisplay.variable}`}
     >
+      <head>
+        {/* Scroll reveals are server-rendered at opacity 0.001 until
+            framer-motion hydrates and plays them. Without JS (crawlers that
+            don't run it, script blockers) that would leave 40-odd sections
+            blank, so show them as they'd end up. */}
+        <noscript>
+          <style>{`[style*="opacity:0.001"]{opacity:1!important;transform:none!important}`}</style>
+        </noscript>
+      </head>
       <body className="antialiased">
         <JsonLd data={getOrganizationJsonLd()} />
         {/* first Tab stop: jump past the fixed navbar */}
