@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 
 const spring = { type: "spring", bounce: 0, duration: 0.5 };
 
@@ -24,7 +24,6 @@ export function RotatingWord({ words, interval = 2000, className }) {
   const [index, setIndex] = useState(0);
   const [widths, setWidths] = useState(null);
   const measureRefs = useRef([]);
-  const reduced = useReducedMotion();
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -50,13 +49,14 @@ export function RotatingWord({ words, interval = 2000, className }) {
   return (
     <>
       <span className="sr-only">{words.join(", ")}</span>
-      <motion.span
+      {/* Width as a plain style with a CSS transition, not a motion
+          `animate`: framer held off applying the first measured width until
+          the word changed, and with the sizing grid already gone the box
+          sat collapsed to its padding for the whole first word. */}
+      <span
         aria-hidden
-        initial={false}
-        animate={widths ? { width: widths[index] } : undefined}
-        transition={reduced ? { duration: 0 } : spring}
-        style={{ boxSizing: "content-box" }}
-        className={`relative inline-block align-top leading-none ${className ?? ""}`}
+        style={{ boxSizing: "content-box", width: widths ? `${widths[index]}px` : undefined }}
+        className={`relative inline-block align-top leading-none transition-[width] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none ${className ?? ""}`}
       >
         {/* the clip for the flip; padding on the outer box stays clear */}
         <span className="relative block h-[1em] overflow-hidden">
@@ -95,7 +95,7 @@ export function RotatingWord({ words, interval = 2000, className }) {
             {w}
           </span>
         ))}
-      </motion.span>
+      </span>
     </>
   );
 }
