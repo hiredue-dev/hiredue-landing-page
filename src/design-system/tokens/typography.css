@@ -1,6 +1,8 @@
 @layer legacy {
   :root {
-    --font-heading: "Inter", sans-serif;
-    --font-body: "Inter", sans-serif;
+    /* the self-hosted Inter Display (next/font, see app/layout.jsx), not a
+       second Inter fetched from Google */
+    --font-heading: var(--font-sans);
+    --font-body: var(--font-sans);
   }
 }

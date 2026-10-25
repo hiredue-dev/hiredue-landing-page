@@ -13,10 +13,6 @@
 /*    (unlayered)    every CSS Module — always wins, so the old pages   */
 /*                   keep their exact styling                           */
 /* ------------------------------------------------------------------ */
-/* hoisted: once everything is bundled into one sheet, @import has to stay
-   at the top — this is the legacy Inter face the old pages use. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
-
 @layer theme, base, legacy-compat, legacy, components, utilities;
 
 @import "../design-system/index.css";
