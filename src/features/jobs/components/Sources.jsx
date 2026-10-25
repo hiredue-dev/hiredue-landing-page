@@ -95,7 +95,7 @@ function CircleButton({ active, label, onClick, size, children }) {
       aria-pressed={active}
       title={label}
       onClick={onClick}
-      className="group flex flex-col items-center gap-1.5"
+      className="group flex shrink-0 flex-col items-center gap-1.5"
       style={{ width: size + 20 }}
     >
       <span
@@ -130,7 +130,8 @@ export function SourceCircles({ platforms, selected = [], onSelect, size = 40 })
   const onlyOne = selected.length === 1 ? selected[0] : null;
 
   return (
-    <div className="flex flex-wrap items-start gap-x-4 gap-y-2">
+    // One scrolling line on phones (it wrapped to two rows above the results); wraps from sm up.
+    <div className="-mx-1 flex max-w-full flex-nowrap items-start gap-x-4 gap-y-2 overflow-x-auto px-1 pb-0.5 [scrollbar-width:none] sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden">
       <CircleButton active={selected.length === 0} label="All" onClick={() => onSelect([])} size={size}>
         <span
           aria-hidden

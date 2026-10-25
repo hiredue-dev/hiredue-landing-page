@@ -116,7 +116,8 @@ export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
  * Button + floating panel, used for the search bar's dropdowns. Closes on an
  * outside click or Escape; the panel is rendered in place so it scrolls with the bar.
  */
-export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, children, className }) {
+/** `align="end"` pins the panel to the button's right edge below `lg`, for a dropdown sitting on the right of a phone row. */
+export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, children, className, align = "start" }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -154,7 +155,7 @@ export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, c
         />
       </button>
       {open && (
-        <div className="absolute top-[calc(100%+8px)] left-0 z-30 w-full min-w-[260px] overflow-hidden rounded-[15px] border border-line bg-white p-1.5 shadow-[0_18px_40px_rgba(29,29,29,0.12)]">
+        <div className={clsx("absolute top-[calc(100%+8px)] z-30 w-full min-w-[260px] overflow-hidden rounded-[15px] border border-line bg-white p-1.5 shadow-[0_18px_40px_rgba(29,29,29,0.12)]", align === "end" ? "right-0 lg:right-auto lg:left-0" : "left-0")}>
           {children}
         </div>
       )}

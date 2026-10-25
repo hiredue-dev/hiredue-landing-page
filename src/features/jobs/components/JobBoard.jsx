@@ -14,6 +14,7 @@ import {
   filtersToQuery,
   hasActiveFilters,
   readFilters,
+  sidebarFilterCount,
 } from "../filters.js";
 import { roleLabel } from "../format.js";
 import { clearApplyTimer, readApplyTimer, timerVerdict } from "../applyTimer.js";
@@ -280,6 +281,7 @@ export function JobBoard() {
   const refreshing = board.status === "refreshing";
   const failed = board.status === "error" && !board.jobs.length;
   const trendingRoles = (facets?.roles ?? []).slice(0, 6);
+  const filterCount = sidebarFilterCount(filters);
 
   const sidebar = (
     <FilterSidebar
@@ -383,6 +385,7 @@ export function JobBoard() {
                   className={clsx(secondaryButton, "lg:hidden")}
                 >
                   <SlidersHorizontal size={16} aria-hidden /> Filters
+                  {filterCount > 0 && <FilterCount count={filterCount} />}
                 </button>
                 {!postsLocked && (
                   <label className="flex items-center gap-1.5 text-[16px] font-medium text-dim">
@@ -473,6 +476,18 @@ export function JobBoard() {
         </div>
       </div>
 
+      {/* Phones and tablets: the in-flow Filters button scrolls away under the
+          search, tabs and hiring posts, so a pinned one stays in reach and
+          shows how many filters are on. Bottom-centre, clear of WhatsApp. */}
+      <button
+        type="button"
+        onClick={() => setFiltersOpen(true)}
+        className="fixed bottom-5 left-1/2 z-[55] inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-ink px-5 py-3 text-[14px] font-semibold text-white shadow-[0_10px_30px_rgba(29,29,29,0.3)] lg:hidden"
+      >
+        <SlidersHorizontal size={16} aria-hidden /> Filters
+        {filterCount > 0 && <FilterCount count={filterCount} inverted />}
+      </button>
+
       {/* Phones and tablets: the sidebar lives in a sheet. */}
       <Dialog open={filtersOpen} onClose={() => setFiltersOpen(false)} labelledBy="job-filters-title">
         <div className="border-b border-line p-6 pr-16">
@@ -483,7 +498,10 @@ export function JobBoard() {
         <div className="flex-1 overflow-y-auto p-6">{sidebar}</div>
         <div className="border-t border-line p-4">
           <button type="button" onClick={() => setFiltersOpen(false)} className={clsx(primaryButton, "h-12 w-full")}>
-            Show {board.total.toLocaleString()} {board.total === 1 ? noun : `${noun}s`}
+            {/* board.total is the previous search's until the new one lands */}
+            {loading || refreshing
+              ? "Updating…"
+              : `Show ${board.total.toLocaleString()} ${board.total === 1 ? noun : `${noun}s`}`}
           </button>
         </div>
       </Dialog>
@@ -607,5 +625,21 @@ export function JobBoardFallback() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** The number badge on a Filters button; `inverted` for the dark pinned one. */
+function FilterCount({ count, inverted }) {
+  return (
+    <span
+      className={clsx(
+        "grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[12px] leading-none font-semibold",
+        inverted ? "bg-white text-ink" : "bg-ink text-white",
+      )}
+    >
+      <span className="sr-only">, </span>
+      {count}
+      <span className="sr-only"> active</span>
+    </span>
   );
 }
