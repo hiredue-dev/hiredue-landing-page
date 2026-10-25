@@ -25,6 +25,8 @@ export const assets = {
   hero: {
     aiBadge: img("MvCoibXjquEPyTLgOctzXJU.png"),
     dashboard: img("dashboard.webp"),
+    /* first frame of dashboard.webp (~30 KB vs ~840 KB): what loads first */
+    dashboardPoster: img("dashboard-poster.webp"),
     cloud01: img("Rorgfh4qpKNsZyFzGNQ9wt5C0i4.png"),
     cloud02: img("fLN6Wx8BsWTV2MkQDeC8mB2BQKA.png"),
     cloud03: img("lSZuKptayJeB4Xcw10qjE7IisQw.png"),

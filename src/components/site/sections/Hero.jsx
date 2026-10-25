@@ -164,16 +164,7 @@ export function Hero() {
                 style={{ scale: dashScale, y: dashY }}
                 className="origin-center will-change-transform"
               >
-                <Image
-                  src={assets.hero.dashboard}
-                  alt="HireDue dashboard"
-                  width={1920}
-                  height={1080}
-                  priority
-                  unoptimized
-                  sizes="(max-width: 1100px) 100vw, 1060px"
-                  className="w-full rounded-[20px]"
-                />
+                <DashboardShot />
               </motion.div>
             </div>
           </div>
@@ -201,6 +192,56 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-[100px] bg-[linear-gradient(rgba(255,255,255,0)_0%,rgba(255,255,255,0.7)_25%,#fff_50%)] min-[810px]:h-[160px] min-[1200px]:h-[200px]" />
 
     </section>
+  );
+}
+
+/*
+ * The product shot is an ~840 KB animated WebP, too heavy to be the page's
+ * first big paint. Its first frame (~30 KB) loads with priority instead, and
+ * the animation fades in over it once the page has finished loading. Reduced
+ * motion and Data Saver keep the still.
+ */
+function DashboardShot() {
+  const reduced = useReducedMotion();
+  const [animate, setAnimate] = useState(false);
+  const [animationReady, setAnimationReady] = useState(false);
+
+  useEffect(() => {
+    if (reduced || navigator.connection?.saveData) return undefined;
+    const start = () => setAnimate(true);
+    if (document.readyState === "complete") {
+      start();
+      return undefined;
+    }
+    window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, [reduced]);
+
+  return (
+    <div className="relative">
+      <Image
+        src={assets.hero.dashboardPoster}
+        alt="HireDue dashboard"
+        width={1200}
+        height={675}
+        priority
+        unoptimized
+        sizes="(max-width: 1100px) 100vw, 1060px"
+        className="w-full rounded-[20px]"
+      />
+      {animate && (
+        <Image
+          src={assets.hero.dashboard}
+          alt=""
+          width={1200}
+          height={675}
+          unoptimized
+          onLoad={() => setAnimationReady(true)}
+          sizes="(max-width: 1100px) 100vw, 1060px"
+          className={`absolute inset-0 w-full rounded-[20px] transition-opacity duration-500 ${animationReady ? "opacity-100" : "opacity-0"}`}
+        />
+      )}
+    </div>
   );
 }
 
