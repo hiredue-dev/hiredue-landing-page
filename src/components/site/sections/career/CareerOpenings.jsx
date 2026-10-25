@@ -79,6 +79,7 @@ function RoleCard({ role }) {
         className="inline-flex items-center gap-1.5 text-[15px] leading-[1.3] font-semibold text-brand"
       >
         View job description
+        <span className="sr-only"> for {role.title} (opens in a new tab)</span>
         <ArrowIcon className="size-3.5" />
       </a>
     </div>

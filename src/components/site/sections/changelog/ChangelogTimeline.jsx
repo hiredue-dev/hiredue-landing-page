@@ -9,7 +9,17 @@ import { formatChangelogDate } from "@/lib/changelog";
  * bottom before it could be read.
  */
 export function ChangelogTimeline({ entries = [] }) {
-  if (!entries.length) return null;
+  /* nothing back from the CMS: say so, rather than a header over nothing */
+  if (!entries.length) {
+    return (
+      <section className="relative px-[30px] pb-[120px] min-[1200px]:pb-[200px]">
+        <div className="mx-auto flex w-full max-w-[560px] flex-col items-center gap-2 rounded-[20px] bg-surface px-6 py-10 text-center">
+          <p className="t-h5">No updates to show right now</p>
+          <p className="t-body">Release notes will appear here. Please check back shortly.</p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="relative pb-[120px] min-[1200px]:pb-[200px]">

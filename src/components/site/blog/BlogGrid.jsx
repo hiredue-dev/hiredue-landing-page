@@ -14,6 +14,17 @@ export function BlogGrid({ posts }) {
   const [expanded, setExpanded] = useState(false);
   const visible = expanded ? posts : posts.slice(0, blog.pageSize);
 
+  /* the CMS can come back empty (nothing published yet, or a failed fetch) —
+     say so rather than leaving a blank space under the headline */
+  if (!posts.length) {
+    return (
+      <div className="flex w-full max-w-[560px] flex-col items-center gap-2 rounded-[20px] bg-surface px-6 py-10 text-center">
+        <p className="t-h5">No articles yet</p>
+        <p className="t-body">New guides and comparisons are on the way. Check back soon.</p>
+      </div>
+    );
+  }
+
   return (
     <>
       <motion.div
