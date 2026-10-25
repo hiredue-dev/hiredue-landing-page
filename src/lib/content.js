@@ -10,7 +10,6 @@ export const hero = {
   signedIn: { label: "Download the App", href: "/download" },
   secondary: { label: "Join Live Onboarding", href: "/onboarding-call" },
   proof: [
-    { icon: assets.icons.star, label: "1000+ active users" },
     { icon: assets.icons.shield, label: "Your data stays on your device" },
     { icon: assets.icons.bolt, label: "Be the first one to apply" },
   ],
