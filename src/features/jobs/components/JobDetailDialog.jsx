@@ -75,13 +75,11 @@ export function JobDetailDialog({ job, onClose, onApply, onAutoApply, path = "de
           </div>
 
           <div className="flex items-center justify-between gap-3 border-t border-line p-4 sm:px-6">
-            <p className="hidden text-[13px] text-dim sm:block">
-              {path === "desktop"
-                ? "Auto-apply runs in the free HireDue desktop app."
-                : isAuthenticated
-                  ? "Opens the employer's application page."
-                  : "Free account required to apply."}
-            </p>
+            {path !== "desktop" && (
+              <p className="hidden text-[13px] text-dim sm:block">
+                {isAuthenticated ? "Opens the employer's application page." : "Free account required to apply."}
+              </p>
+            )}
             <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
               {path === "desktop" ? (
                 <>
