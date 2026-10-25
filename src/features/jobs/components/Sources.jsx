@@ -108,7 +108,7 @@ function CircleButton({ active, label, onClick, size, children }) {
       >
         {children}
       </span>
-      <span className={clsx("text-[11.5px] leading-tight font-semibold whitespace-nowrap", active ? "text-brand" : "text-ink")}>
+      <span className={clsx("text-[12.5px] leading-tight font-semibold whitespace-nowrap", active ? "text-brand" : "text-ink")}>
         {label}
       </span>
     </button>

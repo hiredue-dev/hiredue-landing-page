@@ -39,7 +39,7 @@ export function PostCard({ job, onOpen, onApply, onAutoApply }) {
         <CompanyLogo src={null} name={job.hiringCompany || job.jobTitle} size={44} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate text-[15px] leading-none font-medium text-dim">{job.hiringCompany || "Company"}</p>
-          {posted && <p className="truncate text-[12.5px] leading-none text-dim/80">Posted {posted.toLowerCase()}</p>}
+          {posted && <p className="truncate text-[12.5px] leading-none text-dim">Posted {posted.toLowerCase()}</p>}
         </div>
         <HiringPostBadge className="shrink-0" />
       </div>
@@ -94,7 +94,7 @@ export function LockedPostCard({ job, onUnlock }) {
           <p aria-hidden className="truncate text-[15px] leading-none font-medium text-dim blur-[5px] select-none">
             Company name here
           </p>
-          <p className="truncate text-[12.5px] leading-none text-dim/80">
+          <p className="truncate text-[12.5px] leading-none text-dim">
             {posted ? `Posted ${posted.toLowerCase()}` : "Hiring now"}
           </p>
         </div>

@@ -426,12 +426,31 @@ export function JobBoard() {
             ) : !board.jobs.length ? (
               <EmptyState
                   title={`No ${showPosts ? "hiring posts" : "jobs"} match these filters`}
-                  body="Try other keywords, another location, or reset the filters."
+                  body="Loosen one of these to see more, or start over."
                   action={
                     hasActiveFilters(filters) ? (
-                      <button type="button" onClick={resetFilters} className={secondaryButton}>
-                        Reset filters
-                      </button>
+                      /* one-tap ways to widen the search, narrowest-first,
+                         before the all-or-nothing reset */
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {filters.q && (
+                          <button type="button" onClick={() => updateFilters({ q: "" })} className={secondaryButton}>
+                            Search without keywords
+                          </button>
+                        )}
+                        {filters.location && (
+                          <button type="button" onClick={() => updateFilters({ location: "" })} className={secondaryButton}>
+                            Any location
+                          </button>
+                        )}
+                        {filters.postedWithin && (
+                          <button type="button" onClick={() => updateFilters({ postedWithin: "" })} className={secondaryButton}>
+                            Any time
+                          </button>
+                        )}
+                        <button type="button" onClick={resetFilters} className={secondaryButton}>
+                          Reset all filters
+                        </button>
+                      </div>
                     ) : null
                   }
                 />

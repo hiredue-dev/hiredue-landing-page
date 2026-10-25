@@ -145,7 +145,7 @@ export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, c
         className="flex h-full min-h-12 w-full items-center gap-2 px-4 text-left text-[14.5px] font-medium"
       >
         {Icon && <Icon size={17} className="shrink-0 text-dim" aria-hidden />}
-        <span className={clsx("min-w-0 flex-1 truncate", label ? "text-ink" : "text-dim/70")}>
+        <span className={clsx("min-w-0 flex-1 truncate", label ? "text-ink" : "text-dim")}>
           {label || placeholder}
         </span>
         <ChevronDown

@@ -97,7 +97,7 @@ export function JobCard({ job, onOpen, onApply, onAutoApply }) {
         <CompanyLogo src={job.imageUrl} name={job.hiringCompany || job.jobTitle} size={44} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate text-[15px] leading-none font-medium text-dim">{job.hiringCompany || "Company"}</p>
-          <p className="truncate text-[12.5px] leading-none text-dim/80">
+          <p className="truncate text-[12.5px] leading-none text-dim">
             {platformLabel(job.platformName)}
             {posted && <> · {posted}</>}
           </p>
