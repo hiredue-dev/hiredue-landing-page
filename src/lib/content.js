@@ -1,16 +1,5 @@
 import { assets, marks } from "@/lib/assets";
 
-export const nav = {
-  brand: "HireDue",
-  links: [
-    { label: "Features", href: "#features" },
-    { label: "Get Started", href: "#how-it-works" },
-    { label: "Platform Overview", href: "#overview" },
-    { label: "Pricing", href: "#pricing" },
-  ],
-  cta: { label: "Get Started Free", href: "/signup" },
-};
-
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
   rotatingWords: ["Auto Applies", "Discovers", "Outreaches"],

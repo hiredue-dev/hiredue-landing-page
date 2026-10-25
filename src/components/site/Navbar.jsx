@@ -12,7 +12,7 @@ import { nav } from "@/lib/navigation-content";
 import { PillButton } from "@/components/site/ui/Button";
 import { spring } from "@/lib/motion";
 
-const sectionIds = ["features", "how-it-works", "overview", "pricing"];
+const sectionIds = ["features", "how-it-works", "pricing"];
 
 export function Navbar() {
   const [active, setActive] = useState(null);
@@ -106,18 +106,17 @@ export function Navbar() {
         style={{ "--appear-delay": "0.1s", "--appear-y": "10px", "--appear-duration": "0.6s" }}
         className="appear fixed inset-x-0 top-0 z-50 py-5"
       >
-        {/* 1120 rather than the template's 940: measured in the browser, six
-            links need ~603px and 940 leaves the nav 533px between the logo and
-            the CTA slot, so the first link ran into the logo. The extra width
-            over the old 1040 makes room for "Log in" at xl+. */}
+        {/* 1120 rather than the template's 940: the old six links measured
+            ~603px in the browser and ran into the logo at 940. The five now
+            come to roughly 440px (estimated from the old measurement), which
+            leaves room for "Log in" + the CTA from lg up. */}
         <div className="mx-auto w-full max-w-[1120px] px-[30px]">
           {/*
            * Logo stays its natural width, always left-aligned. Only the right
            * slot gets a fixed width at lg+, since that's the side whose content
            * actually changes ("Log in" + the CTA vs. the signed-in avatar,
-           * ~258px vs ~70px; "Log in" drops into the hamburger menu below xl,
-           * where the six links leave no room for it) — reserving its widest
-           * footprint keeps the bar from resizing when auth state flips.
+           * ~258px vs ~70px) — reserving its widest footprint keeps the bar
+           * from resizing when auth state flips.
            *
            * The nav sits between them as a flex-1 track and centers itself
            * within whatever room that leaves. Centering it on the bar's full
@@ -162,7 +161,7 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="hidden lg:flex lg:w-[184px] xl:w-[264px] lg:shrink-0 lg:items-center lg:justify-end">
+            <div className="hidden lg:flex lg:w-[264px] lg:shrink-0 lg:items-center lg:justify-end">
               {isAuthenticated ? (
                 <div ref={userMenuRef} className="relative">
                   <button
@@ -211,7 +210,7 @@ export function Navbar() {
                   <button
                     type="button"
                     onClick={() => showModal({ view: "signin" })}
-                    className="hidden rounded-full px-3.5 py-2.5 text-[14px] leading-[1.3] font-semibold whitespace-nowrap text-ink transition-colors duration-300 hover:bg-surface xl:inline-flex"
+                    className="hidden rounded-full px-3.5 py-2.5 text-[14px] leading-[1.3] font-semibold whitespace-nowrap text-ink transition-colors duration-300 hover:bg-surface lg:inline-flex"
                   >
                     {nav.login.label}
                   </button>
