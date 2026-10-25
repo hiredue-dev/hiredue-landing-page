@@ -68,6 +68,14 @@ export function LegalPage({ eyebrow, title, effectiveDate, lastUpdated, body }) 
         <div className="legal-body mt-[50px] border-t border-line pt-[50px]">
           <PortableText value={body} components={components} />
         </div>
+
+        {sections.length >= 3 && (
+          <p className="mt-[50px] text-center">
+            <a href="#main" className="text-[15px] font-semibold text-brand hover:underline">
+              Back to top ↑
+            </a>
+          </p>
+        )}
       </div>
     </section>
   );
