@@ -101,9 +101,10 @@ export function Hero() {
                     HireDue{" "}
                     {/* a white chip with brand text: white type straight on the
                         pale sky read as the faintest word in the headline */}
-                    <span className="inline-block rounded-[0.2em] bg-white px-[0.16em] pt-[0.06em] pb-[0.1em] text-brand shadow-[0_8px_24px_rgba(29,29,29,0.08)]">
-                      <RotatingWord words={hero.rotatingWords} />
-                    </span>{" "}
+                    <RotatingWord
+                      words={hero.rotatingWords}
+                      className="rounded-[0.2em] bg-white px-[0.16em] pt-[0.06em] pb-[0.1em] text-brand shadow-[0_8px_24px_rgba(29,29,29,0.08)]"
+                    />{" "}
                     {hero.tagline}
                   </h1>
                 </div>
