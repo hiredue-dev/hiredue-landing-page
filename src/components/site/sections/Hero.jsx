@@ -140,10 +140,21 @@ export function Hero() {
                 </div>
               </div>
 
+              {!isAuthenticated && (
+                <p
+                  style={appear(0.65)}
+                  className="appear -mt-2 rounded-full px-4 py-1.5 text-center text-[14px] leading-[1.3] font-medium text-dim max-md:bg-white/80 max-md:text-ink max-md:backdrop-blur-sm"
+                >
+                  {hero.reassurance}
+                </p>
+              )}
+
               <ul
                 style={appear(0.7)}
-                className="appear flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5"
+                className="appear flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5 max-md:rounded-[16px] max-md:bg-white/80 max-md:px-4 max-md:py-2 max-md:backdrop-blur-sm"
               >
+                {/* below md these sit on the grass image, not the sky: a soft
+                    white backing keeps them readable */}
                 {hero.proof.map((item, i) => (
                   <li key={item.label} className="flex items-center gap-x-5">
                     {i > 0 && <span className="hidden h-[22px] w-px bg-ink sm:block" />}

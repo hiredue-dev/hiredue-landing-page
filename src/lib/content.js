@@ -9,6 +9,8 @@ export const hero = {
   primary: { label: "Get Started Free", href: "/signup" },
   signedIn: { label: "Download the App", href: "/download" },
   secondary: { label: "Join Live Onboarding", href: "/onboarding-call" },
+  // under the CTAs, signed-out only: the questions that stop a first click
+  reassurance: "Free to install · Mac & Windows · No credit card",
   proof: [
     { icon: assets.icons.shield, label: "Your data stays on your device" },
     { icon: assets.icons.bolt, label: "Be the first one to apply" },
@@ -57,7 +59,7 @@ export const features = {
   title: "Everything you need to land your next role",
   description:
     "Built for job seekers who are done doing this manually — students, career switchers, and experienced professionals alike.",
-  cta: { label: "Explore Features", href: "/feature" },
+  cta: { label: "See all features", href: "/feature" },
   findJobs: {
     title: "Find Relevant Jobs",
     description: "Find relevant jobs 24x7 automatically",
@@ -84,7 +86,6 @@ export const overview = {
   title: "See your job search running in real time",
   description:
     "A live dashboard that brings job discovery, applications, and recruiter outreach together in one clear view.",
-  primary: { label: "Explore Features", href: "/feature" },
   secondary: { label: "Download the App", href: "/download" },
   cards: [
     {
@@ -211,7 +212,6 @@ export const integrations = {
   title: "Connect with the job boards and ATS you already use",
   description:
     "HireDue searches every major job board — LinkedIn, Indeed, and more — and submits through 6+ ATS providers, with new ones added all the time.",
-  cta: { label: "Explore all integrations", href: "/feature" },
   footnote: "All major job boards, plus 6+ ATS providers — and growing",
 };
 

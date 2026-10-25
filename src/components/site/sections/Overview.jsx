@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowButton, SlideButton } from "@/components/site/ui/Button";
+import { ArrowButton } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { YouTubeEmbed } from "@/components/site/ui/YouTubeEmbed";
 import { assets } from "@/lib/assets";
@@ -31,8 +31,7 @@ export function Overview() {
               <p className="t-body-lg text-center">{overview.description}</p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-5">
-              <ArrowButton label={overview.primary.label} href={overview.primary.href} tone="primary" />
-              <SlideButton label={overview.secondary.label} href={overview.secondary.href} tone="ink" />
+              <ArrowButton label={overview.secondary.label} href={overview.secondary.href} tone="primary" />
             </div>
           </Reveal>
 

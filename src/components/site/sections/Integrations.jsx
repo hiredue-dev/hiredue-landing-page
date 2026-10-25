@@ -3,7 +3,6 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import clsx from "clsx";
-import { ArrowButton } from "@/components/site/ui/Button";
 import { Mark } from "@/components/site/ui/Mark";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { assets, marks } from "@/lib/assets";
@@ -42,17 +41,10 @@ export function Integrations() {
     <section id="integrations" className="relative">
       <div className="container-page">
         <div className="relative flex flex-col items-center gap-[50px] overflow-hidden rounded-[30px] bg-surface px-6 pt-[60px] pb-[120px] md:px-[100px] md:pt-[100px] md:pb-[239px]">
-          <Reveal className="flex max-w-[520px] flex-col items-center gap-[30px]">
-            <div className="flex flex-col items-center gap-2.5">
-              <Eyebrow tone="white">{integrations.eyebrow}</Eyebrow>
-              <h2 className="t-h2 text-center">{integrations.title}</h2>
-              <p className="t-body-lg text-center">{integrations.description}</p>
-            </div>
-            <ArrowButton
-              label={integrations.cta.label}
-              href={integrations.cta.href}
-              tone="primary"
-            />
+          <Reveal className="flex max-w-[520px] flex-col items-center gap-2.5">
+            <Eyebrow tone="white">{integrations.eyebrow}</Eyebrow>
+            <h2 className="t-h2 text-center">{integrations.title}</h2>
+            <p className="t-body-lg text-center">{integrations.description}</p>
           </Reveal>
 
           {/* orbiting logos */}
