@@ -4,7 +4,9 @@ import { formatChangelogDate } from "@/lib/changelog";
 /**
  * Every card is `position: sticky` at the same offset, so each one parks under
  * the navbar and the next slides up to cover it — the stack the reference site
- * builds with plain CSS rather than a scroll-linked animation.
+ * builds with plain CSS rather than a scroll-linked animation. md+ only: on a
+ * phone a card is taller than the screen, so the next one would cover its
+ * bottom before it could be read.
  */
 export function ChangelogTimeline({ entries = [] }) {
   if (!entries.length) return null;
@@ -13,7 +15,7 @@ export function ChangelogTimeline({ entries = [] }) {
     <section className="relative pb-[120px] min-[1200px]:pb-[200px]">
       <div className="mx-auto flex w-full max-w-[1220px] flex-col gap-[7px] px-[30px]">
         {entries.map((entry) => (
-          <div key={`${entry.version}-${entry.date}`} className="sticky top-[150px]">
+          <div key={`${entry.version}-${entry.date}`} className="md:sticky md:top-[150px]">
             <article className="grid gap-[15px] rounded-[15px] border border-dashed border-line bg-white md:grid-cols-2">
               <div className="p-[25px] pb-0 md:pb-[25px]">
                 <p className="text-[15px] leading-[1.1] font-semibold text-ink">
@@ -42,7 +44,7 @@ export function ChangelogTimeline({ entries = [] }) {
                   <div className="relative aspect-[553/315] w-full overflow-hidden rounded-[10px]">
                     <Image
                       src={entry.image}
-                      alt=""
+                      alt={`Screenshot: ${entry.title}`}
                       fill
                       sizes="(min-width: 1200px) 560px, 100vw"
                       className="object-cover"
