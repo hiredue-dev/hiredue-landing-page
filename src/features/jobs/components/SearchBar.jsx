@@ -71,6 +71,12 @@ export function SearchBar({ filters, facets, onSearch }) {
     onSearch({ location: value });
   };
 
+  /* A chip typed but not yet searched looks the same as an applied one, and
+     picking a location or date (which search at once) leaves it out — so
+     mark the ones that aren't in the live search as pending. */
+  const applied = new Set(parseKeywords(filters.q).map((k) => k.toLowerCase()));
+  const isPending = (keyword) => !applied.has(keyword.toLowerCase());
+
   const postedLabel =
     POSTED_WITHIN_OPTIONS.find((option) => option.value === postedWithin && option.value)?.label ?? "";
 
@@ -86,9 +92,14 @@ export function SearchBar({ filters, facets, onSearch }) {
           {keywords.map((keyword) => (
             <span
               key={keyword}
-              className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface py-1.5 pr-2 pl-3 text-[14px] leading-none font-semibold text-ink"
+              title={isPending(keyword) ? "Not searched yet — press Start searching" : undefined}
+              className={clsx(
+                "inline-flex max-w-full items-center gap-1.5 rounded-full py-1.5 pr-2 pl-3 text-[14px] leading-none font-semibold text-ink",
+                isPending(keyword) ? "border border-dashed border-dim bg-white" : "border border-transparent bg-surface",
+              )}
             >
               <span className="truncate">{keyword}</span>
+              {isPending(keyword) && <span className="sr-only"> (not searched yet)</span>}
               <button
                 type="button"
                 onClick={() => removeKeyword(keyword)}
