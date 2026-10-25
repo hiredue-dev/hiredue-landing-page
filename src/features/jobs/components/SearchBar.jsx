@@ -93,7 +93,7 @@ export function SearchBar({ filters, facets, onSearch }) {
                 type="button"
                 onClick={() => removeKeyword(keyword)}
                 aria-label={`Remove ${keyword}`}
-                className="grid size-4 place-items-center rounded-full text-dim hover:bg-white hover:text-ink"
+                className="relative grid size-4 place-items-center rounded-full text-dim after:absolute after:-inset-[14px] after:content-[''] hover:bg-white hover:text-ink"
               >
                 <X size={12} strokeWidth={2.5} />
               </button>

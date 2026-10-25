@@ -101,7 +101,7 @@ export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 z-10 grid size-9 place-items-center rounded-full border border-line bg-white text-dim transition-colors hover:bg-surface"
+          className="absolute top-4 right-4 z-10 grid size-9 place-items-center rounded-full border border-line bg-white text-dim transition-colors after:absolute after:-inset-1 after:content-[''] hover:bg-surface"
         >
           <X size={18} />
         </button>

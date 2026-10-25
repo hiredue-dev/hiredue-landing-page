@@ -70,7 +70,7 @@ export function JobsPanel({ text }) {
                       type="button"
                       onClick={() => setTerms((list) => list.filter((t) => t !== term))}
                       aria-label={`Remove ${term}`}
-                      className="grid size-5 place-items-center rounded-full text-dim hover:bg-surface hover:text-ink"
+                      className="relative grid size-5 place-items-center rounded-full text-dim after:absolute after:-inset-3 after:content-[''] hover:bg-surface hover:text-ink"
                     >
                       <X size={13} aria-hidden />
                     </button>
