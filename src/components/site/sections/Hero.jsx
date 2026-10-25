@@ -9,18 +9,8 @@ import { RotatingWord } from "@/components/site/ui/RotatingWord";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
+import { appear } from "@/lib/motion";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
-
-/**
- * Load-in: fade up, with the same delay ladder the original uses. Pair with
- * the `appear` class — it's CSS (globals.css), so the copy is never stuck
- * invisible waiting for hydration.
- */
-const appear = (delay, y = 20, duration = 1) => ({
-  "--appear-delay": `${delay}s`,
-  "--appear-y": `${y}px`,
-  "--appear-duration": `${duration}s`,
-});
 
 /*
  * Scroll ranges measured off the original at a 1440 viewport:

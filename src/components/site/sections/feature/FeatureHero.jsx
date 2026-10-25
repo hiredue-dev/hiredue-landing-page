@@ -1,21 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { FeatureHeroVisual } from "@/components/site/sections/feature/FeatureHeroVisual";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { featurePage } from "@/lib/content";
-import { spring } from "@/lib/motion";
-
-/* The route's appear animations: y 20 → 0, spring bounce 0, 1s, two delays. */
-const appear = (delay) => ({
-  initial: { opacity: 0.001, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: spring(1, delay),
-});
+import { appear } from "@/lib/motion";
 
 const { hero } = featurePage;
 
@@ -42,9 +34,9 @@ export function FeatureHero() {
       <div className="container-page relative z-[2]">
         <div className="grid gap-[30px] min-[1200px]:grid-cols-2 min-[1200px]:items-start min-[1200px]:gap-[50px]">
           {/* copy */}
-          <motion.div
-            {...appear(0.1)}
-            className="flex flex-col items-start gap-5 min-[1200px]:gap-10"
+          <div
+            style={appear(0.1)}
+            className="appear flex flex-col items-start gap-5 min-[1200px]:gap-10"
           >
             <div className="flex flex-col gap-2.5">
               <h1 className="t-h2-feature">{hero.title}</h1>
@@ -80,12 +72,12 @@ export function FeatureHero() {
                 />
               )}
             </div>
-          </motion.div>
+          </div>
 
           {/* product visuals: discover → outreach → auto apply */}
-          <motion.div {...appear(0.2)} className="w-full">
+          <div style={appear(0.2)} className="appear w-full">
             <FeatureHeroVisual />
-          </motion.div>
+          </div>
         </div>
       </div>
 

@@ -2,20 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { Eyebrow } from "@/components/site/ui/Primitives";
 import { Field, FormStatus, Input } from "@/components/site/ui/FormField";
 import { assets } from "@/lib/assets";
 import { onboardingCallPage } from "@/lib/content";
-import { spring } from "@/lib/motion";
+import { appear } from "@/lib/motion";
 import useOnboardingCallForm from "@/features/onboarding-call/hooks/useOnboardingCallForm";
 import getFieldError from "@/utils/getFieldError";
-
-const appear = (delay) => ({
-  initial: { opacity: 0.001, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: spring(1, delay),
-});
 
 const { hero } = onboardingCallPage;
 
@@ -49,9 +42,9 @@ export function OnboardingCallHero() {
     <section className="relative isolate flex flex-col overflow-hidden bg-white pt-[128px] pb-[100px] min-[810px]:pt-[158px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
       <div className="container-page relative z-[2]">
         <div className="grid gap-[60px] min-[1200px]:grid-cols-[1fr_520px] min-[1200px]:items-start min-[1200px]:gap-[50px]">
-          <motion.div
-            {...appear(0.1)}
-            className="flex flex-col items-start gap-5 min-[1200px]:gap-8 min-[1200px]:pt-2.5"
+          <div
+            style={appear(0.1)}
+            className="appear flex flex-col items-start gap-5 min-[1200px]:gap-8 min-[1200px]:pt-2.5"
           >
             <div className="flex flex-col items-start gap-2.5">
               <Eyebrow>{hero.eyebrow}</Eyebrow>
@@ -75,11 +68,11 @@ export function OnboardingCallHero() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          <motion.div {...appear(0.25)}>
+          <div style={appear(0.25)} className="appear">
             <OnboardingCallForm form={form} />
-          </motion.div>
+          </div>
         </div>
       </div>
     </section>
