@@ -12,6 +12,9 @@ import { AnimatePresence, motion } from "framer-motion";
  * sizing off the wrong one clips whichever word is actually widest. Instead
  * every word is stacked invisibly in the same grid cell, so the cell sizes
  * itself to whichever one is widest in practice.
+ *
+ * Screen readers get every word once, in a hidden span, instead of whichever
+ * one happens to be showing when the heading is read.
  */
 export function RotatingWord({ words, interval = 2000, className }) {
   const [index, setIndex] = useState(0);
@@ -24,28 +27,32 @@ export function RotatingWord({ words, interval = 2000, className }) {
   }, [words.length, interval]);
 
   return (
-    <span
-      className={`relative inline-grid h-[1em] overflow-hidden text-center align-top leading-none md:text-left ${className ?? ""}`}
-    >
-      <span className="invisible col-start-1 row-start-1 grid">
-        {words.map((w) => (
-          <span key={w} className="col-start-1 row-start-1 whitespace-nowrap">
-            {w}
-          </span>
-        ))}
+    <>
+      <span className="sr-only">{words.join(", ")}</span>
+      <span
+        aria-hidden
+        className={`relative inline-grid h-[1em] overflow-hidden text-center align-top leading-none md:text-left ${className ?? ""}`}
+      >
+        <span className="invisible col-start-1 row-start-1 grid">
+          {words.map((w) => (
+            <span key={w} className="col-start-1 row-start-1 whitespace-nowrap">
+              {w}
+            </span>
+          ))}
+        </span>
+        <AnimatePresence mode="popLayout">
+          <motion.span
+            key={words[index]}
+            initial={{ y: "100%", opacity: 0 }}
+            animate={{ y: "0%", opacity: 1 }}
+            exit={{ y: "-100%", opacity: 0 }}
+            transition={{ type: "spring", bounce: 0, duration: 0.5 }}
+            className="absolute inset-0 col-start-1 row-start-1 leading-none whitespace-nowrap"
+          >
+            {words[index]}
+          </motion.span>
+        </AnimatePresence>
       </span>
-      <AnimatePresence mode="popLayout">
-        <motion.span
-          key={words[index]}
-          initial={{ y: "100%", opacity: 0 }}
-          animate={{ y: "0%", opacity: 1 }}
-          exit={{ y: "-100%", opacity: 0 }}
-          transition={{ type: "spring", bounce: 0, duration: 0.5 }}
-          className="absolute inset-0 col-start-1 row-start-1 leading-none whitespace-nowrap"
-        >
-          {words[index]}
-        </motion.span>
-      </AnimatePresence>
-    </span>
+    </>
   );
 }

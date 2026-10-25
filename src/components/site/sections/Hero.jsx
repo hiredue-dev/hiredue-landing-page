@@ -99,10 +99,11 @@ export function Hero() {
                 <div className="flex flex-col items-center gap-2.5">
                   <h1 style={appear(0.3)} className="appear t-h1 max-w-[1200px] text-center">
                     HireDue{" "}
-                    <RotatingWord
-                      words={hero.rotatingWords}
-                      className="text-white drop-shadow-[0_4px_20px_rgba(29,29,29,0.25)]"
-                    />{" "}
+                    {/* a white chip with brand text: white type straight on the
+                        pale sky read as the faintest word in the headline */}
+                    <span className="inline-block rounded-[0.2em] bg-white px-[0.16em] pt-[0.06em] pb-[0.1em] text-brand shadow-[0_8px_24px_rgba(29,29,29,0.08)]">
+                      <RotatingWord words={hero.rotatingWords} />
+                    </span>{" "}
                     {hero.tagline}
                   </h1>
                 </div>
