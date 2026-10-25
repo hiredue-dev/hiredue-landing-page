@@ -20,6 +20,8 @@ export function Navbar() {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [scrolledAway, setScrolledAway] = useState(false);
   const userMenuRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuth();
@@ -95,6 +97,22 @@ export function Navbar() {
     return () => {
       document.body.style.overflow = "";
     };
+  }, [open]);
+
+  /* Mobile menu: focus its first link on open, and hand focus back to the
+     menu button on close (unless it already moved on, e.g. to the sign-up
+     modal or a new page). */
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (open) {
+      mobileMenuRef.current?.querySelector("a, button")?.focus({ preventScroll: true });
+    } else if (wasOpen.current) {
+      const active = document.activeElement;
+      if (!active || active === document.body || mobileMenuRef.current?.contains(active)) {
+        menuButtonRef.current?.focus({ preventScroll: true });
+      }
+    }
+    wasOpen.current = open;
   }, [open]);
 
   /* Escape closes whichever menu is open */
@@ -270,8 +288,10 @@ export function Navbar() {
 
             <button
               type="button"
+              ref={menuButtonRef}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
+              aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
               className="ml-auto grid size-9 place-items-center rounded-full bg-surface lg:hidden"
             >
@@ -298,6 +318,8 @@ export function Navbar() {
           <AnimatePresence>
             {open && (
               <motion.nav
+                ref={mobileMenuRef}
+                id="mobile-menu"
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
