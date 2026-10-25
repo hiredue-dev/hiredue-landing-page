@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { Pause, Play } from "lucide-react";
 import clsx from "clsx";
 import { Mark } from "@/components/site/ui/Mark";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
@@ -36,7 +37,15 @@ const UNIQUE = [...jobBoards, ...atsProviders];
 const ORBIT = [...UNIQUE, ...UNIQUE];
 const RING = 940;
 
+/* A CSS spin rather than a framer `animate`, so it can be paused in place
+   (and is off under reduced motion, via motion-reduce). */
+const SPIN = "animate-[spin_90s_linear_infinite] motion-reduce:animate-none";
+
 export function Integrations() {
+  // anything that moves for more than 5s needs a way to stop it
+  const [paused, setPaused] = useState(false);
+  const playState = paused ? "[animation-play-state:paused]" : "";
+
   return (
     <section id="integrations" className="relative">
       <div className="container-page">
@@ -49,10 +58,8 @@ export function Integrations() {
 
           {/* orbiting logos */}
           <div className="relative h-[220px] w-full max-w-[1000px] overflow-hidden md:mb-[-416px] md:h-[505px]">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
-              className="absolute top-0 left-1/2 -translate-x-1/2"
+            <div
+              className={clsx("absolute top-0 left-1/2 -translate-x-1/2", SPIN, playState)}
               style={{ width: RING, height: RING }}
             >
               {ORBIT.map((item, i) => {
@@ -64,10 +71,7 @@ export function Integrations() {
                     style={{ transform: `translateX(-50%) rotate(${angle}deg)` }}
                   >
                     {/* undo the ring spin, then undo this spoke's angle, so logos stay upright */}
-                    <motion.div
-                      animate={{ rotate: -360 }}
-                      transition={{ duration: 90, repeat: Infinity, ease: "linear" }}
-                    >
+                    <div className={clsx(SPIN, "[animation-direction:reverse]", playState)}>
                       <span
                         className={clsx(
                           "flex h-11 items-center gap-2 rounded-full bg-white shadow-[0_4px_14px_rgba(29,29,29,0.08)]",
@@ -82,11 +86,21 @@ export function Integrations() {
                           {item.name}
                         </span>
                       </span>
-                    </motion.div>
+                    </div>
                   </div>
                 );
               })}
-            </motion.div>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => setPaused((p) => !p)}
+              aria-pressed={paused}
+              className="absolute top-2 right-2 z-10 grid size-10 place-items-center rounded-full bg-white text-ink shadow-[0_4px_14px_rgba(29,29,29,0.12)] motion-reduce:hidden"
+            >
+              {paused ? <Play size={16} aria-hidden /> : <Pause size={16} aria-hidden />}
+              <span className="sr-only">{paused ? "Play" : "Pause"} the logo animation</span>
+            </button>
           </div>
 
           <Reveal className="relative z-10 flex max-w-[520px] flex-col items-center gap-[30px]">
