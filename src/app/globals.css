@@ -90,18 +90,13 @@
   --ease-framer: cubic-bezier(0.44, 0, 0.56, 1);
 }
 
-/* Immediate feedback while an uncached route segment is streaming in. */
-.route-loading {
-  position: fixed;
-  inset: 0;
-  z-index: 45;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(2px);
-}
-
-.route-loading > span {
+/* Immediate feedback while an uncached route segment is streaming in: a
+   brand bar along the top edge, over the navbar, beside the page skeleton
+   (components/site/ui/Skeleton.jsx). */
+.route-progress {
   position: fixed;
   inset: 0 auto auto 0;
+  z-index: 60;
   width: 35%;
   height: 3px;
   background: var(--color-brand);
@@ -119,7 +114,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .route-loading > span {
+  .route-progress {
     animation: none;
     width: 100%;
   }
