@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Eyebrow } from "@/components/site/ui/Primitives";
+import { Field, FormStatus, Input } from "@/components/site/ui/FormField";
 import { assets } from "@/lib/assets";
 import { onboardingCallPage } from "@/lib/content";
 import { spring } from "@/lib/motion";
@@ -83,6 +84,7 @@ function OnboardingCallForm({ form }) {
           <Field label={copy.nameLabel} required error={getFieldError(form.errors, "name")}>
             <Input
               name="name"
+              autoComplete="name"
               placeholder={copy.namePlaceholder}
               value={form.values.name}
               onChange={form.handleChange}
@@ -92,6 +94,7 @@ function OnboardingCallForm({ form }) {
             <Input
               type="tel"
               name="phone"
+              autoComplete="tel"
               placeholder={copy.phonePlaceholder}
               value={form.values.phone}
               onChange={form.handleChange}
@@ -104,6 +107,7 @@ function OnboardingCallForm({ form }) {
             <Input
               type="email"
               name="email"
+              autoComplete="email"
               placeholder={copy.emailPlaceholder}
               value={form.values.email}
               onChange={form.handleChange}
@@ -132,17 +136,7 @@ function OnboardingCallForm({ form }) {
           {form.status === "submitting" ? copy.submittingLabel : copy.submitLabel}
         </button>
 
-        {form.message && (
-          <p
-            className={
-              form.status === "success"
-                ? "text-[14px] font-medium text-success"
-                : "text-[14px] font-medium text-danger"
-            }
-          >
-            {form.message}
-          </p>
-        )}
+        <FormStatus status={form.status} message={form.message} />
       </form>
 
       <Image
@@ -153,27 +147,5 @@ function OnboardingCallForm({ form }) {
         className="pointer-events-none absolute right-0 bottom-0 left-0 z-0 h-[140px] w-full object-cover object-top min-[810px]:h-[170px]"
       />
     </div>
-  );
-}
-
-function Field({ label, required, error, children }) {
-  return (
-    <label className="flex flex-col gap-2">
-      <span className="text-[14px] leading-[1.3] font-medium text-ink">
-        {label}
-        {required && <span className="text-brand">*</span>}
-      </span>
-      {children}
-      {error && <span className="text-[13px] leading-[1.3] font-medium text-danger">{error}</span>}
-    </label>
-  );
-}
-
-function Input({ className, ...rest }) {
-  return (
-    <input
-      {...rest}
-      className={`w-full rounded-[12px] border border-line bg-white px-4 py-3 text-[15px] font-medium text-ink placeholder:text-dim/70 focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none ${className ?? ""}`}
-    />
   );
 }

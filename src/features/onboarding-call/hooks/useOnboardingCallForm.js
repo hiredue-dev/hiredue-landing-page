@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import focusFirstInvalid from "@/utils/focusFirstInvalid.js";
 import { onboardingCallSchema, formatZodErrors } from "@/lib/shared.js";
 import onboardingCallService from "../services/onboardingCallService.js";
 
@@ -28,7 +29,9 @@ const useOnboardingCallForm = () => {
 
     const parsed = onboardingCallSchema.safeParse(values);
     if (!parsed.success) {
-      setErrors(formatZodErrors(parsed.error));
+      const fieldErrors = formatZodErrors(parsed.error);
+      setErrors(fieldErrors);
+      focusFirstInvalid(event.currentTarget, fieldErrors);
       setStatus("error");
       setMessage("Please fix the highlighted fields.");
       return;
