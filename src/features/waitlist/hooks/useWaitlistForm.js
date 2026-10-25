@@ -1,12 +1,14 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { detectDefaultCountry } from "@/features/auth/countries.js";
 import { waitlistSchema, formatZodErrors } from "@/lib/shared.js";
 import waitlistService from "../services/waitlistService.js";
 
 const createInitialState = (prefillEmail = "") => ({
   email: prefillEmail,
   name: "",
+  countryCode: "IN",
   phone: "",
 });
 
@@ -15,6 +17,11 @@ const useWaitlistForm = ({ source = "waitlist", prefillEmail = "" } = {}) => {
   const [status, setStatus] = useState("idle");
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({});
+
+  // The visitor's country from the browser locale; client-only, so after mount.
+  useEffect(() => {
+    setValues((current) => ({ ...current, countryCode: detectDefaultCountry() }));
+  }, []);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -31,7 +38,7 @@ const useWaitlistForm = ({ source = "waitlist", prefillEmail = "" } = {}) => {
   }, []);
 
   const reset = useCallback(() => {
-    setValues(createInitialState(""));
+    setValues((current) => ({ ...createInitialState(""), countryCode: current.countryCode }));
     setStatus("idle");
     setMessage("");
     setErrors({});
@@ -60,7 +67,7 @@ const useWaitlistForm = ({ source = "waitlist", prefillEmail = "" } = {}) => {
 
       setStatus("success");
       setMessage("You’re on the waitlist.");
-      setValues(createInitialState(""));
+      setValues((current) => ({ ...createInitialState(""), countryCode: current.countryCode }));
     } catch (error) {
       setStatus("error");
       setErrors(error.errors || {});

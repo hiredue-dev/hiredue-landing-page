@@ -2,6 +2,8 @@
 
 import Button from "@/components/ui/Button/Button.jsx";
 import Input from "@/components/ui/Input/Input.jsx";
+import inputStyles from "@/components/ui/Input/Input.module.css";
+import { COUNTRY_OPTIONS } from "@/features/auth/countries.js";
 import getFieldError from "@/utils/getFieldError.js";
 import styles from "./WaitlistForm.module.css";
 
@@ -52,19 +54,35 @@ const WaitlistForm = ({ form }) => {
         <label className={styles.label} htmlFor="waitlist-phone">
           Contact number
         </label>
-        <Input
-          id="waitlist-phone"
-          name="phone"
-          type="tel"
-          inputMode="numeric"
-          maxLength={10}
-          autoComplete="tel-national"
-          placeholder="9876543210"
-          value={form.values.phone}
-          onChange={form.handleChange}
-          aria-invalid={phoneError ? true : undefined}
-          aria-describedby={phoneError ? "waitlist-phone-error" : undefined}
-        />
+        <div className={styles.phoneRow}>
+          <select
+            name="countryCode"
+            aria-label="Country code"
+            autoComplete="tel-country-code"
+            value={form.values.countryCode}
+            onChange={form.handleChange}
+            className={`${inputStyles.input} ${styles.country}`}
+          >
+            {COUNTRY_OPTIONS.map((country) => (
+              <option key={country.value} value={country.value}>
+                {country.label}
+              </option>
+            ))}
+          </select>
+          <Input
+            id="waitlist-phone"
+            name="phone"
+            type="tel"
+            inputMode="numeric"
+            maxLength={form.values.countryCode === "IN" ? 10 : 14}
+            autoComplete="tel-national"
+            placeholder={form.values.countryCode === "IN" ? "9876543210" : "Phone number"}
+            value={form.values.phone}
+            onChange={form.handleChange}
+            aria-invalid={phoneError ? true : undefined}
+            aria-describedby={phoneError ? "waitlist-phone-error" : undefined}
+          />
+        </div>
         {phoneError ? <p id="waitlist-phone-error" className={styles.error}>{phoneError}</p> : null}
       </div>
 

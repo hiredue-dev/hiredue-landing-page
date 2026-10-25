@@ -13,6 +13,18 @@
   font-weight: 600;
 }
 
+.phoneRow {
+  display: flex;
+  gap: 8px;
+}
+
+/* the country list's labels are long ("India (+91)"); cap it so the number
+   field keeps most of the row */
+.country {
+  width: 150px;
+  flex-shrink: 0;
+}
+
 .submit {
   width: 100%;
 }
