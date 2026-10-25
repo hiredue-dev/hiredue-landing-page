@@ -7,10 +7,13 @@ import clsx from "clsx";
  * Labelled field for the marketing-site forms (contact, onboarding call).
  * Wraps exactly one control and wires its error up for every reader: the
  * control gets `aria-invalid` (which also paints the red border — see
- * `controlClass`) and `aria-describedby` pointing at the message.
+ * `controlClass`) and `aria-describedby` pointing at the message. An optional
+ * `hint` shows under the control until there's an error to show instead.
  */
-export function Field({ label, required, error, children }) {
+export function Field({ label, required, error, hint, children }) {
   const errorId = useId();
+  const hintId = useId();
+  const describedBy = error ? errorId : hint ? hintId : undefined;
   const control = Children.only(children);
 
   return (
@@ -22,15 +25,19 @@ export function Field({ label, required, error, children }) {
       {isValidElement(control)
         ? cloneElement(control, {
             "aria-invalid": error ? true : undefined,
-            "aria-describedby": error ? errorId : undefined,
+            "aria-describedby": describedBy,
             "aria-required": required || undefined,
           })
         : control}
-      {error && (
+      {error ? (
         <span id={errorId} className="text-[13px] leading-[1.3] font-medium text-[#b91c1c]">
           {error}
         </span>
-      )}
+      ) : hint ? (
+        <span id={hintId} className="text-[13px] leading-[1.3] font-medium text-dim">
+          {hint}
+        </span>
+      ) : null}
     </label>
   );
 }

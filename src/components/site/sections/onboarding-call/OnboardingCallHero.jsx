@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Eyebrow } from "@/components/site/ui/Primitives";
@@ -23,6 +24,22 @@ function todayISODate() {
   const now = new Date();
   const tzOffsetMs = now.getTimezoneOffset() * 60000;
   return new Date(now - tzOffsetMs).toISOString().slice(0, 10);
+}
+
+/* The call is 9:30 PM IST (UTC+5:30), i.e. 16:00 UTC. */
+const CALL_UTC_HOUR = 16;
+const IST_OFFSET_MINUTES = -330;
+
+/**
+ * "…which is 12:00 PM EDT for you" on the chosen (or today's) date, or null when
+ * the visitor is already on IST. Date-specific so daylight saving is right.
+ */
+function localCallTime(isoDate) {
+  if (new Date().getTimezoneOffset() === IST_OFFSET_MINUTES) return null;
+  const [y, m, d] = (isoDate || todayISODate()).split("-").map(Number);
+  const call = new Date(Date.UTC(y, m - 1, d, CALL_UTC_HOUR, 0));
+  const time = call.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit", timeZoneName: "short" });
+  return `The call starts at 9:30 PM IST, which is ${time} for you.`;
 }
 
 export function OnboardingCallHero() {
@@ -73,6 +90,12 @@ export function OnboardingCallHero() {
 
 function OnboardingCallForm({ form }) {
   const { form: copy } = hero;
+  /* Both depend on the visitor's clock and zone, so they're worked out after
+     mount — on the server they'd differ from the browser and break hydration. */
+  const [minDate, setMinDate] = useState(undefined);
+  const [timeHint, setTimeHint] = useState(null);
+  useEffect(() => setMinDate(todayISODate()), []);
+  useEffect(() => setTimeHint(localCallTime(form.values.preferredDate)), [form.values.preferredDate]);
 
   return (
     <div className="relative w-full overflow-hidden rounded-[30px] bg-surface shadow-[0_24px_60px_rgba(29,29,29,0.12)]">
@@ -117,11 +140,12 @@ function OnboardingCallForm({ form }) {
             label={copy.dateLabel}
             required
             error={getFieldError(form.errors, "preferredDate")}
+            hint={timeHint}
           >
             <Input
               type="date"
               name="preferredDate"
-              min={todayISODate()}
+              min={minDate}
               value={form.values.preferredDate}
               onChange={form.handleChange}
             />
