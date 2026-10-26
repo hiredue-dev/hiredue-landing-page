@@ -1,4 +1,5 @@
 import { assets, marks } from "@/lib/assets";
+import { xProfileUrl } from "@/lib/seo";
 
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
@@ -469,7 +470,8 @@ export const footer = {
     {
       name: "X",
       icon: assets.footer.social[3],
-      href: process.env.NEXT_PUBLIC_TWITTER_URL,
+      // left out (null) when the env value isn't a real X profile URL
+      href: xProfileUrl(),
     },
   ],
 };
