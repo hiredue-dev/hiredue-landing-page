@@ -20,8 +20,13 @@ const spring = { type: "spring", bounce: 0, duration: 0.5 };
  * before the measurements land.
  *
  * Screen readers get every word once, in a hidden span, instead of whichever
- * one happens to be showing when the heading is read.
+ * one happens to be showing when the heading is read. That span is the only
+ * text in the DOM: the visible word, the sizer and the measuring copies paint
+ * theirs with CSS (`content: attr(data-word)`), so crawlers and text
+ * extraction read the headline once instead of the words four times over.
  */
+const WORD = "rotating-word";
+
 export function RotatingWord({ words, interval = 2000, className }) {
   const [index, setIndex] = useState(0);
   const [widths, setWidths] = useState(null);
@@ -59,9 +64,7 @@ export function RotatingWord({ words, interval = 2000, className }) {
         <span className={`invisible col-start-1 row-start-1 inline-block leading-none ${className ?? ""}`}>
           <span className="grid h-[1em]">
             {words.map((w) => (
-              <span key={w} className="col-start-1 row-start-1 whitespace-nowrap">
-                {w}
-              </span>
+              <span key={w} data-word={w} className={`col-start-1 row-start-1 whitespace-nowrap ${WORD}`} />
             ))}
           </span>
         </span>
@@ -83,10 +86,9 @@ export function RotatingWord({ words, interval = 2000, className }) {
                 animate={{ y: "0%", opacity: 1 }}
                 exit={{ y: "-100%", opacity: 0 }}
                 transition={spring}
-                className="absolute top-0 left-0 leading-none whitespace-nowrap"
-              >
-                {words[index]}
-              </motion.span>
+                data-word={words[index]}
+                className={`absolute top-0 left-0 leading-none whitespace-nowrap ${WORD}`}
+              />
             </AnimatePresence>
           </span>
 
@@ -97,10 +99,9 @@ export function RotatingWord({ words, interval = 2000, className }) {
               ref={(el) => {
                 measureRefs.current[i] = el;
               }}
-              className="pointer-events-none invisible absolute top-0 left-0 whitespace-nowrap"
-            >
-              {w}
-            </span>
+              data-word={w}
+              className={`pointer-events-none invisible absolute top-0 left-0 whitespace-nowrap ${WORD}`}
+            />
           ))}
         </span>
       </span>
