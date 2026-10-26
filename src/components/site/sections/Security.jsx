@@ -10,8 +10,9 @@ import { security } from "@/lib/content";
 
 export function Security() {
   const { showModal } = useAuthModal();
+  // change_v 2 : added pb-[120px] md:pb-[200px] for space before Integrations (Use Cases used to provide it)
   return (
-    <section className="relative">
+    <section className="relative pb-[120px] md:pb-[200px]">
       <div className="container-page">
         <div className="flex flex-col items-center gap-[50px] lg:flex-row lg:items-start lg:gap-[70px]">
           <Reveal className="w-full lg:w-[628px] lg:shrink-0">

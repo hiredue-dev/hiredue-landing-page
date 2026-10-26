@@ -4,7 +4,8 @@ import { Features } from "@/components/site/sections/Features";
 import { Overview } from "@/components/site/sections/Overview";
 import { Steps } from "@/components/site/sections/Steps";
 import { Security } from "@/components/site/sections/Security";
-import { UseCases } from "@/components/site/sections/UseCases";
+// change_v 1 : Use Cases section ("Who HireDue is built for") hidden, import commented out
+// import { UseCases } from "@/components/site/sections/UseCases";
 import { Integrations } from "@/components/site/sections/Integrations";
 import { Stats } from "@/components/site/sections/Stats";
 import { Testimonials } from "@/components/site/sections/Testimonials";
@@ -51,7 +52,8 @@ export default async function Home() {
         items={testimonialItems?.length ? testimonialItems : undefined}
       />
       <Security />
-      <UseCases />
+      {/* change_v 1 : Use Cases section ("Who HireDue is built for") hidden */}
+      {/* <UseCases /> */}
       <Integrations />
       <Stats />
       <Pricing initialPlans={plans} />
