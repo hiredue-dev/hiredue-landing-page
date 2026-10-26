@@ -11,10 +11,6 @@ export const hero = {
   secondary: { label: "Join Live Onboarding", href: "/onboarding-call" },
   // under the CTAs, signed-out only: the questions that stop a first click
   reassurance: "Free to install · Mac & Windows · No credit card",
-  proof: [
-    { icon: assets.icons.shield, label: "Your data stays on your device" },
-    { icon: assets.icons.bolt, label: "Be the first one to apply" },
-  ],
 };
 
 export const clients = {

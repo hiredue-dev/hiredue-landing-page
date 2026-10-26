@@ -6,6 +6,7 @@ import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion
 import { ArrowButton, PillButton, SlideButton } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
+import { WithLiveBadge } from "@/components/site/ui/LiveBadge";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
@@ -132,8 +133,9 @@ export function Hero() {
                   )}
                 </div>
                 <div style={appear(0.6)} className="appear">
+                  {/* "Live" gets a broadcast badge: it's a real session, not a video */}
                   <SlideButton
-                    label={hero.secondary.label}
+                    label={<WithLiveBadge label={hero.secondary.label} />}
                     href={hero.secondary.href}
                     tone="white"
                   />
@@ -149,28 +151,6 @@ export function Hero() {
                 </p>
               )}
 
-              <ul
-                style={appear(0.7)}
-                className="appear flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5 max-md:rounded-[16px] max-md:bg-white/80 max-md:px-4 max-md:py-2 max-md:backdrop-blur-sm"
-              >
-                {/* below md these sit on the grass image, not the sky: a soft
-                    white backing keeps them readable */}
-                {hero.proof.map((item, i) => (
-                  <li key={item.label} className="flex items-center gap-x-5">
-                    {i > 0 && <span className="hidden h-[22px] w-px bg-ink sm:block" />}
-                    <span className="flex items-center gap-1.5">
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={19}
-                        height={18}
-                        className="h-[18px] w-auto"
-                      />
-                      <span className="t-body">{item.label}</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
             </div>
 
             {/* product shot */}
