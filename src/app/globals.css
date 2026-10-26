@@ -43,9 +43,7 @@
   --ease-framer: cubic-bezier(0.44, 0, 0.56, 1);
 }
 
-/* Immediate feedback while an uncached route segment is streaming in: a
-   brand bar along the top edge, over the navbar, beside the page skeleton
-   (components/site/ui/Skeleton.jsx). */
+/* A brand bar along the top edge, over the navbar, while PageLoader is up. */
 .route-progress {
   position: fixed;
   inset: 0 auto auto 0;
@@ -713,4 +711,12 @@ html:not([data-splash]) .appear {
   .scroll-on-hover:hover::-webkit-scrollbar-thumb {
     background: var(--color-line);
   }
+}
+
+/* RotatingWord paints its words from data-word so the DOM holds them only
+   once (in its screen-reader span). Plain CSS, not Tailwind's
+   before:content-[attr()]: that routes attr() through a custom property,
+   which Chrome resolves on the pseudo-element itself and gets nothing. */
+.rotating-word::before {
+  content: attr(data-word);
 }

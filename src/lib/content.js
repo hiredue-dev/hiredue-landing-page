@@ -1,4 +1,5 @@
 import { assets, marks } from "@/lib/assets";
+import { xProfileUrl } from "@/lib/seo";
 
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
@@ -469,7 +470,8 @@ export const footer = {
     {
       name: "X",
       icon: assets.footer.social[3],
-      href: process.env.NEXT_PUBLIC_TWITTER_URL,
+      // left out (null) when the env value isn't a real X profile URL
+      href: xProfileUrl(),
     },
   ],
 };
@@ -915,7 +917,7 @@ export const downloadPage = {
   title: "Download HireDue",
   description:
     "Install the desktop app to start automating your job search — it's free, and takes under a minute to set up.",
-  version: "Version 1.0.1",
+  versionLabel: "Version",
   freeNote: "Free to install",
   notice: {
     heading: "Already installed?",

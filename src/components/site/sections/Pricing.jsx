@@ -16,6 +16,7 @@ import useCheckoutPolling from "@/features/subscription/hooks/useCheckoutPolling
 import {
   createCheckout,
   getProducts,
+  sortPlans,
   validateCoupon,
 } from "@/features/subscription/services/subscriptionService";
 import { Busy } from "@/components/site/ui/Spinner";
@@ -126,13 +127,18 @@ function planName(price) {
   return `${count}-${interval} plan`;
 }
 
-export function Pricing() {
+/**
+ * `initialPlans` is the signed-out price list, fetched on the server so the
+ * plans are in the HTML. The browser still reloads the list, since a
+ * signed-in visitor's can differ.
+ */
+export function Pricing({ initialPlans = [] }) {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const { showModal } = useAuthModal();
 
-  const [products, setProducts] = useState([]);
-  const [status, setStatus] = useState("loading");
+  const [products, setProducts] = useState(initialPlans);
+  const [status, setStatus] = useState(initialPlans.length ? "ready" : "loading");
 
   const [checkoutLoadingId, setCheckoutLoadingId] = useState(null);
   const [checkoutError, setCheckoutError] = useState(null);
@@ -163,15 +169,17 @@ export function Pricing() {
       try {
         const response = await getProducts();
         if (!response.success) throw new Error(response.error || "Failed to load plans");
-        const collection = response.data?.collections?.[0];
-        const sorted = [...(collection?.products || [])].sort(
-          (a, b) => (a.priceMinor ?? 0) - (b.priceMinor ?? 0),
-        );
+        const sorted = sortPlans(response.data);
         if (cancelled) return;
-        setProducts(sorted);
-        setStatus(sorted.length ? "ready" : "error");
+        if (sorted.length) {
+          setProducts(sorted);
+          setStatus("ready");
+        } else if (!initialPlans.length) {
+          setStatus("error");
+        }
       } catch {
-        if (!cancelled) setStatus("error");
+        // keep the server's plans on screen if there are any
+        if (!cancelled && !initialPlans.length) setStatus("error");
       }
     })();
     return () => {
@@ -179,6 +187,7 @@ export function Pricing() {
     };
     // Reloaded on sign-in and sign-out: the price list can differ for a
     // signed-in visitor.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- initialPlans is the first render's
   }, [isAuthenticated]);
 
   // A coupon belongs to the price list it was checked against.

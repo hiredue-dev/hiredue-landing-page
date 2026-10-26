@@ -32,6 +32,10 @@ export const PLATFORMS = [
   },
 ];
 
+/** The released build's version, read from the installer file names (HireDue-2.3.0-arm64.dmg), so it can't fall behind the files. Null if no name carries one. */
+export const APP_VERSION =
+  PLATFORMS.map((p) => p.url.match(/(\d+\.\d+\.\d+)/)?.[1]).find(Boolean) ?? null;
+
 export const SETUP = {
   mac: [
     "Open the HireDue .dmg from your Downloads.",

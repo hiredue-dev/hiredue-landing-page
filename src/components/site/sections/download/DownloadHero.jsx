@@ -10,7 +10,7 @@ import { Reveal } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { downloadPage } from "@/lib/content";
-import { detectPlatform, PLATFORMS } from "@/features/jobs/downloads.js";
+import { APP_VERSION, detectPlatform, PLATFORMS } from "@/features/jobs/downloads.js";
 
 /* Build URLs and availability come from the shared list in
    features/jobs/downloads.js; this page only adds how each card looks. */
@@ -73,8 +73,14 @@ export function DownloadHero() {
 
       <Reveal delay={0.1} className="flex flex-col items-center gap-5 self-center">
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <span className="t-body-sm">{downloadPage.version}</span>
-          <span className="size-1 rounded-full bg-dim" />
+          {APP_VERSION && (
+            <>
+              <span className="t-body-sm">
+                {downloadPage.versionLabel} {APP_VERSION}
+              </span>
+              <span className="size-1 rounded-full bg-dim" />
+            </>
+          )}
           <span className="flex items-center gap-1.5 text-[14px] leading-[1.3] font-medium text-dim">
             <Image src={assets.icons.checkGreen} alt="" width={14} height={14} className="size-3.5" />
             {downloadPage.freeNote}
