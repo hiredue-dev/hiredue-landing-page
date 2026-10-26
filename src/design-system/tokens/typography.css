@@ -1,8 +1,0 @@
-@layer legacy {
-  :root {
-    /* the self-hosted Inter Display (next/font, see app/layout.jsx), not a
-       second Inter fetched from Google */
-    --font-heading: var(--font-sans);
-    --font-body: var(--font-sans);
-  }
-}
