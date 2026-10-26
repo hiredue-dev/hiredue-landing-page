@@ -43,9 +43,7 @@
   --ease-framer: cubic-bezier(0.44, 0, 0.56, 1);
 }
 
-/* Immediate feedback while an uncached route segment is streaming in: a
-   brand bar along the top edge, over the navbar, beside the page skeleton
-   (components/site/ui/Skeleton.jsx). */
+/* A brand bar along the top edge, over the navbar, while PageLoader is up. */
 .route-progress {
   position: fixed;
   inset: 0 auto auto 0;
