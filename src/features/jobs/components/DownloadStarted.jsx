@@ -81,7 +81,7 @@ export function DownloadStarted() {
 
   return (
     <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[140px]">
-      <div className="mx-auto w-full max-w-[1100px] px-[20px] sm:px-[30px]">
+      <div className="mx-auto w-full max-w-[1220px] px-[20px] sm:px-[30px]">
         <div className="flex flex-col gap-[50px]">
           <Reveal className="mx-auto flex max-w-[720px] flex-col items-center gap-4 text-center">
             <Eyebrow>{started ? "Download started" : "Download HireDue"}</Eyebrow>

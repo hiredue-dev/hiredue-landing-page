@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { PillButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Avatar } from "@/components/site/ui/Avatar";
 import { Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -40,7 +40,7 @@ export function Testimonials({ items = testimonials.items }) {
               </ul>
             </Reveal>
             <Reveal delay={0.1}>
-              <PillButton onClick={() => showModal({ view: "signup" })}>{testimonials.cta.label}</PillButton>
+              <Button onClick={() => showModal({ view: "signup" })}>{testimonials.cta.label}</Button>
             </Reveal>
           </div>
         </div>

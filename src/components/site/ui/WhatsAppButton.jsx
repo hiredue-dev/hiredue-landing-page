@@ -6,9 +6,9 @@ import { marks } from "@/lib/assets";
 import { WHATSAPP_GREEN, WHATSAPP_NUMBER, whatsappHref } from "@/lib/whatsapp";
 
 /**
- * Pill button that opens a WhatsApp chat in a new tab. Mirrors <SlideButton>
+ * Pill button that opens a WhatsApp chat in a new tab. Mirrors <Button effect="slide">
  * (same sizing, tones, and sliding-text hover) with a WhatsApp glyph pinned
- * to the left, so it drops into any spot a SlideButton would.
+ * to the left, so it drops into any spot a sliding Button would.
  */
 export function WhatsAppButton({
   label = "Chat on WhatsApp",

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { SlideButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
 import { careerPage } from "@/lib/content";
@@ -11,7 +11,7 @@ const { openings, apply } = careerPage;
 export function CareerOpenings({ items = [] }) {
   return (
     <section className="relative pb-[120px] md:pb-[200px]">
-      <div className="mx-auto w-full max-w-[1060px] px-[30px]">
+      <div className="container-wide">
         <div className="flex flex-col items-center gap-[50px]">
           <Reveal className="flex flex-col items-center gap-2.5">
             <Eyebrow>{openings.eyebrow}</Eyebrow>
@@ -31,15 +31,10 @@ export function CareerOpenings({ items = [] }) {
             <div className="flex w-full max-w-[560px] flex-col items-center gap-2 rounded-[20px] bg-surface px-6 py-10 text-center">
               <p className="t-h5">{openings.empty.title}</p>
               <p className="t-body">{openings.empty.description}</p>
-              <a
-                href={apply.cta.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-3 inline-flex min-h-11 items-center rounded-full bg-ink px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90"
-              >
+              <Button variant="ink" size="sm" href={apply.cta.href} className="mt-3">
                 {openings.empty.cta}
                 <span className="sr-only"> (opens in a new tab)</span>
-              </a>
+              </Button>
             </div>
           )}
 
@@ -59,7 +54,7 @@ export function CareerOpenings({ items = [] }) {
                   </a>
                 </p>
               </div>
-              <SlideButton label={apply.cta.label} href={apply.cta.href} tone="ink" />
+              <Button effect="slide" variant="ink" href={apply.cta.href}>{apply.cta.label}</Button>
             </div>
             <Image
               src={assets.pricing.enterprise}

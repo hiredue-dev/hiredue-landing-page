@@ -1,6 +1,6 @@
 "use client";
 
-import { PillButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { EndCta } from "@/components/site/sections/EndCta";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { ambassadorPage } from "@/lib/content";
@@ -15,9 +15,9 @@ export function AmbassadorCta() {
       title={cta.title}
       description={cta.description}
       action={
-        <PillButton tone="dark" onClick={() => showModal({ view: "signup" })}>
+        <Button variant="dark" onClick={() => showModal({ view: "signup" })}>
           {applyLabel}
-        </PillButton>
+        </Button>
       }
     />
   );

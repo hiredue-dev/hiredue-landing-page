@@ -1,5 +1,5 @@
 import { PortableText } from "next-sanity";
-import { Eyebrow } from "@/components/site/ui/Primitives";
+import { PageHero } from "@/components/site/ui/PageHero";
 
 /* Section anchors use the block's Sanity _key: unique and stable, and the
    same value the contents list reads, so the two can't drift apart. */
@@ -31,52 +31,51 @@ const formatDate = (iso) =>
 export function LegalPage({ eyebrow, title, effectiveDate, lastUpdated, body }) {
   const sections = (body ?? []).filter((block) => block._type === "block" && block.style === "h2" && block._key);
 
+  const dates = (effectiveDate || lastUpdated) && (
+    <p className="t-body-sm">
+      {effectiveDate && `Effective ${formatDate(effectiveDate)}`}
+      {effectiveDate && lastUpdated && " · "}
+      {lastUpdated && `Last updated ${formatDate(lastUpdated)}`}
+    </p>
+  );
+
   return (
-    <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
-      <div className="mx-auto w-full max-w-[760px] px-[30px]">
-        <div className="flex flex-col items-center gap-2.5 text-center">
-          <Eyebrow>{eyebrow}</Eyebrow>
-          <h1 className="t-h2 text-center">{title}</h1>
-          {(effectiveDate || lastUpdated) && (
-            <p className="t-body-sm">
-              {effectiveDate && `Effective ${formatDate(effectiveDate)}`}
-              {effectiveDate && lastUpdated && " · "}
-              {lastUpdated && `Last updated ${formatDate(lastUpdated)}`}
-            </p>
-          )}
-        </div>
+    <PageHero
+      eyebrow={eyebrow}
+      title={title}
+      description={dates}
+      className="pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]"
+    >
+      {/* these run to fifteen-odd sections: give readers a way to jump */}
+      {sections.length >= 3 && (
+        <nav aria-label="On this page" className="rounded-[20px] bg-surface p-6 sm:p-8">
+          <p className="text-[14px] leading-[1.3] font-semibold text-ink">On this page</p>
+          <ol className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
+            {sections.map((block) => (
+              <li key={block._key}>
+                <a
+                  href={`#${sectionId(block)}`}
+                  className="text-[15px] leading-[1.4] font-medium text-dim transition-colors duration-200 hover:text-ink"
+                >
+                  {blockText(block)}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+      )}
 
-        {/* these run to fifteen-odd sections: give readers a way to jump */}
-        {sections.length >= 3 && (
-          <nav aria-label="On this page" className="mt-[50px] rounded-[20px] bg-surface p-6 sm:p-8">
-            <p className="text-[14px] leading-[1.3] font-semibold text-ink">On this page</p>
-            <ol className="mt-3 grid gap-x-8 gap-y-1.5 sm:grid-cols-2">
-              {sections.map((block) => (
-                <li key={block._key}>
-                  <a
-                    href={`#${sectionId(block)}`}
-                    className="text-[15px] leading-[1.4] font-medium text-dim transition-colors duration-200 hover:text-ink"
-                  >
-                    {blockText(block)}
-                  </a>
-                </li>
-              ))}
-            </ol>
-          </nav>
-        )}
-
-        <div className="legal-body mt-[50px] border-t border-line pt-[50px]">
-          <PortableText value={body} components={components} />
-        </div>
-
-        {sections.length >= 3 && (
-          <p className="mt-[50px] text-center">
-            <a href="#main" className="text-[15px] font-semibold text-brand hover:underline">
-              Back to top ↑
-            </a>
-          </p>
-        )}
+      <div className="legal-body border-t border-line pt-[50px]">
+        <PortableText value={body} components={components} />
       </div>
-    </section>
+
+      {sections.length >= 3 && (
+        <p className="text-center">
+          <a href="#main" className="text-[15px] font-semibold text-brand hover:underline">
+            Back to top ↑
+          </a>
+        </p>
+      )}
+    </PageHero>
   );
 }

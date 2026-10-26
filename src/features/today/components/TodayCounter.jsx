@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import clsx from "clsx";
 import { Reveal } from "@/components/site/ui/Primitives";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { useCountUp } from "@/components/site/sections/ambassador/use-count-up";
 import { inView, spring } from "@/lib/motion";
 import {
@@ -138,7 +138,7 @@ export function TodayCounter({ initial }) {
               automatic &ldquo;we received your application&rdquo; emails.
             </p>
           </div>
-          <ArrowButton label="Get HireDue" href="/download" />
+          <Button effect="arrow" ring href="/download">Get HireDue</Button>
         </Reveal>
       </div>
     </section>

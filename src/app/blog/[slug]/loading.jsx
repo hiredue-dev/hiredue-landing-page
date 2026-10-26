@@ -3,7 +3,7 @@ import { Bone, HeroBones, SkeletonPage, TextBones } from "@/components/site/ui/S
 export default function Loading() {
   return (
     <SkeletonPage label="Loading article" className="pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]">
-      <div className="mx-auto w-full max-w-[860px] px-[30px] pt-[128px] pb-[50px] min-[810px]:pt-[158px] min-[1200px]:pt-[194px]">
+      <div className="container-narrow pt-[140px] pb-[50px] min-[810px]:pt-[170px] min-[1200px]:pt-[194px]">
         <div className="flex flex-col items-center gap-4">
           <div className="flex items-center gap-2.5">
             <Bone className="h-7 w-24 rounded-full" />

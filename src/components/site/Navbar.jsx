@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { nav } from "@/lib/navigation-content";
-import { PillButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { spring } from "@/lib/motion";
 
 const sectionIds = ["features", "how-it-works", "pricing"];
@@ -279,9 +279,9 @@ export function Navbar() {
                   >
                     {nav.login.label}
                   </button>
-                  <PillButton size="sm" onClick={() => showModal({ view: "signup" })}>
+                  <Button size="sm" onClick={() => showModal({ view: "signup" })}>
                     {nav.cta.label}
-                  </PillButton>
+                  </Button>
                 </div>
               )}
             </div>
@@ -373,7 +373,7 @@ export function Navbar() {
                     >
                       {nav.login.label}
                     </button>
-                    <PillButton
+                    <Button
                       size="sm"
                       className="w-full"
                       onClick={() => {
@@ -382,7 +382,7 @@ export function Navbar() {
                       }}
                     >
                       {nav.cta.label}
-                    </PillButton>
+                    </Button>
                   </div>
                 )}
               </motion.nav>

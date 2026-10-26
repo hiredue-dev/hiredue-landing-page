@@ -1,7 +1,8 @@
 "use client";
 
 import { PortableText } from "next-sanity";
-import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { PageHero } from "@/components/site/ui/PageHero";
+import { Reveal } from "@/components/site/ui/Primitives";
 import { aboutPage } from "@/lib/content";
 
 const components = {
@@ -70,21 +71,10 @@ export function AboutStory({
   body,
 }) {
   return (
-    <section className="relative pt-[140px] pb-[60px] min-[810px]:pt-[170px] min-[810px]:pb-[100px] min-[1200px]:pt-[194px]">
-      <div className="mx-auto w-full max-w-[760px] px-[30px]">
-        <Reveal className="flex flex-col items-center gap-2.5 text-center">
-          <Eyebrow>{eyebrow}</Eyebrow>
-          <h1 className="t-h2 text-center">{title}</h1>
-        </Reveal>
-
-        <Reveal y={30} delay={0.1} className="mt-10 flex flex-col gap-6">
-          {body ? (
-            <PortableText value={body} components={components} />
-          ) : (
-            <FallbackManifesto />
-          )}
-        </Reveal>
-      </div>
-    </section>
+    <PageHero eyebrow={eyebrow} title={title} className="pb-[60px] min-[810px]:pb-[100px]">
+      <Reveal y={30} delay={0.1} className="flex flex-col gap-6">
+        {body ? <PortableText value={body} components={components} /> : <FallbackManifesto />}
+      </Reveal>
+    </PageHero>
   );
 }

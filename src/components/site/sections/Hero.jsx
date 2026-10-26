@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
-import { ArrowButton, PillButton, SlideButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
 import { WithLiveBadge } from "@/components/site/ui/LiveBadge";
@@ -125,20 +125,16 @@ export function Hero() {
                 <div style={appear(0.5)} className="appear">
                   {/* signed in, sign-up is moot — the next step is the app */}
                   {isAuthenticated ? (
-                    <ArrowButton label={hero.signedIn.label} href={hero.signedIn.href} />
+                    <Button effect="arrow" ring href={hero.signedIn.href}>{hero.signedIn.label}</Button>
                   ) : (
-                    <PillButton ring onClick={() => showModal({ view: "signup" })}>
+                    <Button ring onClick={() => showModal({ view: "signup" })}>
                       {hero.primary.label}
-                    </PillButton>
+                    </Button>
                   )}
                 </div>
                 <div style={appear(0.6)} className="appear">
                   {/* "Live" gets a broadcast badge: it's a real session, not a video */}
-                  <SlideButton
-                    label={<WithLiveBadge label={hero.secondary.label} />}
-                    href={hero.secondary.href}
-                    tone="white"
-                  />
+                  <Button effect="slide" variant="white" href={hero.secondary.href}><WithLiveBadge label={hero.secondary.label} /></Button>
                 </div>
               </div>
 

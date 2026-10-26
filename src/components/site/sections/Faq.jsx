@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import clsx from "clsx";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { FaqAccordion } from "@/components/site/ui/FaqAccordion";
 import { Reveal } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
@@ -46,7 +46,7 @@ export function Faq({ items = faq.items }) {
                   <h3 className="t-h5">{faq.aside.title}</h3>
                   <p className="t-body">{faq.aside.description}</p>
                 </div>
-                <ArrowButton label={faq.aside.cta.label} href={faq.aside.cta.href} tone="dark" />
+                <Button effect="arrow" ring variant="dark" href={faq.aside.cta.href}>{faq.aside.cta.label}</Button>
               </div>
             </div>
           </Reveal>

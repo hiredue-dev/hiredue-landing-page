@@ -1,8 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import clsx from "clsx";
-import { PillButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Reveal } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
@@ -42,16 +41,13 @@ export function EndCta({ title = endCta.title, description = endCta.description,
             {/* dark, not the usual blue: it sits on a blue slab */}
             {action ??
               (isAuthenticated ? (
-                <Link
-                  href={endCta.signedIn.href}
-                  className="inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-[30px] py-3 text-[18px] leading-[1.3] font-semibold whitespace-nowrap text-white transition-opacity hover:opacity-90"
-                >
+                <Button variant="dark" href={endCta.signedIn.href}>
                   {endCta.signedIn.label}
-                </Link>
+                </Button>
               ) : (
-                <PillButton tone="dark" onClick={() => showModal({ view: "signup" })}>
+                <Button variant="dark" onClick={() => showModal({ view: "signup" })}>
                   {endCta.label}
-                </PillButton>
+                </Button>
               ))}
           </div>
         </Reveal>

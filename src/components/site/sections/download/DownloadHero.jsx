@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { PageHero } from "@/components/site/ui/PageHero";
+import { Reveal } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { downloadPage } from "@/lib/content";
@@ -57,57 +58,53 @@ export function DownloadHero() {
   const [recommended, setRecommended] = useState(null);
   useEffect(() => setRecommended(detectPlatform()), []);
   return (
-    <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
-      <div className="mx-auto w-full max-w-[1100px] px-[30px]">
-        <div className="flex flex-col items-center gap-[50px]">
-          <Reveal className="flex flex-col items-center gap-2.5">
-            <Eyebrow>{downloadPage.eyebrow}</Eyebrow>
-            <h1 className="t-h2 text-center">{downloadPage.title}</h1>
-            <p className="t-body-lg max-w-[520px] text-center">{downloadPage.description}</p>
-          </Reveal>
+    <PageHero
+      eyebrow={downloadPage.eyebrow}
+      title={downloadPage.title}
+      description={downloadPage.description}
+      width="wide"
+      className="pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]"
+    >
+      <Reveal y={30} className="grid w-full gap-5 md:grid-cols-3">
+        {platforms.map((platform) => (
+          <PlatformCard key={platform.key} platform={platform} recommended={platform.key === recommended} />
+        ))}
+      </Reveal>
 
-          <Reveal y={30} className="grid w-full gap-5 md:grid-cols-3">
-            {platforms.map((platform) => (
-              <PlatformCard key={platform.key} platform={platform} recommended={platform.key === recommended} />
-            ))}
-          </Reveal>
-
-          <Reveal delay={0.1} className="flex flex-col items-center gap-5">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <span className="t-body-sm">{downloadPage.version}</span>
-              <span className="size-1 rounded-full bg-dim" />
-              <span className="flex items-center gap-1.5 text-[14px] leading-[1.3] font-medium text-dim">
-                <Image src={assets.icons.checkGreen} alt="" width={14} height={14} className="size-3.5" />
-                {downloadPage.freeNote}
-              </span>
-            </div>
-
-            <div className="max-w-[620px] rounded-[20px] bg-surface px-6 py-5 text-center">
-              <p className="t-body">
-                <strong className="font-semibold text-ink">{downloadPage.notice.heading}</strong>{" "}
-                {downloadPage.notice.body} Need an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signup" })}
-                  className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
-                >
-                  {downloadPage.notice.cta.label}
-                </button>{" "}
-                or{" "}
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signin" })}
-                  className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
-                >
-                  {downloadPage.notice.altCta.label}
-                </button>
-                .
-              </p>
-            </div>
-          </Reveal>
+      <Reveal delay={0.1} className="flex flex-col items-center gap-5 self-center">
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <span className="t-body-sm">{downloadPage.version}</span>
+          <span className="size-1 rounded-full bg-dim" />
+          <span className="flex items-center gap-1.5 text-[14px] leading-[1.3] font-medium text-dim">
+            <Image src={assets.icons.checkGreen} alt="" width={14} height={14} className="size-3.5" />
+            {downloadPage.freeNote}
+          </span>
         </div>
-      </div>
-    </section>
+
+        <div className="max-w-[620px] rounded-[20px] bg-surface px-6 py-5 text-center">
+          <p className="t-body">
+            <strong className="font-semibold text-ink">{downloadPage.notice.heading}</strong>{" "}
+            {downloadPage.notice.body} Need an account?{" "}
+            <button
+              type="button"
+              onClick={() => showModal({ view: "signup" })}
+              className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
+            >
+              {downloadPage.notice.cta.label}
+            </button>{" "}
+            or{" "}
+            <button
+              type="button"
+              onClick={() => showModal({ view: "signin" })}
+              className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
+            >
+              {downloadPage.notice.altCta.label}
+            </button>
+            .
+          </p>
+        </div>
+      </Reveal>
+    </PageHero>
   );
 }
 

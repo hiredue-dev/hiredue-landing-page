@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
-import { PillButton, SlideButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import {
   Reveal,
   RevealGroup,
@@ -49,14 +49,10 @@ export function Footer() {
               <p className="t-body-lg text-center">{cta.description}</p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-5">
-              <PillButton ring onClick={() => showModal({ view: "signup" })}>
+              <Button ring onClick={() => showModal({ view: "signup" })}>
                 {cta.primary.label}
-              </PillButton>
-              <SlideButton
-                label={cta.secondary.label}
-                href={to(cta.secondary.href)}
-                tone="white"
-              />
+              </Button>
+              <Button effect="slide" variant="white" href={to(cta.secondary.href)}>{cta.secondary.label}</Button>
             </div>
           </Reveal>
           )}
@@ -75,12 +71,7 @@ export function Footer() {
                       {footer.brand}
                     </p>
                   </div>
-                  <SlideButton
-                    label={footer.email}
-                    href={`mailto:${footer.email}`}
-                    tone="ink"
-                    className="self-start"
-                  />
+                  <Button effect="slide" variant="ink" href={`mailto:${footer.email}`} className="self-start">{footer.email}</Button>
                 </div>
 
                 <RevealGroup

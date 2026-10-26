@@ -43,7 +43,7 @@ export function FeatureSteps() {
         <div className="flex flex-col items-center gap-[30px] min-[810px]:gap-10 min-[1200px]:gap-[50px]">
           <Reveal className="flex max-w-[800px] flex-col items-center gap-2.5">
             <Eyebrow>{steps.eyebrow}</Eyebrow>
-            <h2 className="t-h2-feature text-center">{steps.title}</h2>
+            <h2 className="t-h2 text-center">{steps.title}</h2>
             <p className="t-body-lg text-center">{steps.description}</p>
           </Reveal>
 

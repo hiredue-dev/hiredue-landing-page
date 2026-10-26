@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
 import { features } from "@/lib/content";
@@ -28,7 +28,7 @@ export function Features() {
             </Reveal>
             <Reveal delay={0.1} className="flex flex-1 flex-col items-start gap-5 lg:items-end">
               <p className="t-body-lg lg:text-right">{features.description}</p>
-              <ArrowButton label={features.cta.label} href={features.cta.href} tone="dark" />
+              <Button effect="arrow" ring variant="dark" href={features.cta.href}>{features.cta.label}</Button>
             </Reveal>
           </div>
 

@@ -23,7 +23,7 @@ export function ChangelogTimeline({ entries = [] }) {
 
   return (
     <section className="relative pb-[120px] min-[1200px]:pb-[200px]">
-      <div className="mx-auto flex w-full max-w-[1220px] flex-col gap-[7px] px-[30px]">
+      <div className="container-wide flex flex-col gap-[7px]">
         {entries.map((entry) => (
           <div key={`${entry.version}-${entry.date}`} className="md:sticky md:top-[150px]">
             <article className="grid gap-[15px] rounded-[15px] border border-dashed border-line bg-white md:grid-cols-2">

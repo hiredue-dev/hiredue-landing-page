@@ -3,10 +3,10 @@ import { Bone, HERO_TOP, HeroBones, SkeletonPage, TextBones } from "@/components
 export default function Loading() {
   return (
     <SkeletonPage label="Loading product updates" className={`${HERO_TOP} pb-[120px] min-[1200px]:pb-[200px]`}>
-      <div className="mx-auto w-full max-w-[720px] px-[30px] pb-[60px] min-[1200px]:pb-20">
+      <div className="container-narrow pb-[60px] min-[1200px]:pb-20">
         <HeroBones />
       </div>
-      <div className="mx-auto flex w-full max-w-[1220px] flex-col gap-[7px] px-[30px]">
+      <div className="container-wide flex flex-col gap-[7px]">
         {[0, 1, 2].map((i) => (
           <div key={i} className="grid gap-[15px] rounded-[15px] border border-dashed border-line bg-white md:grid-cols-2">
             <div className="p-[25px] pb-0 md:pb-[25px]">

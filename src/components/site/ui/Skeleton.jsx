@@ -70,5 +70,4 @@ export function CardBones() {
   );
 }
 
-/** Top-of-page padding shared by the inner pages' heroes. */
-export const HERO_TOP = "pt-[140px] min-[810px]:pt-[170px] min-[1200px]:pt-[194px]";
+export { HERO_TOP } from "@/lib/layout";

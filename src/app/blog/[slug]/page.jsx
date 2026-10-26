@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }) {
             {formatDate(post.date)}
           </time>
         </div>
-        <h1 className="t-h2-feature text-center">{post.title}</h1>
+        <h1 className="t-page-title text-center">{post.title}</h1>
         <p className="t-body-lg text-center">{post.description}</p>
         {post.author && <PostAuthor author={post.author} />}
       </BlogHero>
@@ -132,7 +132,7 @@ export default async function BlogPostPage({ params }) {
       <section className="relative flex flex-col items-center pb-[30px] min-[810px]:pb-20 min-[1200px]:pb-[100px]">
         <div className="container-page flex flex-col gap-10 min-[1200px]:gap-[50px]">
           <Reveal>
-            <h2 className="t-h2-feature">{blog.otherArticles}</h2>
+            <h2 className="t-h2">{blog.otherArticles}</h2>
           </Reveal>
 
           {/* at the tablet tier the template lets the third card run the

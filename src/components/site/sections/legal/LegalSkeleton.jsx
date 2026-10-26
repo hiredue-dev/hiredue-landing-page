@@ -4,7 +4,7 @@ import { Bone, HERO_TOP, HeroBones, SkeletonPage, TextBones } from "@/components
 export function LegalSkeleton({ contents = true }) {
   return (
     <SkeletonPage className={`${HERO_TOP} pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]`}>
-      <div className="mx-auto w-full max-w-[760px] px-[30px]">
+      <div className="container-narrow">
         <HeroBones lede={false} />
         {contents && <Bone className="mt-[50px] h-[180px] rounded-[20px]" />}
         <div className="mt-[50px] flex flex-col gap-10 border-t border-line pt-[50px]">

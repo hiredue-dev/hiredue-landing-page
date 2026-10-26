@@ -2,11 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Image from "next/image";
-import { Eyebrow } from "@/components/site/ui/Primitives";
+import { SplitHero } from "@/components/site/ui/PageHero";
 import { FormCard, FormInput } from "@/components/site/ui/FormField";
 import { assets } from "@/lib/assets";
 import { onboardingCallPage } from "@/lib/content";
-import { appear } from "@/lib/motion";
 import useOnboardingCallForm from "@/features/onboarding-call/hooks/useOnboardingCallForm";
 
 const { hero } = onboardingCallPage;
@@ -38,43 +37,22 @@ export function OnboardingCallHero() {
   const form = useOnboardingCallForm();
 
   return (
-    <section className="relative isolate flex flex-col overflow-hidden bg-white pt-[128px] pb-[100px] min-[810px]:pt-[158px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
-      <div className="container-page relative z-[2]">
-        <div className="grid gap-[60px] min-[1200px]:grid-cols-[1fr_520px] min-[1200px]:items-start min-[1200px]:gap-[50px]">
-          <div
-            style={appear(0.1)}
-            className="appear flex flex-col items-start gap-5 min-[1200px]:gap-8 min-[1200px]:pt-2.5"
-          >
-            <div className="flex flex-col items-start gap-2.5">
-              <Eyebrow>{hero.eyebrow}</Eyebrow>
-              <h1 className="t-h1-ambassador whitespace-pre-line">{hero.title}</h1>
-              <p className="max-w-[520px] text-[18px] leading-[1.3] font-medium text-dim min-[810px]:text-[20px]">
-                {hero.description}
-              </p>
-            </div>
-
-            <ul className="flex flex-col gap-2.5">
-              {hero.points.map((point) => (
-                <li key={point} className="flex items-start gap-1.5">
-                  <Image
-                    src={assets.icons.chevronBlue}
-                    alt=""
-                    width={7}
-                    height={10}
-                    className="mt-[7px] w-[7px] shrink-0"
-                  />
-                  <span className="text-[16px] leading-[1.3] font-medium text-ink">{point}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div style={appear(0.25)} className="appear">
-            <OnboardingCallForm form={form} />
-          </div>
-        </div>
-      </div>
-    </section>
+    <SplitHero
+      eyebrow={hero.eyebrow}
+      title={hero.title}
+      titleClassName="whitespace-pre-line"
+      description={hero.description}
+      aside={<OnboardingCallForm form={form} />}
+    >
+      <ul className="flex flex-col gap-2.5">
+        {hero.points.map((point) => (
+          <li key={point} className="flex items-start gap-1.5">
+            <Image src={assets.icons.chevronBlue} alt="" width={7} height={10} className="mt-[7px] w-[7px] shrink-0" />
+            <span className="text-[16px] leading-[1.3] font-medium text-ink">{point}</span>
+          </li>
+        ))}
+      </ul>
+    </SplitHero>
   );
 }
 

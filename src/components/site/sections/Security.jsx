@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { PillButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { SecurityDiagram } from "@/components/site/sections/security-diagram";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -26,7 +26,7 @@ export function Security() {
               <h2 className="t-h2">{security.title}</h2>
               <p className="t-body-lg">{security.description}</p>
               <div className="pt-2.5">
-                <PillButton onClick={() => showModal({ view: "signup" })}>{security.cta.label}</PillButton>
+                <Button onClick={() => showModal({ view: "signup" })}>{security.cta.label}</Button>
               </div>
             </div>
 

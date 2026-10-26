@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
-import { SlideButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -269,7 +269,7 @@ export function Pricing() {
 
   return (
     <section id="pricing" className="relative pb-[120px] md:pb-[200px]">
-      <div className="mx-auto w-full max-w-[1060px] px-[30px]">
+      <div className="container-wide">
         <div className="flex flex-col items-center gap-[50px]">
           <Reveal className="flex flex-col items-center gap-2.5">
             <Eyebrow>{pricing.eyebrow}</Eyebrow>
@@ -373,11 +373,7 @@ export function Pricing() {
                   <h3 className="t-h5">{pricing.enterprise.title}</h3>
                   <p className="t-body-lg max-w-[406px]">{pricing.enterprise.description}</p>
                 </div>
-                <SlideButton
-                  label={pricing.enterprise.cta.label}
-                  href={pricing.enterprise.cta.href}
-                  tone="ink"
-                />
+                <Button effect="slide" variant="ink" href={pricing.enterprise.cta.href}>{pricing.enterprise.cta.label}</Button>
               </div>
               <Image
                 src={assets.pricing.enterprise}
