@@ -8,6 +8,7 @@ import { contactPage } from "@/lib/content";
 import { appear } from "@/lib/motion";
 import useContactForm from "@/features/contact/hooks/useContactForm";
 import getFieldError from "@/utils/getFieldError";
+import { Busy } from "@/components/site/ui/Spinner";
 
 const { hero } = contactPage;
 
@@ -137,7 +138,7 @@ function ContactForm({ form }) {
           disabled={form.status === "submitting"}
           className="inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-4 text-[16px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:opacity-60 sm:w-auto"
         >
-          {form.status === "submitting" ? copy.submittingLabel : copy.submitLabel}
+          <Busy busy={form.status === "submitting"} label={copy.submittingLabel}>{copy.submitLabel}</Busy>
         </button>
 
         <FormStatus status={form.status} message={form.message} />

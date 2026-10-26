@@ -10,6 +10,7 @@ import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { cancelSubscription, getPortalLink } from "@/features/subscription/services/subscriptionService.js";
 import { assets } from "@/lib/assets";
+import { Busy } from "@/components/site/ui/Spinner";
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : null;
@@ -254,7 +255,7 @@ export default function AccountPage() {
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <Pill tone="white" onClick={handleCancel} disabled={cancelling}>
-                    {cancelling ? "Cancelling…" : "Yes, cancel subscription"}
+                    <Busy busy={cancelling} label="Cancelling…">Yes, cancel subscription</Busy>
                   </Pill>
                   <Pill tone="ghost" onClick={() => setConfirmingCancel(false)} disabled={cancelling}>
                     Keep subscription
@@ -283,7 +284,7 @@ export default function AccountPage() {
                   </Pill>
                 ) : isPaid ? (
                   <Pill tone="white" onClick={handlePortal} disabled={portalLoading}>
-                    {portalLoading ? "Opening portal…" : "Manage subscription"}
+                    <Busy busy={portalLoading} label="Opening portal…">Manage subscription</Busy>
                   </Pill>
                 ) : isTrialPending ? (
                   <>

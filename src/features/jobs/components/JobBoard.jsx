@@ -33,6 +33,7 @@ import { SourceCircles } from "./Sources.jsx";
 import { LockedPostCard, PostCard, UnlockPostsPanel } from "./PostCard.jsx";
 import { SearchBar } from "./SearchBar.jsx";
 import { Dialog, primaryButton, secondaryButton } from "./ui.jsx";
+import { Busy } from "@/components/site/ui/Spinner";
 
 // Fixed navbar height plus breathing room: where scrolled-to content should land.
 const NAV_OFFSET = 100;
@@ -480,11 +481,9 @@ export function JobBoard() {
                       disabled={board.status === "loadingMore"}
                       className={clsx(secondaryButton, "h-12 px-8")}
                     >
-                      {board.status === "loadingMore"
-                        ? "Loading…"
-                        : board.status === "error"
-                          ? "Try again"
-                          : `Load more ${noun}s`}
+                      <Busy busy={board.status === "loadingMore"} label="Loading…">
+                        {board.status === "error" ? "Try again" : `Load more ${noun}s`}
+                      </Busy>
                     </button>
                   </div>
                 )}

@@ -16,6 +16,7 @@ import {
 import { friendlyAuthError } from "@/features/auth/errorMessages.js";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
 import useDialogFocus from "@/hooks/useDialogFocus.js";
+import { Busy } from "@/components/site/ui/Spinner";
 
 const AuthModalContext = createContext(null);
 
@@ -356,7 +357,7 @@ function SigninView({ onClose, onSwitch, onForgot, redirectTo, router }) {
         )}
 
         <button type="submit" disabled={loading} className={btnPrimary}>
-          {loading ? "Signing in…" : "Sign in"}
+          <Busy busy={loading} label="Signing in…">Sign in</Busy>
         </button>
       </form>
 
@@ -621,7 +622,7 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
             )}
 
             <button type="submit" disabled={loading} className={btnPrimary}>
-              {loading ? "Creating account…" : "Create account"}
+              <Busy busy={loading} label="Creating account…">Create account</Busy>
             </button>
           </form>
         </>
@@ -656,7 +657,7 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
             disabled={loading || otp.length < 6}
             className={btnPrimary}
           >
-            {loading ? "Verifying…" : "Verify and continue"}
+            <Busy busy={loading} label="Verifying…">Verify and continue</Busy>
           </button>
 
           <div className="flex items-center justify-between text-[14px]">
@@ -792,7 +793,7 @@ function ForgotView({ onBack }) {
           )}
 
           <button type="submit" disabled={loading} className={btnPrimary}>
-            {loading ? "Sending code…" : "Send code"}
+            <Busy busy={loading} label="Sending code…">Send code</Busy>
           </button>
         </form>
       ) : (
@@ -845,7 +846,7 @@ function ForgotView({ onBack }) {
           )}
 
           <button type="submit" disabled={loading} className={btnPrimary}>
-            {loading ? "Resetting…" : "Reset password"}
+            <Busy busy={loading} label="Resetting…">Reset password</Busy>
           </button>
         </form>
       )}

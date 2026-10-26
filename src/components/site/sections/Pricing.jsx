@@ -18,6 +18,7 @@ import {
   getProducts,
   validateCoupon,
 } from "@/features/subscription/services/subscriptionService";
+import { Busy } from "@/components/site/ui/Spinner";
 
 const CURRENCY_SYMBOLS = { INR: "₹", USD: "$", EUR: "€", GBP: "£" };
 
@@ -459,7 +460,7 @@ function CouponBox({ code, onCodeChange, applied, error, applying, disabled, onA
           disabled={!code.trim() || applying || disabled}
           className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {applying ? "Checking…" : "Apply"}
+          <Busy busy={applying} label="Checking…">Apply</Busy>
         </button>
       </form>
       {error && (
@@ -561,7 +562,7 @@ function PlanCard({ product, coupon, featured, onSelect, loading, disabled }) {
           featured ? "bg-white text-ink" : "bg-ink text-white",
         )}
       >
-        {loading ? "Processing…" : pricing.ctaLabel}
+        <Busy busy={loading} label="Processing…">{pricing.ctaLabel}</Busy>
       </button>
 
       <ul className="flex flex-col gap-2.5">
@@ -637,7 +638,7 @@ function StatusBanner({ variant, message, onVerify, verifying, onDismiss, verify
             disabled={verifying}
             className="rounded-full bg-ink px-4 py-2 text-[14px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:opacity-60"
           >
-            {verifying ? "Checking…" : verifyLabel}
+            <Busy busy={verifying} label="Checking…">{verifyLabel}</Busy>
           </button>
         )}
         {onDismiss && (
