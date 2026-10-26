@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { BriefcaseBusiness, FileText, RefreshCw } from "lucide-react";
 import clsx from "clsx";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { PageLoader } from "@/components/site/ui/PageLoader";
 import { primaryButton } from "@/features/jobs/components/ui.jsx";
 import { getJob } from "@/features/jobs/services/jobBoardService.js";
 import { atsChecker } from "@/lib/content";
@@ -42,6 +43,9 @@ export function AtsChecker() {
   );
 
   return (
+    <>
+    {/* nothing to fetch up front: it lifts once the checker has hydrated */}
+    <PageLoader ready label="Opening the ATS checker…" />
     <section id="checker" className="relative scroll-mt-24 pt-[140px] pb-[100px] min-[810px]:pt-[170px] md:pb-[130px] min-[1200px]:pt-[194px]">
       <div className="container-page">
         <div className="flex flex-col gap-[50px]">
@@ -93,6 +97,7 @@ export function AtsChecker() {
         <JobPrefillWatcher onJob={prefillJob} />
       </Suspense>
     </section>
+    </>
   );
 }
 

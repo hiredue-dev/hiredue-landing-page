@@ -118,7 +118,7 @@ export default function RootLayout({ children }) {
             blank, so show them as they'd end up. */}
         <script dangerouslySetInnerHTML={{ __html: SPLASH_SCRIPT }} />
         <noscript>
-          <style>{`[style*="opacity:0.001"]{opacity:1!important;transform:none!important}.site-splash{display:none}.appear{animation-play-state:running!important}`}</style>
+          <style>{`[style*="opacity:0.001"]{opacity:1!important;transform:none!important}.site-splash,.page-loader{display:none}.appear{animation-play-state:running!important}`}</style>
         </noscript>
       </head>
       <body className="antialiased">

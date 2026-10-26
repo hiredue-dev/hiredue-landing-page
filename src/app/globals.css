@@ -198,6 +198,35 @@ html:not([data-splash]) .appear {
   animation-play-state: paused;
 }
 
+/* In-site page loader (PageLoader.jsx): the splash's look for /jobs and
+   /ats-checker, under the navbar so the site's chrome stays usable. The
+   delayed fade is a fallback for when the JS that lifts it never runs. */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  animation: splash-out 0.35s ease 6s forwards;
+}
+
+.page-loader--route {
+  animation: none;
+}
+
+.page-loader--gone {
+  animation: splash-out 0.35s ease forwards;
+  pointer-events: none;
+}
+
+.page-loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
 @keyframes splash-in {
   from {
     opacity: 0;

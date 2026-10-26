@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Linkedin, Loader2, SearchX, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
+import { BrandLoader, PageLoader } from "@/components/site/ui/PageLoader";
 import { useJobBoard } from "../hooks/useJobBoard.js";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
@@ -295,6 +296,7 @@ export function JobBoard() {
 
   return (
     <JobDialogsContext.Provider value={dialogs}>
+    <PageLoader ready={board.status !== "loading"} label="Finding fresh jobs…" />
     <section className="relative pt-[104px] pb-[120px] min-[810px]:pt-[116px] min-[1200px]:pb-[160px]">
       <div className="mx-auto w-full max-w-[1380px] px-[20px] sm:px-[30px]">
         <JobsHero facets={facets} />
@@ -620,6 +622,10 @@ function EmptyState({ title, body, action }) {
 export function JobBoardFallback() {
   return (
     <section className="relative pt-[104px] pb-[120px] min-[810px]:pt-[116px]">
+      {/* the board's own PageLoader takes over, looking the same, once it mounts */}
+      <div className="page-loader" aria-hidden>
+        <BrandLoader label="Finding fresh jobs…" />
+      </div>
       <div className="mx-auto w-full max-w-[1380px] px-[20px] sm:px-[30px]">
         {/* The real header (with the page's h1) is in the static HTML. */}
         <JobsHero facets={null} />
