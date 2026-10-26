@@ -142,6 +142,92 @@
   }
 }
 
+/* First-visit splash (SiteSplash in app/layout.jsx). It paints with the
+   server HTML, so it covers the page from the first frame, before any JS.
+   An inline script marks <html data-splash="done"> once the page has loaded
+   (or straight away on later visits in the same tab session) and it fades
+   out; if that script never runs, the animation below removes it anyway. */
+.site-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  animation: splash-out 0.45s ease 3s forwards;
+}
+
+.site-splash__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  animation: splash-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-splash__bar {
+  position: relative;
+  width: 132px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+
+.site-splash__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--color-brand);
+  animation: splash-bar 1s ease-in-out infinite;
+}
+
+html[data-splash="done"] .site-splash {
+  animation: splash-out 0.45s ease forwards;
+}
+
+/* already seen this session: gone before the first frame, no fade */
+html[data-splash="skip"] .site-splash {
+  display: none;
+}
+
+/* the hero's load-in waits for the splash, so it plays where people see it */
+html:not([data-splash]) .appear {
+  animation-play-state: paused;
+}
+
+@keyframes splash-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes splash-bar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-splash__inner,
+  .site-splash__bar::after {
+    animation: none;
+  }
+}
+
 /* ------------------------------------------------------------------ */
 /*  Base                                                                */
 /* ------------------------------------------------------------------ */

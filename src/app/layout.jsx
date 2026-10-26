@@ -7,6 +7,7 @@ import { Navbar } from "@/components/site/Navbar";
 import { Footer } from "@/components/site/sections/Footer";
 import { MicrosoftClarity } from "@/components/site/analytics/MicrosoftClarity";
 import { JsonLd } from "@/components/site/seo/JsonLd";
+import { SiteSplash, SPLASH_SCRIPT } from "@/components/site/ui/SiteSplash";
 import { WhatsAppFloatingButton } from "@/components/site/ui/WhatsAppFloatingButton";
 import {
   DEFAULT_DESCRIPTION,
@@ -106,6 +107,8 @@ export default function RootLayout({ children }) {
   return (
     <html
       lang="en"
+      /* the splash script sets data-splash before React hydrates */
+      suppressHydrationWarning
       className={`${bricolage.variable} ${interDisplay.variable}`}
     >
       <head>
@@ -113,11 +116,13 @@ export default function RootLayout({ children }) {
             framer-motion hydrates and plays them. Without JS (crawlers that
             don't run it, script blockers) that would leave 40-odd sections
             blank, so show them as they'd end up. */}
+        <script dangerouslySetInnerHTML={{ __html: SPLASH_SCRIPT }} />
         <noscript>
-          <style>{`[style*="opacity:0.001"]{opacity:1!important;transform:none!important}`}</style>
+          <style>{`[style*="opacity:0.001"]{opacity:1!important;transform:none!important}.site-splash{display:none}.appear{animation-play-state:running!important}`}</style>
         </noscript>
       </head>
       <body className="antialiased">
+        <SiteSplash />
         <JsonLd data={getOrganizationJsonLd()} />
         {/* first Tab stop: jump past the fixed navbar */}
         <a
