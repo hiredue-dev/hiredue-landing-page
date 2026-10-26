@@ -62,12 +62,25 @@ export function createPageMetadata({
   };
 }
 
+// What HireDue is, in one sentence an answer engine can quote.
+export const PRODUCT_DESCRIPTION =
+  "HireDue is an AI job search agent: a desktop app for macOS and Windows that finds jobs across 50,000+ career pages and job boards, tailors your resume to each one, fills in and submits applications, and messages recruiters from your own LinkedIn and email. Sessions, credentials and email history stay encrypted on your device.";
+
+/**
+ * The X profile URL, or null when it isn't one. An X handle is 1–15 letters,
+ * digits or underscores, so a value like twitter.com/hiredue-ai is dropped
+ * rather than published as a broken link.
+ */
+export function xProfileUrl(url = process.env.NEXT_PUBLIC_TWITTER_URL) {
+  return /^https:\/\/(www\.)?(twitter|x)\.com\/\w{1,15}\/?$/.test(url ?? "") ? url : null;
+}
+
 export function getOrganizationJsonLd() {
   const sameAs = [
     process.env.NEXT_PUBLIC_LINKEDIN_URL,
     process.env.NEXT_PUBLIC_INSTAGRAM_URL,
     process.env.NEXT_PUBLIC_FACEBOOK_URL,
-    process.env.NEXT_PUBLIC_TWITTER_URL,
+    xProfileUrl(),
   ].filter(Boolean);
 
   return {
@@ -84,6 +97,7 @@ export function getOrganizationJsonLd() {
           width: 375,
           height: 375,
         },
+        description: PRODUCT_DESCRIPTION,
         email: "support@hiredue.com",
         sameAs,
       },
@@ -145,6 +159,73 @@ export function getAtsCheckerJsonLd({ title, description, features, faq }) {
       {
         "@type": "FAQPage",
         "@id": `${url}#faq`,
+        mainEntity: faq.map((item) => ({
+          "@type": "Question",
+          name: item.question,
+          acceptedAnswer: { "@type": "Answer", text: item.answer },
+        })),
+      },
+    ],
+  };
+}
+
+/**
+ * Structured data for the home page: the desktop app with its platforms and
+ * the signed-out price list, and the FAQ exactly as the page shows it.
+ * `plans` are billing products (see getPublicPlans); with none, the app is
+ * described without offers rather than with made-up prices.
+ */
+export function getHomeJsonLd({ faq, plans = [], version }) {
+  const offers = plans.map((plan) => {
+    const amount = String((plan.price?.price ?? plan.priceMinor) / 100);
+    const count = Number(plan.price?.payment_frequency_count) || 1;
+    const unit = { day: "D", week: "W", month: "M", year: "Y" }[
+      plan.price?.payment_frequency_interval?.toLowerCase()
+    ];
+    return {
+      "@type": "Offer",
+      name: plan.name,
+      price: amount,
+      priceCurrency: plan.currency,
+      ...(unit && {
+        priceSpecification: {
+          "@type": "UnitPriceSpecification",
+          price: amount,
+          priceCurrency: plan.currency,
+          billingDuration: `P${count}${unit}`,
+          valueAddedTaxIncluded: Boolean(plan.price?.tax_inclusive),
+        },
+      }),
+    };
+  });
+
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "@id": `${SITE_URL}/#app`,
+        name: SITE_NAME,
+        url: SITE_URL,
+        description: PRODUCT_DESCRIPTION,
+        applicationCategory: "BusinessApplication",
+        operatingSystem: "macOS (Apple Silicon), Windows 10, Windows 11",
+        ...(version && { softwareVersion: version }),
+        downloadUrl: absoluteUrl("/download"),
+        featureList: [
+          "Finds new jobs across 50,000+ career pages and job boards, including LinkedIn, Naukri, Indeed and Wellfound",
+          "Tailors your resume to every job description",
+          "Fills in and submits applications on LinkedIn Easy Apply, Greenhouse, Workday, Lever, Ashby and SmartRecruiters",
+          "Sends personalised recruiter outreach from your own LinkedIn and email",
+          "Tracks every application in one dashboard",
+          "Keeps sessions, credentials and email history encrypted on your device",
+        ],
+        publisher: { "@id": `${SITE_URL}/#organization` },
+        ...(offers.length && { offers }),
+      },
+      {
+        "@type": "FAQPage",
+        "@id": `${SITE_URL}/#faq`,
         mainEntity: faq.map((item) => ({
           "@type": "Question",
           name: item.question,

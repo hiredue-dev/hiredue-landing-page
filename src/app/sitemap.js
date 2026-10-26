@@ -15,6 +15,9 @@ const INDEXABLE_ROUTES = [
   "/changelog",
   "/contact",
   "/ambassadors",
+  "/download",
+  "/privacy",
+  "/terms",
 ];
 
 export default async function sitemap() {
