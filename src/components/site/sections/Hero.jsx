@@ -34,7 +34,10 @@ const HILL_FADE = [250, 820];
  * tall window the grass sits low (or below the fold) instead of cutting
  * across the product shot.
  */
-const COPY_BLOCK = 420;
+// The copy's full height (headline, description, CTAs, reassurance line),
+// reserved even when part of it is hidden (signed in), so the product shot,
+// which starts pulled up by its scroll offset, always clears the buttons.
+const COPY_BLOCK = 546;
 
 export function Hero() {
   /* Both effects belong to the desktop layout only, same as the original.
