@@ -17,7 +17,9 @@ const surface = {
   dark: "bg-[linear-gradient(110deg,#323232_0%,#000_100%)] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)]",
   white: "bg-white text-ink",
   ink: "bg-ink text-white",
-  outline: "border border-line bg-transparent text-ink",
+  outline: "border border-line bg-white text-ink hover:bg-surface hover:opacity-100",
+  // on a dark panel (the /account plan card)
+  ghost: "bg-white/10 text-white ring-1 ring-white/25 hover:bg-white/15 hover:opacity-100",
 };
 
 const arrowTransition = { type: "spring", bounce: 0, duration: 0.45 };
@@ -59,13 +61,19 @@ function Anchor({
 const SIZE = {
   md: "min-h-11 px-[30px] py-3 text-[18px]",
   sm: "min-h-11 px-5 py-2.5 text-[14px]",
+  // the tools' compact controls (job board, ATS checker, dialogs)
+  tool: "px-5 py-2.5 text-[14px]",
 };
 
-/** The pill's classes, for the rare control that can't be a <Button>. */
+/**
+ * The button's look as classes, for controls that can't be a <Button> (a
+ * <label>, a download <a>, the tools' class constants). `size: null` leaves
+ * padding and type size to the caller.
+ */
 export function buttonClass({ variant = "primary", size = "md" } = {}) {
   return clsx(
-    "inline-flex shrink-0 items-center justify-center rounded-full font-semibold leading-[1.3] whitespace-nowrap transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60",
-    SIZE[size],
+    "inline-flex items-center justify-center gap-2 rounded-full font-semibold leading-[1.3] transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60",
+    size && SIZE[size],
     surface[variant],
   );
 }
@@ -74,8 +82,8 @@ export function buttonClass({ variant = "primary", size = "md" } = {}) {
  * The site's one button. A link when given `href` (routes go through the
  * router, external URLs open in a new tab), otherwise a <button>.
  *
- *   variant  primary (the sign-up action) · dark · white · ink · outline
- *   size     md · sm (navbar) — both at least 44px tall
+ *   variant  primary (the sign-up action) · dark · white · ink · outline · ghost
+ *   size     md · sm (navbar), both at least 44px tall · tool (compact)
  *   effect   none · "arrow" (an arrow bubble that swaps on hover)
  *            · "slide" (the label slides up to a second copy on hover)
  *   ring     the faint halo the hero and footer CTAs sit in
@@ -109,7 +117,7 @@ export function Button({
     );
   }
 
-  const pill = buttonClass({ variant, size });
+  const pill = clsx(buttonClass({ variant, size }), "shrink-0 whitespace-nowrap");
   const inner = ring ? <span className={clsx(pill, "w-full")}>{children}</span> : children;
   const outer = ring ? clsx("inline-flex shrink-0 rounded-full bg-white/10 p-1.5", className) : clsx(pill, className);
 

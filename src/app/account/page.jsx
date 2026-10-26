@@ -11,31 +11,10 @@ import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { cancelSubscription, getPortalLink } from "@/features/subscription/services/subscriptionService.js";
 import { assets } from "@/lib/assets";
 import { Busy } from "@/components/site/ui/Spinner";
+import { Button } from "@/components/site/ui/Button";
 
 const formatDate = (value) =>
   value ? new Date(value).toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" }) : null;
-
-/*
- * The site's pill buttons, as plain <button>s: every action here calls
- * something rather than navigating, so the href-based buttons in
- * components/site/ui/Button do not fit.
- */
-const PILL =
-  "inline-flex items-center justify-center rounded-full px-7 py-[15px] text-[16px] leading-[1.3] font-semibold transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60";
-
-const PILL_TONE = {
-  primary:
-    "bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]",
-  ink: "bg-ink text-white",
-  white: "bg-white text-ink",
-  outline: "bg-transparent text-ink ring-1 ring-line hover:bg-surface hover:opacity-100",
-  // On the dark plan card.
-  ghost: "bg-white/10 text-white ring-1 ring-white/25 hover:bg-white/15 hover:opacity-100",
-};
-
-function Pill({ tone = "ink", className, ...props }) {
-  return <button type="button" className={clsx(PILL, PILL_TONE[tone], className)} {...props} />;
-}
 
 /** One labelled fact on the plan card. */
 function Fact({ label, value, dark }) {
@@ -254,12 +233,12 @@ export default function AccountPage() {
                   the pricing page.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
-                  <Pill tone="white" onClick={handleCancel} disabled={cancelling}>
+                  <Button variant="white" onClick={handleCancel} disabled={cancelling}>
                     <Busy busy={cancelling} label="Cancelling…">Yes, cancel subscription</Busy>
-                  </Pill>
-                  <Pill tone="ghost" onClick={() => setConfirmingCancel(false)} disabled={cancelling}>
+                  </Button>
+                  <Button variant="ghost" onClick={() => setConfirmingCancel(false)} disabled={cancelling}>
                     Keep subscription
-                  </Pill>
+                  </Button>
                 </div>
               </div>
             )}
@@ -279,26 +258,26 @@ export default function AccountPage() {
             {!(managedHere && (endsAtPeriodEnd || confirmingCancel)) && (
               <div className="flex flex-wrap gap-3">
                 {managedHere ? (
-                  <Pill tone="ghost" onClick={() => setConfirmingCancel(true)}>
+                  <Button variant="ghost" onClick={() => setConfirmingCancel(true)}>
                     Cancel subscription
-                  </Pill>
+                  </Button>
                 ) : isPaid ? (
-                  <Pill tone="white" onClick={handlePortal} disabled={portalLoading}>
+                  <Button variant="white" onClick={handlePortal} disabled={portalLoading}>
                     <Busy busy={portalLoading} label="Opening portal…">Manage subscription</Busy>
-                  </Pill>
+                  </Button>
                 ) : isTrialPending ? (
                   <>
-                    <Pill tone="primary" onClick={() => router.push("/download")}>
+                    <Button variant="primary" onClick={() => router.push("/download")}>
                       Download the app
-                    </Pill>
-                    <Pill tone="outline" onClick={() => router.push("/#pricing")}>
+                    </Button>
+                    <Button variant="outline" onClick={() => router.push("/#pricing")}>
                       View plans
-                    </Pill>
+                    </Button>
                   </>
                 ) : (
-                  <Pill tone="primary" onClick={() => router.push("/#pricing")}>
+                  <Button variant="primary" onClick={() => router.push("/#pricing")}>
                     {isTrial ? "Upgrade plan" : "View plans"}
-                  </Pill>
+                  </Button>
                 )}
               </div>
             )}
@@ -314,9 +293,9 @@ export default function AccountPage() {
                 Your agent runs from the HireDue app for macOS and Windows.
               </p>
             </div>
-            <Pill tone="ink" className="relative z-1 self-start" onClick={() => router.push("/download")}>
+            <Button variant="ink" className="relative z-1 self-start" onClick={() => router.push("/download")}>
               Download the app
-            </Pill>
+            </Button>
             <Image
               src={assets.pricing.enterprise}
               alt=""
@@ -333,9 +312,9 @@ export default function AccountPage() {
                 Sign out of this browser. You&apos;ll need to log in again to reach your account.
               </p>
             </div>
-            <Pill tone="outline" className="self-start bg-white" onClick={handleLogout}>
+            <Button variant="outline" className="self-start bg-white" onClick={handleLogout}>
               Log out
-            </Pill>
+            </Button>
           </div>
         </Reveal>
       </div>
@@ -376,9 +355,9 @@ function SignedOut({ onSignIn }) {
         <p className="t-body-lg max-w-[520px]">
           Your plan, billing and subscription settings are here once you&apos;re signed in.
         </p>
-        <Pill tone="primary" onClick={onSignIn} className="mt-5">
+        <Button variant="primary" onClick={onSignIn} className="mt-5">
           Log in
-        </Pill>
+        </Button>
       </div>
     </AccountShell>
   );

@@ -35,6 +35,7 @@ import { LockedPostCard, PostCard, UnlockPostsPanel } from "./PostCard.jsx";
 import { SearchBar } from "./SearchBar.jsx";
 import { Dialog, primaryButton, secondaryButton } from "./ui.jsx";
 import { Busy } from "@/components/site/ui/Spinner";
+import { buttonClass } from "@/components/site/ui/Button";
 
 // Fixed navbar height plus breathing room: where scrolled-to content should land.
 const NAV_OFFSET = 100;
@@ -502,7 +503,7 @@ export function JobBoard() {
       <button
         type="button"
         onClick={() => setFiltersOpen(true)}
-        className="fixed bottom-5 left-1/2 z-[55] inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-ink px-5 py-3 text-[14px] font-semibold text-white shadow-[0_10px_30px_rgba(29,29,29,0.3)] lg:hidden"
+        className={clsx(buttonClass({ variant: "ink", size: "tool" }), "fixed bottom-5 left-1/2 z-[55] -translate-x-1/2 py-3 shadow-[0_10px_30px_rgba(29,29,29,0.3)] lg:hidden")}
       >
         <SlidersHorizontal size={16} aria-hidden /> Filters
         {filterCount > 0 && <FilterCount count={filterCount} inverted />}

@@ -4,19 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronDown, X } from "lucide-react";
 import clsx from "clsx";
+import { buttonClass } from "@/components/site/ui/Button";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
 import useDialogFocus from "@/hooks/useDialogFocus.js";
 
-export const primaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] px-5 py-2.5 text-[14px] leading-[1.3] font-semibold text-white shadow-[0_6px_14px_0_rgba(58,119,229,0.35)] transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60";
+/* The tools' button looks, from the site's one Button (components/site/ui/Button). */
+export const primaryButton = buttonClass({ variant: "primary", size: "tool" });
 
-export const secondaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-[14px] leading-[1.3] font-semibold text-ink transition-colors duration-200 hover:bg-surface";
+export const secondaryButton = buttonClass({ variant: "outline", size: "tool" });
 
 // No padding or font size here: set them where it is used, since two conflicting
 // utilities on one element resolve by CSS order, not by which was passed last.
-export const darkButton =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] leading-[1.3] font-semibold whitespace-nowrap text-white shadow-[inset_3px_3px_6px_0_rgba(255,255,255,0.25),inset_-3px_-3px_6px_0_rgba(255,255,255,0.25),0_8px_16px_0_rgba(29,29,29,0.3)] transition-opacity duration-200 hover:opacity-90";
+export const darkButton = clsx(buttonClass({ variant: "dark", size: null }), "whitespace-nowrap");
 
 export function CompanyLogo({ src, name, size = 48 }) {
   const [failed, setFailed] = useState(false);

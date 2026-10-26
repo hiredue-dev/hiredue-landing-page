@@ -86,15 +86,10 @@ function RoleCard({ role }) {
       {/* Applying meant finding the shared form at the bottom of the page;
           each role links to it directly (the form asks which role). */}
       <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-        <a
-          href={apply.cta.href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center rounded-full bg-ink px-5 py-2.5 text-[14px] leading-[1.3] font-semibold text-white transition-opacity hover:opacity-90"
-        >
+        <Button variant="ink" size="sm" href={apply.cta.href}>
           Apply
           <span className="sr-only"> for {role.title} (opens in a new tab)</span>
-        </a>
+        </Button>
         <a
           href={role.jdUrl}
           target="_blank"

@@ -17,6 +17,7 @@ import { friendlyAuthError } from "@/features/auth/errorMessages.js";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
 import useDialogFocus from "@/hooks/useDialogFocus.js";
 import { Busy } from "@/components/site/ui/Spinner";
+import { buttonClass } from "@/components/site/ui/Button";
 
 const AuthModalContext = createContext(null);
 
@@ -66,15 +67,11 @@ export function useAuthModal() {
 const fieldBase =
   "h-12 w-full rounded-[14px] border bg-white px-4 text-[15px] font-medium text-ink outline-none transition-colors placeholder:text-dim/50 focus:border-brand focus:ring-[3px] focus:ring-brand/20";
 
-const btnPrimary = clsx(
-  "inline-flex w-full items-center justify-center rounded-full h-12",
-  "text-[15px] font-semibold leading-[1.3] text-white transition-all duration-200",
-  "bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)]",
-  "shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_12px_rgba(58,119,229,0.3)]",
-  "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_18px_rgba(58,119,229,0.4)]",
-  "disabled:opacity-50 disabled:pointer-events-none",
-);
+/* The site's primary button (components/site/ui/Button), full width. */
+const btnPrimary = clsx(buttonClass({ variant: "primary", size: null }), "h-12 w-full text-[15px]");
 
+/* Google's own sign-in button style, as its brand guidelines ask, so it
+   stays apart from the site's buttons. */
 const btnGoogle = clsx(
   "inline-flex w-full items-center justify-center gap-2.5 rounded-[14px]",
   "border border-[#dadce0] bg-white px-4 min-h-[48px]",
