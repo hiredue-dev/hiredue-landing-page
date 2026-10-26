@@ -18,6 +18,7 @@ import {
   detectDefaultCountry,
 } from "@/features/auth/countries.js";
 import { validateContactNumber } from "@/features/auth/validators.js";
+import { Busy } from "@/components/site/ui/Spinner";
 
 export default function CognitoCallbackPage() {
   const router = useRouter();
@@ -282,7 +283,7 @@ export default function CognitoCallbackPage() {
                   : "pointer",
             }}
           >
-            {submitting ? "Finishing..." : "Finish signing up"}
+            <Busy busy={submitting} label="Finishing…">Finish signing up</Busy>
           </button>
         </form>
       </div>

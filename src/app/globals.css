@@ -1,67 +1,16 @@
 /* ------------------------------------------------------------------ */
-/*  Single global entry point for both design systems.                  */
+/*  Single global entry point.                                          */
 /*                                                                      */
-/*  Cascade order, weakest first:                                       */
-/*                                                                      */
-/*    theme          Tailwind's tokens                                  */
-/*    base           Tailwind preflight                                 */
-/*    legacy-compat  puts back the UA defaults preflight removes,       */
-/*                   but only inside the `.legacyPage` subtree          */
-/*    legacy         the pre-redesign design system                     */
-/*    components     the redesign's type presets (.t-h1, .blog-body, …) */
-/*    utilities      Tailwind utilities                                 */
-/*    (unlayered)    every CSS Module — always wins, so the old pages   */
-/*                   keep their exact styling                           */
+/*  Cascade order, weakest first: Tailwind's theme and preflight, the   */
+/*  type presets (.t-h1, .blog-body, …), utilities, then CSS Modules    */
+/*  (unlayered, so they always win).                                    */
 /* ------------------------------------------------------------------ */
-/* hoisted: once everything is bundled into one sheet, @import has to stay
-   at the top — this is the legacy Inter face the old pages use. */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+@layer theme, base, components, utilities;
 
-@layer theme, base, legacy-compat, legacy, components, utilities;
-
-@import "../design-system/index.css";
 @import "tailwindcss";
 
 /* explicit, so class detection never depends on cwd */
 @source "../";
-
-/* ------------------------------------------------------------------ */
-/*  legacy-compat                                                       */
-/*                                                                      */
-/*  Tailwind's preflight is a global reset, but only the redesigned     */
-/*  routes were written against it. Everything under `.legacyPage`      */
-/*  predates it and still expects browser defaults — bulleted lists,    */
-/*  heading sizes, form-control chrome. `revert` rolls each property    */
-/*  back to the user-agent value, and every selector is wrapped in      */
-/*  `:where()` so it carries zero specificity: any rule in the old      */
-/*  design system or in a CSS Module still overrides it.                */
-/* ------------------------------------------------------------------ */
-@layer legacy-compat {
-  :where(.legacyPage) :where(*, *::before, *::after) {
-    margin: revert;
-    padding: revert;
-    border-width: revert;
-    border-style: revert;
-  }
-
-  :where(.legacyPage) :where(ul, ol, menu) {
-    list-style: revert;
-  }
-
-  :where(.legacyPage) :where(h1, h2, h3, h4, h5, h6) {
-    font-size: revert;
-    font-weight: revert;
-  }
-
-  :where(.legacyPage) :where(button, input, optgroup, select, textarea) {
-    background-color: revert;
-    border-radius: revert;
-  }
-
-  :where(.legacyPage) :where(img, video) {
-    height: revert;
-  }
-}
 
 /* ------------------------------------------------------------------ */
 /*  Design tokens — mirrored from the Framer template                   */
@@ -94,18 +43,13 @@
   --ease-framer: cubic-bezier(0.44, 0, 0.56, 1);
 }
 
-/* Immediate feedback while an uncached route segment is streaming in. */
-.route-loading {
-  position: fixed;
-  inset: 0;
-  z-index: 45;
-  background: rgba(255, 255, 255, 0.55);
-  backdrop-filter: blur(2px);
-}
-
-.route-loading > span {
+/* Immediate feedback while an uncached route segment is streaming in: a
+   brand bar along the top edge, over the navbar, beside the page skeleton
+   (components/site/ui/Skeleton.jsx). */
+.route-progress {
   position: fixed;
   inset: 0 auto auto 0;
+  z-index: 60;
   width: 35%;
   height: 3px;
   background: var(--color-brand);
@@ -123,9 +67,146 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .route-loading > span {
+  .route-progress {
     animation: none;
     width: 100%;
+  }
+}
+
+/* Above-the-fold load-in. Plain CSS rather than framer-motion so the server
+   HTML is already animating — a motion `initial` ships the hero at opacity
+   0.001 and leaves it blank until the JS bundle hydrates. Per element:
+   --appear-delay, --appear-y. */
+@keyframes appear-up {
+  from {
+    opacity: 0;
+    transform: translateY(var(--appear-y, 20px));
+  }
+}
+
+.appear {
+  animation: appear-up var(--appear-duration, 1s) cubic-bezier(0.22, 1, 0.36, 1)
+    var(--appear-delay, 0s) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .appear {
+    animation: none;
+  }
+}
+
+/* First-visit splash (SiteSplash in app/layout.jsx). It paints with the
+   server HTML, so it covers the page from the first frame, before any JS.
+   An inline script marks <html data-splash="done"> once the page has loaded
+   (or straight away on later visits in the same tab session) and it fades
+   out; if that script never runs, the animation below removes it anyway. */
+.site-splash {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  animation: splash-out 0.45s ease 3s forwards;
+}
+
+.site-splash__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  animation: splash-in 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.site-splash__bar {
+  position: relative;
+  width: 132px;
+  height: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-line);
+}
+
+.site-splash__bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  border-radius: inherit;
+  background: var(--color-brand);
+  animation: splash-bar 1s ease-in-out infinite;
+}
+
+html[data-splash="done"] .site-splash {
+  animation: splash-out 0.45s ease forwards;
+}
+
+/* already seen this session: gone before the first frame, no fade */
+html[data-splash="skip"] .site-splash {
+  display: none;
+}
+
+/* the hero's load-in waits for the splash, so it plays where people see it */
+html:not([data-splash]) .appear {
+  animation-play-state: paused;
+}
+
+/* In-site page loader (PageLoader.jsx): the splash's look for /jobs and
+   /ats-checker, under the navbar so the site's chrome stays usable. The
+   delayed fade is a fallback for when the JS that lifts it never runs. */
+.page-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  animation: splash-out 0.35s ease 6s forwards;
+}
+
+.page-loader--route {
+  animation: none;
+}
+
+.page-loader--gone {
+  animation: splash-out 0.35s ease forwards;
+  pointer-events: none;
+}
+
+.page-loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+}
+
+@keyframes splash-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+
+@keyframes splash-bar {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@keyframes splash-out {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-splash__inner,
+  .site-splash__bar::after {
+    animation: none;
   }
 }
 
@@ -141,10 +222,17 @@
   }
 
   body {
+    min-width: 320px;
     background: #fff;
     color: var(--color-ink);
     font-family: var(--font-sans);
     overflow-x: clip;
+  }
+
+  /* preflight resets buttons to the arrow cursor */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
   }
 
   /* clear the fixed navbar when jumping to an anchor */
@@ -156,6 +244,13 @@
   ::selection {
     background: var(--color-brand);
     color: #fff;
+  }
+
+  /* One keyboard focus ring for everything. Base layer, so a component that
+     draws its own (ring utilities, outline-none on inputs) still wins. */
+  :focus-visible {
+    outline: 2px solid var(--color-brand);
+    outline-offset: 2px;
   }
 }
 
@@ -173,6 +268,18 @@
     color: var(--color-ink);
   }
 
+  /* Page title — 64 / 52 / 38: the h1 of every page but home (whose hero
+     has .t-h1) and the tool pages, which keep the tool above the fold. */
+  .t-page-title {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 64px;
+    line-height: 1.1;
+    letter-spacing: -1.4px;
+    text-wrap: balance;
+    color: var(--color-ink);
+  }
+
   /* Section headline — 48 / 40 / 32 */
   .t-h2 {
     font-family: var(--font-display);
@@ -180,28 +287,6 @@
     font-size: 48px;
     line-height: 1.2;
     letter-spacing: -1px;
-    color: var(--color-ink);
-  }
-
-  /* Feature-page headline — 48 / 44 / 34.
-     The template gives this page its own ladder, a step above .t-h2. */
-  .t-h2-feature {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 48px;
-    line-height: 1.2;
-    letter-spacing: -1px;
-    color: var(--color-ink);
-  }
-
-  /* Ambassador headline — 68 / 54 / 40. Bigger than the feature ladder: this
-     route is a pitch, so the headline carries it. */
-  .t-h1-ambassador {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 68px;
-    line-height: 1.1;
-    letter-spacing: -1.4px;
     color: var(--color-ink);
   }
 
@@ -238,16 +323,6 @@
     font-weight: 500;
     line-height: 1.3;
     color: var(--color-dim);
-  }
-
-  /* Blog index headline — 72 / 54 / 44 */
-  .t-blog-title {
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: 72px;
-    line-height: 1.2;
-    letter-spacing: -1.4px;
-    color: var(--color-ink);
   }
 
   /*
@@ -303,6 +378,8 @@
     line-height: 1.2;
     color: var(--color-ink);
     margin-top: 50px;
+    /* clear the fixed navbar when jumped to from the contents list */
+    scroll-margin-top: 118px;
   }
 
   .legal-body h3 {
@@ -364,19 +441,12 @@
       font-size: 68px;
       letter-spacing: -1.2px;
     }
+    .t-page-title {
+      font-size: 52px;
+      letter-spacing: -1.2px;
+    }
     .t-h2 {
       font-size: 40px;
-    }
-    .t-h2-feature {
-      font-size: 44px;
-    }
-    .t-h1-ambassador {
-      font-size: 54px;
-      letter-spacing: -1.2px;
-    }
-    .t-blog-title {
-      font-size: 54px;
-      letter-spacing: -1.2px;
     }
     .blog-body h2 {
       font-size: 30px;
@@ -391,21 +461,13 @@
       font-size: 44px;
       letter-spacing: -0.8px;
     }
+    .t-page-title {
+      font-size: 38px;
+      letter-spacing: -0.8px;
+    }
     .t-h2 {
       font-size: 32px;
       letter-spacing: -0.6px;
-    }
-    .t-h2-feature {
-      font-size: 34px;
-      letter-spacing: -0.6px;
-    }
-    .t-h1-ambassador {
-      font-size: 40px;
-      letter-spacing: -0.8px;
-    }
-    .t-blog-title {
-      font-size: 44px;
-      letter-spacing: -0.8px;
     }
     .blog-body h2 {
       font-size: 26px;
@@ -434,6 +496,22 @@
 @utility container-page {
   width: 100%;
   max-width: 1260px;
+  margin-inline: auto;
+  padding-inline: 30px;
+}
+
+/* Narrow: a column of text (legal, about, page heroes). Wide: card grids
+   that want less than the full page width (pricing, careers, download). */
+@utility container-narrow {
+  width: 100%;
+  max-width: 760px;
+  margin-inline: auto;
+  padding-inline: 30px;
+}
+
+@utility container-wide {
+  width: 100%;
+  max-width: 1220px;
   margin-inline: auto;
   padding-inline: 30px;
 }

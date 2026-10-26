@@ -8,7 +8,7 @@ import { createPageMetadata, getAtsCheckerJsonLd } from "@/lib/seo";
 
 const TITLE = "Free ATS Resume Checker – Instant ATS Score & Fixes";
 const DESCRIPTION =
-  "Check your resume against ATS for free. Get an instant ATS score, the fixes that matter most, and one-click tailoring to any job description. No sign-up.";
+  "Check your resume against ATS for free. Get an instant ATS score and the fixes that matter most, no sign-up needed — then optimize it or tailor it to any job description with a free account.";
 
 export const metadata = {
   ...createPageMetadata({

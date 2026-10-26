@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { getJob } from "../services/jobBoardService.js";
 import { AutomateLink, JobBadges, JobMeta } from "./JobCard.jsx";
-import { CompanyLogo, Dialog, primaryButton } from "./ui.jsx";
+import { CompanyLogo, Dialog, primaryButton, secondaryButton } from "./ui.jsx";
 
 /**
  * Full posting. Opens instantly from the card's data; the description loads in behind it.
- * `path` is "desktop" (Auto-apply with HireDue first, Apply manually as a quiet link) or
+ * `path` is "desktop" (Apply manually as an outlined secondary, Auto-apply with HireDue as the primary) or
  * "mobile" (one Apply button, since there is nothing to install). Without `onAutoApply`
  * the install button is the plain Automate link, which is what the ATS checker's job list uses.
  */
@@ -83,11 +83,11 @@ export function JobDetailDialog({ job, onClose, onApply, onAutoApply, path = "de
             <div className="flex w-full items-center gap-2 sm:ml-auto sm:w-auto">
               {path === "desktop" ? (
                 <>
-                  {/* Quiet on purpose: the manual path is the one we would rather people did not take, but it stays a readable link, never hidden. */}
+                  {/* An outlined secondary, as on the job card: applying manually is the most common path, so it reads as a real button. */}
                   <button
                     type="button"
                     onClick={() => onApply(shown)}
-                    className="shrink-0 px-3 py-2.5 text-[14px] font-medium text-dim underline-offset-4 transition-colors hover:text-ink hover:underline"
+                    className={`${secondaryButton} flex-1 sm:flex-none sm:px-6`}
                   >
                     Apply manually
                   </button>

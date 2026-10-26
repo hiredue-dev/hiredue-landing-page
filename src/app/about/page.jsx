@@ -1,4 +1,5 @@
 import { AboutStory } from "@/components/site/sections/about/AboutStory";
+import { EndCta } from "@/components/site/sections/EndCta";
 import { client } from "@/lib/sanity/client";
 import { ABOUT_PAGE_QUERY } from "@/lib/sanity/queries";
 import { createPageMetadata } from "@/lib/seo";
@@ -17,5 +18,10 @@ export default async function AboutPage() {
     { next: { revalidate: 60 } },
   );
 
-  return <AboutStory {...page} />;
+  return (
+    <>
+      <AboutStory {...page} />
+      <EndCta />
+    </>
+  );
 }

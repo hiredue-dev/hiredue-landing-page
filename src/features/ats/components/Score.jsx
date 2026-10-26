@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, CircleAlert, Info, TriangleAlert } from "lucide-react";
 import clsx from "clsx";
@@ -53,6 +54,7 @@ export function ScoreRing({ score, size = 132, label = "ATS score" }) {
 }
 
 export function CategoryBars({ categories, compareTo }) {
+  const reduce = useReducedMotion();
   return (
     <ul className="flex flex-col gap-3.5">
       {categories.map((category) => {
@@ -77,7 +79,13 @@ export function CategoryBars({ categories, compareTo }) {
             >
               <motion.div
                 className="h-full rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)]"
-                initial={{ width: prev ? `${(prev.score / category.max) * 100}%` : 0 }}
+                initial={{
+                  width: reduce
+                    ? `${(category.score / category.max) * 100}%`
+                    : prev
+                      ? `${(prev.score / category.max) * 100}%`
+                      : 0,
+                }}
                 animate={{ width: `${(category.score / category.max) * 100}%` }}
                 transition={spring(0.9, 0.15)}
               />
@@ -96,24 +104,35 @@ const SEVERITY = {
 };
 
 export function IssueList({ issues, limit = 5 }) {
+  const [showAll, setShowAll] = useState(false);
   if (!issues.length) {
     return <p className="t-body">No issues found. This resume covers everything the checker looks for.</p>;
   }
+  const shown = showAll ? issues : issues.slice(0, limit);
+  const hidden = issues.length - shown.length;
   return (
-    <ul className="flex flex-col gap-3">
-      {issues.slice(0, limit).map((issue) => {
-        const { icon: Icon, className, label } = SEVERITY[issue.severity];
-        return (
-          <li key={issue.id} className="flex gap-3 rounded-[14px] border border-line bg-white p-4">
-            <Icon size={18} className={clsx("mt-0.5 shrink-0", className)} aria-label={label} />
-            <div className="flex flex-col gap-1">
-              <p className="text-[15px] leading-[1.3] font-semibold text-ink">{issue.title}</p>
-              <p className="t-body-sm">{issue.detail}</p>
-            </div>
-          </li>
-        );
-      })}
-    </ul>
+    <div className="flex flex-col gap-3">
+      <ul className="flex flex-col gap-3">
+        {shown.map((issue) => {
+          const { icon: Icon, className, label } = SEVERITY[issue.severity];
+          return (
+            <li key={issue.id} className="flex gap-3 rounded-[14px] border border-line bg-white p-4">
+              <Icon size={18} className={clsx("mt-0.5 shrink-0", className)} aria-label={label} />
+              <div className="flex flex-col gap-1">
+                <p className="text-[15px] leading-[1.3] font-semibold text-ink">{issue.title}</p>
+                <p className="t-body-sm">{issue.detail}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ul>
+      {/* the rest were silently cut off before — say how many and let them in */}
+      {hidden > 0 && (
+        <button type="button" onClick={() => setShowAll(true)} className="self-start py-2 text-[14px] font-semibold text-brand hover:underline">
+          Show {hidden} more issue{hidden === 1 ? "" : "s"}
+        </button>
+      )}
+    </div>
   );
 }
 

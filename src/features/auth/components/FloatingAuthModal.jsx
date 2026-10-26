@@ -15,6 +15,9 @@ import {
 } from "@/features/auth/validators.js";
 import { friendlyAuthError } from "@/features/auth/errorMessages.js";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
+import useDialogFocus from "@/hooks/useDialogFocus.js";
+import { Busy } from "@/components/site/ui/Spinner";
+import { buttonClass } from "@/components/site/ui/Button";
 
 const AuthModalContext = createContext(null);
 
@@ -62,17 +65,13 @@ export function useAuthModal() {
 }
 
 const fieldBase =
-  "h-12 w-full rounded-[14px] border bg-white px-4 text-[15px] font-medium text-ink outline-none transition-colors placeholder:text-dim/50 focus:border-brand";
+  "h-12 w-full rounded-[14px] border bg-white px-4 text-[15px] font-medium text-ink outline-none transition-colors placeholder:text-dim/50 focus:border-brand focus:ring-[3px] focus:ring-brand/20";
 
-const btnPrimary = clsx(
-  "inline-flex w-full items-center justify-center rounded-full h-12",
-  "text-[15px] font-semibold leading-[1.3] text-white transition-all duration-200",
-  "bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)]",
-  "shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_4px_12px_rgba(58,119,229,0.3)]",
-  "hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_6px_18px_rgba(58,119,229,0.4)]",
-  "disabled:opacity-50 disabled:pointer-events-none",
-);
+/* The site's primary button (components/site/ui/Button), full width. */
+const btnPrimary = clsx(buttonClass({ variant: "primary", size: null }), "h-12 w-full text-[15px]");
 
+/* Google's own sign-in button style, as its brand guidelines ask, so it
+   stays apart from the site's buttons. */
 const btnGoogle = clsx(
   "inline-flex w-full items-center justify-center gap-2.5 rounded-[14px]",
   "border border-[#dadce0] bg-white px-4 min-h-[48px]",
@@ -112,6 +111,24 @@ const viewVariants = {
   exit: { opacity: 0, y: -6, transition: { duration: 0.13 } },
 };
 
+/** The form's one message slot: an error (announced at once) and/or a notice (announced politely). */
+function FormAlert({ error, notice }) {
+  return (
+    <>
+      {error && (
+        <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
+          {error}
+        </p>
+      )}
+      {notice && (
+        <p role="status" className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
+          {notice}
+        </p>
+      )}
+    </>
+  );
+}
+
 function GoogleIcon() {
   return (
     <svg className="size-[18px] shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -148,6 +165,7 @@ function HeaderIcon({ children }) {
 function FloatingAuthModal({ isOpen, view, setView, redirectTo, onClose }) {
   const router = useRouter();
   useBodyScrollLock(isOpen);
+  const panelRef = useDialogFocus(isOpen, onClose);
 
   const isBrowser = typeof document !== "undefined";
   if (!isBrowser) return null;
@@ -181,9 +199,11 @@ function FloatingAuthModal({ isOpen, view, setView, redirectTo, onClose }) {
             className={clsx(
               "relative z-10 flex w-full max-w-[440px] flex-col overflow-hidden rounded-t-[28px] bg-white",
               "sm:rounded-[24px]",
-              "max-h-[92dvh] overflow-y-auto overscroll-contain",
+              "max-h-[92dvh] overflow-y-auto overscroll-contain outline-none",
               "ring-1 ring-black/[0.06] shadow-[0_-12px_48px_rgba(15,23,42,0.18)] sm:shadow-[0_24px_80px_rgba(15,23,42,0.25)]",
             )}
+            ref={panelRef}
+            tabIndex={-1}
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-modal="true"
@@ -345,14 +365,10 @@ function SigninView({ onClose, onSwitch, onForgot, redirectTo, router }) {
           Forgot password?
         </button>
 
-        {error && (
-          <p className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-            {error}
-          </p>
-        )}
+        <FormAlert error={error} />
 
         <button type="submit" disabled={loading} className={btnPrimary}>
-          {loading ? "Signing in…" : "Sign in"}
+          <Busy busy={loading} label="Signing in…">Sign in</Busy>
         </button>
       </form>
 
@@ -388,8 +404,13 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
   const [notice, setNotice] = useState(null);
   const [cooldown, setCooldown] = useState(0);
 
-  const emailError = email && validateEmail(email);
-  const passwordError = password && validateSignupPassword(password);
+  /* Errors wait until a field has been left (or the form submitted) once —
+     flagging "invalid email" on the first keystroke reads as a scolding.
+     After that they update live, so fixing one clears it immediately. */
+  const [touched, setTouched] = useState({ email: false, password: false });
+  const touch = (field) => () => setTouched((t) => (t[field] ? t : { ...t, [field]: true }));
+  const emailError = touched.email && email && validateEmail(email);
+  const passwordError = touched.password && password && validateSignupPassword(password);
 
   useEffect(() => {
     if (cooldown <= 0) return;
@@ -401,11 +422,12 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
     e.preventDefault();
     setError(null);
     setNotice(null);
+    setTouched({ email: true, password: true });
     if (!fullName.trim() || !email || !password) {
       setError("Please fill in all fields.");
       return;
     }
-    if (emailError || passwordError) {
+    if (validateEmail(email) || validateSignupPassword(password)) {
       setError("Please fix the highlighted fields.");
       return;
     }
@@ -559,24 +581,30 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
             <label className="flex flex-col gap-1.5">
               <span className="text-[13px] font-semibold text-ink">Email</span>
               <input
-                className={clsx(fieldBase, emailError ? "border-[#f51c23]/40" : "border-line")}
+                className={clsx(fieldBase, emailError ? "border-[#c0382b]" : "border-line")}
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                onBlur={touch("email")}
+                aria-invalid={Boolean(emailError)}
+                aria-describedby={emailError ? "signup-email-error" : undefined}
                 autoComplete="email"
                 placeholder="you@example.com"
                 required
               />
-              {emailError && <span className="text-[12px] font-medium text-[#c0382b]">{emailError}</span>}
+              {emailError && <span id="signup-email-error" className="text-[12px] font-medium text-[#c0382b]">{emailError}</span>}
             </label>
             <label className="flex flex-col gap-1.5">
               <span className="text-[13px] font-semibold text-ink">Password</span>
               <span className="relative block">
                 <input
-                  className={clsx(fieldBase, "pr-12", passwordError ? "border-[#f51c23]/40" : "border-line")}
+                  className={clsx(fieldBase, "pr-12", passwordError ? "border-[#c0382b]" : "border-line")}
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  onBlur={touch("password")}
+                  aria-invalid={Boolean(passwordError)}
+                  aria-describedby={passwordError ? "signup-password-error" : undefined}
                   autoComplete="new-password"
                   placeholder="At least 8 characters"
                   required
@@ -590,22 +618,13 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </span>
-              {passwordError && <span className="text-[12px] font-medium text-[#c0382b]">{passwordError}</span>}
+              {passwordError && <span id="signup-password-error" className="text-[12px] font-medium text-[#c0382b]">{passwordError}</span>}
             </label>
 
-            {notice && (
-              <p className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-                {notice}
-              </p>
-            )}
-            {error && !notice && (
-              <p className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-                {error}
-              </p>
-            )}
+            <FormAlert error={notice ? null : error} notice={notice} />
 
             <button type="submit" disabled={loading} className={btnPrimary}>
-              {loading ? "Creating account…" : "Create account"}
+              <Busy busy={loading} label="Creating account…">Create account</Busy>
             </button>
           </form>
         </>
@@ -621,26 +640,17 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
             autoFocus
             aria-label="Verification code"
             placeholder="••••••"
-            className="h-[56px] w-full rounded-[14px] border border-line bg-white px-4 text-center font-display text-[28px] font-semibold tracking-[0.5em] text-ink outline-none transition-colors placeholder:text-dim/30 focus:border-brand"
+            className="h-[56px] w-full rounded-[14px] border border-line bg-white px-4 text-center font-display text-[28px] font-semibold tracking-[0.5em] text-ink outline-none transition-colors placeholder:text-dim/30 focus:border-brand focus:ring-[3px] focus:ring-brand/20"
           />
 
-          {error && (
-            <p className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-              {error}
-            </p>
-          )}
-          {notice && !error && (
-            <p className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-              {notice}
-            </p>
-          )}
+          <FormAlert error={error} notice={error ? null : notice} />
 
           <button
             type="submit"
             disabled={loading || otp.length < 6}
             className={btnPrimary}
           >
-            {loading ? "Verifying…" : "Verify and continue"}
+            <Busy busy={loading} label="Verifying…">Verify and continue</Busy>
           </button>
 
           <div className="flex items-center justify-between text-[14px]">
@@ -758,24 +768,16 @@ function ForgotView({ onBack }) {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
               placeholder="you@example.com"
               required
             />
           </label>
 
-          {error && (
-            <p className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-              {error}
-            </p>
-          )}
-          {success && (
-            <p className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-              {success}
-            </p>
-          )}
+          <FormAlert error={error} notice={success} />
 
           <button type="submit" disabled={loading} className={btnPrimary}>
-            {loading ? "Sending code…" : "Send code"}
+            <Busy busy={loading} label="Sending code…">Send code</Busy>
           </button>
         </form>
       ) : (
@@ -785,6 +787,7 @@ function ForgotView({ onBack }) {
             <input
               className={clsx(fieldBase, "border-line")}
               inputMode="numeric"
+              autoComplete="one-time-code"
               maxLength={6}
               value={code}
               onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
@@ -800,6 +803,7 @@ function ForgotView({ onBack }) {
                 type={showPassword ? "text" : "password"}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="new-password"
                 placeholder="At least 8 characters"
                 required
               />
@@ -814,19 +818,10 @@ function ForgotView({ onBack }) {
             </span>
           </label>
 
-          {error && (
-            <p className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-              {error}
-            </p>
-          )}
-          {success && (
-            <p className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-              {success}
-            </p>
-          )}
+          <FormAlert error={error} notice={success} />
 
           <button type="submit" disabled={loading} className={btnPrimary}>
-            {loading ? "Resetting…" : "Reset password"}
+            <Busy busy={loading} label="Resetting…">Reset password</Busy>
           </button>
         </form>
       )}
@@ -835,7 +830,7 @@ function ForgotView({ onBack }) {
         <button
           type="button"
           onClick={onBack}
-          className="flex items-center gap-1 font-semibold text-brand transition-colors duration-200 hover:text-[#5290f4]"
+          className="inline-flex items-center gap-1 font-semibold text-brand transition-colors duration-200 hover:text-[#5290f4]"
         >
           <ArrowLeft size={14} /> Back to sign in
         </button>

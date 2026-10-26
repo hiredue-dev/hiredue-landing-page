@@ -4,18 +4,18 @@ import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { Check, ChevronDown, X } from "lucide-react";
 import clsx from "clsx";
+import { buttonClass } from "@/components/site/ui/Button";
 import useBodyScrollLock from "@/hooks/useBodyScrollLock.js";
+import useDialogFocus from "@/hooks/useDialogFocus.js";
 
-export const primaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] px-5 py-2.5 text-[14px] leading-[1.3] font-semibold text-white shadow-[0_6px_14px_0_rgba(58,119,229,0.35)] transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60";
+/* The tools' button looks, from the site's one Button (components/site/ui/Button). */
+export const primaryButton = buttonClass({ variant: "primary", size: "tool" });
 
-export const secondaryButton =
-  "inline-flex items-center justify-center gap-2 rounded-full border border-line bg-white px-5 py-2.5 text-[14px] leading-[1.3] font-semibold text-ink transition-colors duration-200 hover:bg-surface";
+export const secondaryButton = buttonClass({ variant: "outline", size: "tool" });
 
 // No padding or font size here: set them where it is used, since two conflicting
 // utilities on one element resolve by CSS order, not by which was passed last.
-export const darkButton =
-  "inline-flex items-center justify-center gap-2 rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] leading-[1.3] font-semibold whitespace-nowrap text-white shadow-[inset_3px_3px_6px_0_rgba(255,255,255,0.25),inset_-3px_-3px_6px_0_rgba(255,255,255,0.25),0_8px_16px_0_rgba(29,29,29,0.3)] transition-opacity duration-200 hover:opacity-90";
+export const darkButton = clsx(buttonClass({ variant: "dark", size: null }), "whitespace-nowrap");
 
 export function CompanyLogo({ src, name, size = 48 }) {
   const [failed, setFailed] = useState(false);
@@ -70,48 +70,11 @@ export function Badge({ children, tone = "surface" }) {
  * Bottom sheet on phones, centred dialog from `sm` up. Closes on Escape and
  * on a click outside the panel.
  */
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
 export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
   const [mounted, setMounted] = useState(false);
-  const panelRef = useRef(null);
   useEffect(() => setMounted(true), []);
   useBodyScrollLock(open);
-
-  useEffect(() => {
-    if (!open) return undefined;
-    const onKey = (event) => {
-      if (event.key === "Escape") onClose();
-      // Keep Tab inside the dialog: it's modal, the page behind can't be used.
-      if (event.key !== "Tab" || !panelRef.current) return;
-      const items = [...panelRef.current.querySelectorAll(FOCUSABLE)];
-      if (!items.length) return;
-      const first = items[0];
-      const last = items[items.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onClose]);
-
-  // Focus moves into the dialog on open and back to whatever opened it on close.
-  useEffect(() => {
-    if (!open || !mounted) return undefined;
-    const opener = document.activeElement;
-    const panel = panelRef.current;
-    const target = panel?.querySelector("[autofocus]") ?? panel;
-    target?.focus({ preventScroll: true });
-    return () => {
-      if (opener instanceof HTMLElement && opener.isConnected) opener.focus({ preventScroll: true });
-    };
-  }, [open, mounted]);
+  const panelRef = useDialogFocus(open && mounted, onClose);
 
   if (!open || !mounted) return null;
 
@@ -137,7 +100,7 @@ export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
           type="button"
           onClick={onClose}
           aria-label="Close"
-          className="absolute top-4 right-4 z-10 grid size-9 place-items-center rounded-full border border-line bg-white text-dim transition-colors hover:bg-surface"
+          className="absolute top-4 right-4 z-10 grid size-9 place-items-center rounded-full border border-line bg-white text-dim transition-colors after:absolute after:-inset-1 after:content-[''] hover:bg-surface"
         >
           <X size={18} />
         </button>
@@ -152,7 +115,8 @@ export function Dialog({ open, onClose, labelledBy, size = "md", children }) {
  * Button + floating panel, used for the search bar's dropdowns. Closes on an
  * outside click or Escape; the panel is rendered in place so it scrolls with the bar.
  */
-export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, children, className }) {
+/** `align="end"` pins the panel to the button's right edge below `lg`, for a dropdown sitting on the right of a phone row. */
+export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, children, className, align = "start" }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -180,7 +144,7 @@ export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, c
         className="flex h-full min-h-12 w-full items-center gap-2 px-4 text-left text-[14.5px] font-medium"
       >
         {Icon && <Icon size={17} className="shrink-0 text-dim" aria-hidden />}
-        <span className={clsx("min-w-0 flex-1 truncate", label ? "text-ink" : "text-dim/70")}>
+        <span className={clsx("min-w-0 flex-1 truncate", label ? "text-ink" : "text-dim")}>
           {label || placeholder}
         </span>
         <ChevronDown
@@ -190,7 +154,7 @@ export function Dropdown({ icon: Icon, label, placeholder, open, onOpenChange, c
         />
       </button>
       {open && (
-        <div className="absolute top-[calc(100%+8px)] left-0 z-30 w-full min-w-[260px] overflow-hidden rounded-[15px] border border-line bg-white p-1.5 shadow-[0_18px_40px_rgba(29,29,29,0.12)]">
+        <div className={clsx("absolute top-[calc(100%+8px)] z-30 w-full min-w-[260px] overflow-hidden rounded-[15px] border border-line bg-white p-1.5 shadow-[0_18px_40px_rgba(29,29,29,0.12)]", align === "end" ? "right-0 lg:right-auto lg:left-0" : "left-0")}>
           {children}
         </div>
       )}

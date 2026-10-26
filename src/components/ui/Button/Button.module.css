@@ -7,7 +7,7 @@
   border: 1px solid transparent;
   font-size: 0.875rem;
   font-weight: 500;
-  transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base), background-color var(--transition-base), color var(--transition-base);
+  transition: transform 300ms ease, box-shadow 300ms ease, border-color 300ms ease, background-color 300ms ease, color 300ms ease;
 }
 
 .button:hover {
@@ -47,10 +47,10 @@
 .secondary:hover {
   border-color: #bfc7d8;
   background: #fafbff;
-  color: var(--color-foreground);
+  color: var(--color-ink);
 }
 
 .ghost {
   background: transparent;
-  color: var(--color-foreground);
+  color: var(--color-ink);
 }

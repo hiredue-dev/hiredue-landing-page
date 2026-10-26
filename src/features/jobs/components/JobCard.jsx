@@ -97,7 +97,7 @@ export function JobCard({ job, onOpen, onApply, onAutoApply }) {
         <CompanyLogo src={job.imageUrl} name={job.hiringCompany || job.jobTitle} size={44} />
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <p className="truncate text-[15px] leading-none font-medium text-dim">{job.hiringCompany || "Company"}</p>
-          <p className="truncate text-[12.5px] leading-none text-dim/80">
+          <p className="truncate text-[12.5px] leading-none text-dim">
             {platformLabel(job.platformName)}
             {posted && <> · {posted}</>}
           </p>
@@ -135,7 +135,12 @@ export function JobCard({ job, onOpen, onApply, onAutoApply }) {
             <button type="button" onClick={() => onApply(job)} className={clsx(secondaryButton, "min-w-0 flex-1")}>
               Apply manually
             </button>
-            <button type="button" onClick={() => onAutoApply(job)} className={clsx(primaryButton, "min-w-0 flex-1")}>
+            <button
+              type="button"
+              onClick={() => onAutoApply(job)}
+              aria-describedby={`auto-apply-note-${job.id}`}
+              className={clsx(primaryButton, "min-w-0 flex-1")}
+            >
               Auto-apply
             </button>
           </>
@@ -145,6 +150,12 @@ export function JobCard({ job, onOpen, onApply, onAutoApply }) {
           </button>
         )}
       </div>
+      {/* "Auto-apply" installs the desktop app rather than applying here — say so before the click, not after the download starts. */}
+      {onAutoApply && (
+        <p id={`auto-apply-note-${job.id}`} className="-mt-2 text-[12.5px] leading-[1.35] text-dim">
+          Auto-apply runs in the free HireDue desktop app.
+        </p>
+      )}
     </article>
   );
 }

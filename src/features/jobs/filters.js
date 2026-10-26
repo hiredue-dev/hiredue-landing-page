@@ -73,6 +73,17 @@ export function hasActiveFilters(filters) {
   return filtersToQuery({ ...filters, source: "jobs" }) !== "";
 }
 
+/** How many sidebar filters are on — the badge on the phone "Filters" button. Search-bar fields (keywords, location) and the tab don't count. */
+export function sidebarFilterCount(filters) {
+  return (
+    filters.platforms.length +
+    filters.roles.length +
+    filters.experience.length +
+    (filters.easyApply ? 1 : 0) +
+    (filters.postedWithin ? 1 : 0)
+  );
+}
+
 /*
  * The search bar holds keywords as chips. The API takes one `q` in Postgres
  * websearch syntax, where "a b or c" means (a AND b) OR c — so each chip keeps

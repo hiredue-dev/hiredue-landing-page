@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import clsx from "clsx";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
 
@@ -48,7 +48,7 @@ export function FeatureAbout({
     >
       <div className="flex flex-col items-start gap-2.5">
         <Eyebrow>{eyebrow}</Eyebrow>
-        <h2 className="t-h2-feature min-[810px]:whitespace-pre-line">
+        <h2 className="t-h2 min-[810px]:whitespace-pre-line">
           {title}
         </h2>
         {description && <p className="t-body-lg">{description}</p>}
@@ -71,7 +71,7 @@ export function FeatureAbout({
         </ul>
       </div>
 
-      {cta && <ArrowButton label={cta.label} href={cta.href} tone="dark" />}
+      {cta && <Button effect="arrow" ring variant="dark" href={cta.href}>{cta.label}</Button>}
     </Reveal>
   );
 

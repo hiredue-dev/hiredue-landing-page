@@ -9,6 +9,7 @@ import { friendlyAuthError } from "@/features/auth/errorMessages.js";
 import { validateContactNumber, validateEmail, validateSignupPassword } from "@/features/auth/validators.js";
 import { startGoogleSignIn } from "@/features/auth/services/googleAuthService.js";
 import { primaryButton, secondaryButton } from "./ui.jsx";
+import { Busy } from "@/components/site/ui/Spinner";
 
 /*
  * Sign-up and log-in as in-page steps, for the job board's dialogs. Same
@@ -309,7 +310,7 @@ export function SignupDetailsStep({ flow, onSwitchToLogin, submitLabel = "Create
       )}
 
       <button type="submit" disabled={loading} className={clsx(primaryButton, "h-12 text-[15px]")}>
-        {loading ? "Creating your account…" : submitLabel}
+        <Busy busy={loading} label="Creating your account…">{submitLabel}</Busy>
       </button>
       <p className="text-center text-[14px] text-dim">
         Already have an account?{" "}
@@ -390,7 +391,7 @@ export function VerifyStep({ flow, onBack }) {
       {info && !error && <p className="rounded-[12px] bg-success-10 px-4 py-3 text-[14px] text-success">{info}</p>}
 
       <button type="submit" disabled={loading || code.length < 6} className={clsx(primaryButton, "h-12 text-[15px]")}>
-        {loading ? "Verifying…" : "Verify and continue"}
+        <Busy busy={loading} label="Verifying…">Verify and continue</Busy>
       </button>
       <div className="flex items-center justify-between text-[14px]">
         <button type="button" onClick={onBack} className="font-semibold text-dim hover:text-ink">
@@ -480,7 +481,7 @@ export function LoginForm({ initialEmail = "", onSuccess, onSwitchToSignup }) {
       )}
 
       <button type="submit" disabled={loading} className={clsx(primaryButton, "h-12 text-[15px]")}>
-        {loading ? "Logging in…" : "Log in"}
+        <Busy busy={loading} label="Logging in…">Log in</Busy>
       </button>
       <p className="text-center text-[14px] text-dim">
         New to HireDue?{" "}

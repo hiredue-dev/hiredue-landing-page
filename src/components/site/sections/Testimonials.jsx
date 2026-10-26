@@ -1,9 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Avatar } from "@/components/site/ui/Avatar";
-import { Marquee, Reveal } from "@/components/site/ui/Primitives";
+import { Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { testimonials } from "@/lib/content";
@@ -40,47 +40,43 @@ export function Testimonials({ items = testimonials.items }) {
               </ul>
             </Reveal>
             <Reveal delay={0.1}>
-              <button
-                type="button"
-                onClick={() => showModal({ view: "signup" })}
-                className="inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-9 py-3.5 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
-              >
-                {testimonials.cta.label}
-              </button>
+              <Button onClick={() => showModal({ view: "signup" })}>{testimonials.cta.label}</Button>
             </Reveal>
           </div>
         </div>
 
-        <Reveal y={30}>
-          <Marquee duration={70} gap={50} className="w-full">
-            {items.map((item) => (
-              <figure
-                key={item.name}
-                className="flex h-[300px] w-[400px] shrink-0 flex-col justify-between overflow-hidden rounded-[30px] bg-white p-10"
-              >
-                <div className="flex flex-col gap-4 pb-10">
-                  <Image
-                    src={assets.icons.stars5}
-                    alt="5 out of 5"
-                    width={137}
-                    height={27}
-                    className="h-[27px] w-auto"
-                  />
-                  <blockquote className="t-body-lg text-ink">{item.quote}</blockquote>
-                </div>
-                <figcaption className="flex items-center gap-4">
-                  <Avatar name={item.name} size={50} />
-                  <span className="flex flex-col gap-0.5">
-                    <span className="text-[20px] leading-[1.3] font-medium text-ink">
-                      {item.name}
+        {/* Read, not chased: a still grid from sm up, a swipeable row on
+            phones (each card snaps, the next one peeks in at the edge). */}
+        <div className="container-page">
+          <RevealGroup
+            step={0.06}
+            className="-mx-[30px] flex snap-x snap-mandatory gap-5 overflow-x-auto px-[30px] pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 lg:gap-[30px] [&::-webkit-scrollbar]:hidden"
+          >
+            {items.slice(0, 6).map((item) => (
+              <RevealItem key={item.name} className="w-[85%] shrink-0 snap-start sm:w-auto">
+                <figure className="flex h-full flex-col justify-between rounded-[30px] bg-white p-7 sm:p-8">
+                  <div className="flex flex-col gap-4 pb-8">
+                    <Image
+                      src={assets.icons.stars5}
+                      alt="5 out of 5"
+                      width={137}
+                      height={27}
+                      className="h-[22px] w-auto self-start"
+                    />
+                    <blockquote className="t-body-lg text-ink">{item.quote}</blockquote>
+                  </div>
+                  <figcaption className="flex items-center gap-4">
+                    <Avatar name={item.name} size={50} />
+                    <span className="flex flex-col gap-0.5">
+                      <span className="text-[18px] leading-[1.3] font-medium text-ink">{item.name}</span>
+                      <span className="t-body-sm">{item.role}</span>
                     </span>
-                    <span className="t-body-sm">{item.role}</span>
-                  </span>
-                </figcaption>
-              </figure>
+                  </figcaption>
+                </figure>
+              </RevealItem>
             ))}
-          </Marquee>
-        </Reveal>
+          </RevealGroup>
+        </div>
       </div>
     </section>
   );

@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
-import { SlideButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { useAuth } from "@/features/auth/context/AuthContext";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -18,6 +18,7 @@ import {
   getProducts,
   validateCoupon,
 } from "@/features/subscription/services/subscriptionService";
+import { Busy } from "@/components/site/ui/Spinner";
 
 const CURRENCY_SYMBOLS = { INR: "₹", USD: "$", EUR: "€", GBP: "£" };
 
@@ -268,7 +269,7 @@ export function Pricing() {
 
   return (
     <section id="pricing" className="relative pb-[120px] md:pb-[200px]">
-      <div className="mx-auto w-full max-w-[1060px] px-[30px]">
+      <div className="container-wide">
         <div className="flex flex-col items-center gap-[50px]">
           <Reveal className="flex flex-col items-center gap-2.5">
             <Eyebrow>{pricing.eyebrow}</Eyebrow>
@@ -372,11 +373,7 @@ export function Pricing() {
                   <h3 className="t-h5">{pricing.enterprise.title}</h3>
                   <p className="t-body-lg max-w-[406px]">{pricing.enterprise.description}</p>
                 </div>
-                <SlideButton
-                  label={pricing.enterprise.cta.label}
-                  href={pricing.enterprise.cta.href}
-                  tone="ink"
-                />
+                <Button effect="slide" variant="ink" href={pricing.enterprise.cta.href}>{pricing.enterprise.cta.label}</Button>
               </div>
               <Image
                 src={assets.pricing.enterprise}
@@ -410,14 +407,9 @@ function CouponBox({ code, onCodeChange, applied, error, applying, disabled, onA
               {applied.paymentMethod && ` · Pay with ${METHOD_LABELS[applied.paymentMethod]} to get it`}
             </span>
           </div>
-          <button
-            type="button"
-            onClick={onRemove}
-            disabled={disabled}
-            className="rounded-full px-4 py-2 text-[14px] font-semibold text-dim ring-1 ring-line hover:text-ink disabled:opacity-60"
-          >
+          <Button variant="outline" size="sm" onClick={onRemove} disabled={disabled}>
             Remove
-          </button>
+          </Button>
         </div>
         {/* The payment page opens on the plan's full price and only brings the
             offer in once a payment method is being chosen. Saying so here
@@ -454,13 +446,9 @@ function CouponBox({ code, onCodeChange, applied, error, applying, disabled, onA
             error ? "ring-danger/40" : "ring-line",
           )}
         />
-        <button
-          type="submit"
-          disabled={!code.trim() || applying || disabled}
-          className="rounded-full bg-ink px-5 py-2.5 text-[15px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-        >
-          {applying ? "Checking…" : "Apply"}
-        </button>
+        <Button type="submit" variant="ink" size="sm" disabled={!code.trim() || applying || disabled}>
+          <Busy busy={applying} label="Checking…">Apply</Busy>
+        </Button>
       </form>
       {error && (
         <p id="pricing-coupon-error" role="alert" className="text-[14px] leading-[1.3] font-medium text-danger">
@@ -552,17 +540,14 @@ function PlanCard({ product, coupon, featured, onSelect, loading, disabled }) {
         </div>
       )}
 
-      <button
-        type="button"
+      <Button
+        variant={featured ? "white" : "ink"}
         onClick={() => onSelect(product)}
         disabled={disabled || loading}
-        className={clsx(
-          "inline-flex w-full items-center justify-center rounded-full px-6 py-[18px] text-[18px] leading-[1.3] font-semibold transition-opacity duration-200 disabled:cursor-not-allowed disabled:opacity-60",
-          featured ? "bg-white text-ink" : "bg-ink text-white",
-        )}
+        className="w-full py-[18px]"
       >
-        {loading ? "Processing…" : pricing.ctaLabel}
-      </button>
+        <Busy busy={loading} label="Processing…">{pricing.ctaLabel}</Busy>
+      </Button>
 
       <ul className="flex flex-col gap-2.5">
         {product.features?.map((feature) => (
@@ -631,14 +616,9 @@ function StatusBanner({ variant, message, onVerify, verifying, onDismiss, verify
       </span>
       <div className="flex items-center gap-2.5">
         {onVerify && (
-          <button
-            type="button"
-            onClick={onVerify}
-            disabled={verifying}
-            className="rounded-full bg-ink px-4 py-2 text-[14px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:opacity-60"
-          >
-            {verifying ? "Checking…" : verifyLabel}
-          </button>
+          <Button variant="ink" size="sm" onClick={onVerify} disabled={verifying}>
+            <Busy busy={verifying} label="Checking…">{verifyLabel}</Busy>
+          </Button>
         )}
         {onDismiss && (
           <button

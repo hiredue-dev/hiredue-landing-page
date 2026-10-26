@@ -30,7 +30,7 @@ export function Comparison() {
 
   return (
     <section ref={sectionRef} className="relative flex flex-col gap-[150px] pt-[120px] md:pt-[200px]">
-      <div className="sticky top-20 mx-auto w-full max-w-[760px] px-[30px]">
+      <div className="sticky top-20 container-narrow">
         <div className="flex flex-col gap-[50px]">
           <Reveal className="px-[30px]">
             <h2 className="t-h2 text-center">{comparison.title}</h2>

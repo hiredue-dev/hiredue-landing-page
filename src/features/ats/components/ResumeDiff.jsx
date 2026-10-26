@@ -9,8 +9,9 @@ import { SECTION_LABELS, readResume } from "../resumeText.js";
 const FIRST_SHOWN = 4;
 
 const ROW = {
-  del: { row: "bg-danger-05", mark: "rounded-[3px] bg-danger/15 text-ink no-underline", sign: "−", label: "Removed: ", text: "text-dim" },
-  add: { row: "bg-success-10", mark: "rounded-[3px] bg-success/25 text-ink no-underline", sign: "+", label: "Added: ", text: "text-ink" },
+  // Removed words are struck through, not just tinted, so the change reads without relying on colour.
+  del: { row: "bg-danger-05", mark: "rounded-[3px] bg-danger/15 text-ink line-through decoration-[#b91c1c]/70", tag: "Before", tagColor: "text-[#b91c1c]", text: "text-dim" },
+  add: { row: "bg-success-10", mark: "rounded-[3px] bg-success/25 text-ink no-underline", tag: "After", tagColor: "text-[#047857]", text: "text-ink" },
 };
 
 /** One removed or added line, with the words that changed marked. */
@@ -19,11 +20,12 @@ function DiffLine({ line }) {
   const Mark = line.op === "del" ? "del" : "ins";
   return (
     <p className={clsx("flex gap-2.5 px-3 py-1.5 text-[14px] leading-[1.55]", style.row, style.text)}>
-      <span className="w-2 shrink-0 select-none font-semibold text-dim/70" aria-hidden>
-        {style.sign}
+      {/* a word, not a −/+ sign: which line is old reads without colour */}
+      <span className={clsx("w-[46px] shrink-0 pt-[3px] text-[12px] leading-none font-semibold tracking-[0.02em] uppercase select-none", style.tagColor)}>
+        {style.tag}
+        <span className="sr-only">:</span>
       </span>
       <span className="min-w-0 break-words">
-        <span className="sr-only">{style.label}</span>
         {line.parts.map((part, k) =>
           part.changed ? (
             <Mark key={k} className={style.mark}>

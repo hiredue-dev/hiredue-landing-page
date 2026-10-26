@@ -42,9 +42,15 @@ export function ResumeDropzone({ parsing, error, onFile, privacyNote, autoFocus 
           setDragging(false);
           if (!parsing) take(event.dataTransfer.files);
         }}
+        /* A click anywhere on the area opens the picker, not just the button
+           (which stays the keyboard route, so this is a mouse convenience). */
+        onClick={(event) => {
+          if (!parsing && !event.target.closest("button, a, input")) inputRef.current?.click();
+        }}
         className={clsx(
           "flex flex-col items-center gap-5 rounded-[20px] border-[1.5px] border-dashed px-6 py-12 text-center transition-colors duration-200 sm:py-16",
           dragging ? "border-brand bg-ice" : "border-line bg-white",
+          !parsing && "cursor-pointer hover:border-brand/50",
         )}
       >
         <span className="grid size-14 place-items-center rounded-full bg-ice text-brand">

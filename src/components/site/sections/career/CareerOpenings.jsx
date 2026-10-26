@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { SlideButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal, RevealGroup, RevealItem } from "@/components/site/ui/Primitives";
 import { assets } from "@/lib/assets";
 import { careerPage } from "@/lib/content";
 
 const { openings, apply } = careerPage;
 
-export function CareerOpenings({ items = openings.items }) {
+export function CareerOpenings({ items = [] }) {
   return (
     <section className="relative pb-[120px] md:pb-[200px]">
-      <div className="mx-auto w-full max-w-[1060px] px-[30px]">
+      <div className="container-wide">
         <div className="flex flex-col items-center gap-[50px]">
           <Reveal className="flex flex-col items-center gap-2.5">
             <Eyebrow>{openings.eyebrow}</Eyebrow>
@@ -19,13 +19,24 @@ export function CareerOpenings({ items = openings.items }) {
             <p className="t-body-lg max-w-[520px] text-center">{openings.description}</p>
           </Reveal>
 
-          <RevealGroup step={0.08} className="grid w-full gap-5 md:grid-cols-3">
-            {items.map((role) => (
-              <RevealItem key={role.title}>
-                <RoleCard role={role} />
-              </RevealItem>
-            ))}
-          </RevealGroup>
+          {items.length ? (
+            <RevealGroup step={0.08} className="grid w-full gap-5 md:grid-cols-3">
+              {items.map((role) => (
+                <RevealItem key={role.title}>
+                  <RoleCard role={role} />
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          ) : (
+            <div className="flex w-full max-w-[560px] flex-col items-center gap-2 rounded-[20px] bg-surface px-6 py-10 text-center">
+              <p className="t-h5">{openings.empty.title}</p>
+              <p className="t-body">{openings.empty.description}</p>
+              <Button variant="ink" size="sm" href={apply.cta.href} className="mt-3">
+                {openings.empty.cta}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </Button>
+            </div>
+          )}
 
           {/* how to apply */}
           <div className="relative w-full overflow-hidden rounded-[30px] bg-[linear-gradient(#e2f5ff_0%,#fff_100%)] p-[30px]">
@@ -43,7 +54,7 @@ export function CareerOpenings({ items = openings.items }) {
                   </a>
                 </p>
               </div>
-              <SlideButton label={apply.cta.label} href={apply.cta.href} tone="ink" />
+              <Button effect="slide" variant="ink" href={apply.cta.href}>{apply.cta.label}</Button>
             </div>
             <Image
               src={assets.pricing.enterprise}
@@ -72,15 +83,24 @@ function RoleCard({ role }) {
 
       <h3 className="t-h5 flex-1">{role.title}</h3>
 
-      <a
-        href={role.jdUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="inline-flex items-center gap-1.5 text-[15px] leading-[1.3] font-semibold text-brand"
-      >
-        View job description
-        <ArrowIcon className="size-3.5" />
-      </a>
+      {/* Applying meant finding the shared form at the bottom of the page;
+          each role links to it directly (the form asks which role). */}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+        <Button variant="ink" size="sm" href={apply.cta.href}>
+          Apply
+          <span className="sr-only"> for {role.title} (opens in a new tab)</span>
+        </Button>
+        <a
+          href={role.jdUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-1.5 text-[15px] leading-[1.3] font-semibold text-brand"
+        >
+          View job description
+          <span className="sr-only"> for {role.title} (opens in a new tab)</span>
+          <ArrowIcon className="size-3.5" />
+        </a>
+      </div>
     </div>
   );
 }

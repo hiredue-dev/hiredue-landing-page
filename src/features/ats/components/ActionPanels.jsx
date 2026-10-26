@@ -14,17 +14,27 @@ import { ScoreDelta } from "./Score.jsx";
 
 const copy = atsChecker.tabs;
 
-/** The button that runs an AI action; signed out, it says an account comes first. */
+/**
+ * The button that runs an AI action. Signed out, the lock sits on the button
+ * itself and the note is tied to it, so the account step is no surprise.
+ */
 function GatedButton({ signedIn, onClick, children, icon: Icon, type = "button" }) {
+  const noteId = useId();
+  const ButtonIcon = signedIn ? Icon : Lock;
   return (
     <div className="flex flex-wrap items-center gap-3">
-      <button type={type} onClick={onClick} className={clsx(primaryButton, "h-12 px-7 text-[15px]")}>
-        <Icon size={17} aria-hidden />
+      <button
+        type={type}
+        onClick={onClick}
+        aria-describedby={signedIn ? undefined : noteId}
+        className={clsx(primaryButton, "h-12 px-7 text-[15px]")}
+      >
+        <ButtonIcon size={17} aria-hidden />
         {children}
       </button>
       {!signedIn && (
-        <span className="flex items-center gap-1.5 text-[13px] font-medium text-dim">
-          <Lock size={14} aria-hidden /> Free account required
+        <span id={noteId} className="text-[13px] font-medium text-dim">
+          Needs a free account — your score stays free
         </span>
       )}
     </div>

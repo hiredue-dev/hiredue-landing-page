@@ -19,7 +19,7 @@ export function FeatureIntegrations() {
         <div className="flex flex-col items-center gap-[30px] min-[810px]:gap-10 min-[1200px]:gap-[50px]">
           <Reveal className="flex max-w-[800px] flex-col items-center gap-2.5">
             <Eyebrow>{integrations.eyebrow}</Eyebrow>
-            <h2 className="t-h2-feature text-center min-[810px]:whitespace-pre-line">
+            <h2 className="t-h2 text-center min-[810px]:whitespace-pre-line">
               {integrations.title}
             </h2>
             <p className="t-body-lg text-center">{integrations.description}</p>

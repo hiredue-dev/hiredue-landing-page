@@ -20,7 +20,7 @@ export default async function CareerPage() {
   return (
     <>
       <CareerHero />
-      <CareerOpenings items={jobOpenings?.length ? jobOpenings : undefined} />
+      <CareerOpenings items={jobOpenings ?? []} />
     </>
   );
 }

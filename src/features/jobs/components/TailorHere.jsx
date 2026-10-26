@@ -69,7 +69,12 @@ export function TailorHere({ job, onDone, onDownloadAndApply }) {
 
   if (state.status === "running") return <Progress stages={atsChecker.stages.tailor} current={state.stage} />;
 
-  if (state.status === "error") return <RunError error={state.error} onRetry={() => setState(IDLE)} />;
+  // Retrying the same file only helps for service hiccups. For a bad file
+  // (wrong type, too big, a scan) go back to the dropzone with the message,
+  // so another file can be picked without reopening the dialog.
+  if (state.status === "error" && state.error.retry) {
+    return <RunError error={state.error} onRetry={() => setState(IDLE)} />;
+  }
 
   if (state.status === "done") {
     const { result, fileName, bytes } = state;
@@ -113,7 +118,7 @@ export function TailorHere({ job, onDone, onDownloadAndApply }) {
   return (
     <ResumeDropzone
       parsing={state.status === "parsing"}
-      error={null}
+      error={state.status === "error" ? state.error : null}
       onFile={run}
       title="One-click resume tailoring. Free."
       privacyNote="We keep only the text of your resume, never the file, and only to write this version."

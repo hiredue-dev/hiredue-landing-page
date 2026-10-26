@@ -151,7 +151,7 @@ function ZoomButton({ label, disabled, onClick, children }) {
       disabled={disabled}
       onClick={onClick}
       className={clsx(
-        "grid size-8 place-items-center rounded-full text-ink transition-colors",
+        "relative grid size-8 place-items-center rounded-full text-ink transition-colors after:absolute after:-inset-1.5 after:content-['']",
         disabled ? "cursor-not-allowed opacity-40" : "hover:bg-surface",
       )}
     >

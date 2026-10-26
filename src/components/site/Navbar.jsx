@@ -9,15 +9,19 @@ import clsx from "clsx";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { nav } from "@/lib/navigation-content";
+import { Button } from "@/components/site/ui/Button";
 import { spring } from "@/lib/motion";
 
-const sectionIds = ["features", "how-it-works", "overview", "pricing"];
+const sectionIds = ["features", "how-it-works", "pricing"];
 
 export function Navbar() {
   const [active, setActive] = useState(null);
   const [open, setOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [scrolledAway, setScrolledAway] = useState(false);
   const userMenuRef = useRef(null);
+  const menuButtonRef = useRef(null);
+  const mobileMenuRef = useRef(null);
 
   const router = useRouter();
   const { isAuthenticated, user, logout } = useAuth();
@@ -52,12 +56,76 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  /* Slide the bar away while scrolling down, back as soon as the visitor
+     scrolls up. Small moves (trackpad jitter, momentum settling) are ignored,
+     and it always shows near the top of the page. */
+  useEffect(() => {
+    const TOP = 80;
+    const JITTER = 8;
+    let lastY = window.scrollY;
+    let frame = 0;
+
+    const onScroll = () => {
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const y = window.scrollY;
+        if (y < TOP) {
+          setScrolledAway(false);
+          lastY = y;
+          return;
+        }
+        const delta = y - lastY;
+        if (Math.abs(delta) < JITTER) return;
+        setScrolledAway(delta > 0);
+        lastY = y;
+      });
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  /* never hide with a menu open */
+  const hidden = scrolledAway && !open && !userMenuOpen;
+
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
   }, [open]);
+
+  /* Mobile menu: focus its first link on open, and hand focus back to the
+     menu button on close (unless it already moved on, e.g. to the sign-up
+     modal or a new page). */
+  const wasOpen = useRef(false);
+  useEffect(() => {
+    if (open) {
+      mobileMenuRef.current?.querySelector("a, button")?.focus({ preventScroll: true });
+    } else if (wasOpen.current) {
+      const active = document.activeElement;
+      if (!active || active === document.body || mobileMenuRef.current?.contains(active)) {
+        menuButtonRef.current?.focus({ preventScroll: true });
+      }
+    }
+    wasOpen.current = open;
+  }, [open]);
+
+  /* Escape closes whichever menu is open */
+  useEffect(() => {
+    if (!open && !userMenuOpen) return;
+    const onKey = (event) => {
+      if (event.key !== "Escape") return;
+      setOpen(false);
+      setUserMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, userMenuOpen]);
 
   /* close both menus whenever the route changes */
   useEffect(() => {
@@ -87,22 +155,33 @@ export function Navbar() {
 
   return (
     <>
-      <motion.header
-        initial={{ opacity: 0.001, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={spring(0.6, 0.1)}
-        className="fixed inset-x-0 top-0 z-50 py-5"
+      {/* The header slides out of view on scroll-down (transform); the load-in
+          animation lives on the wrapper below, since a CSS animation on the
+          same element would pin its transform. Keyboard focus landing in the
+          bar brings it back. */}
+      <header
+        onFocusCapture={() => setScrolledAway(false)}
+        className={clsx(
+          "fixed inset-x-0 top-0 z-50 py-5 transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none",
+          hidden && "-translate-y-full",
+        )}
       >
-        {/* 1040 rather than the template's 940: measured in the browser, six
-            links need ~603px and 940 leaves the nav 533px between the logo and
-            the CTA slot, so the first link ran into the logo. */}
-        <div className="mx-auto w-full max-w-[1040px] px-[30px]">
+        {/* 1120 rather than the template's 940: the old six links measured
+            ~603px in the browser and ran into the logo at 940. The five now
+            come to roughly 440px (estimated from the old measurement), which
+            leaves room for "Log in" + the CTA from lg up. */}
+        {/* CSS load-in (globals.css `.appear`), so the bar is never invisible
+            before hydration */}
+        <div
+          style={{ "--appear-delay": "0.1s", "--appear-y": "10px", "--appear-duration": "0.6s" }}
+          className="appear mx-auto w-full max-w-[1120px] px-[30px]"
+        >
           {/*
            * Logo stays its natural width, always left-aligned. Only the right
            * slot gets a fixed width at lg+, since that's the side whose content
-           * actually changes (the "Download the App" CTA vs. the signed-in
-           * avatar, ~178px vs ~70px) — reserving its widest footprint keeps the
-           * bar from resizing when auth state flips.
+           * actually changes ("Log in" + the CTA vs. the signed-in avatar,
+           * ~258px vs ~70px) — reserving its widest footprint keeps the bar
+           * from resizing when auth state flips.
            *
            * The nav sits between them as a flex-1 track and centers itself
            * within whatever room that leaves. Centering it on the bar's full
@@ -147,7 +226,7 @@ export function Navbar() {
               })}
             </nav>
 
-            <div className="hidden lg:flex lg:w-[184px] lg:shrink-0 lg:items-center lg:justify-end">
+            <div className="hidden lg:flex lg:w-[264px] lg:shrink-0 lg:items-center lg:justify-end">
               {isAuthenticated ? (
                 <div ref={userMenuRef} className="relative">
                   <button
@@ -191,20 +270,28 @@ export function Navbar() {
                   </AnimatePresence>
                 </div>
               ) : (
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signup" })}
-                  className="inline-flex shrink-0 rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] py-2.5 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
-                >
-                  {nav.cta.label}
-                </button>
+                <div className="flex items-center gap-1">
+                  {/* returning users get their own way in — the CTA only opens sign-up */}
+                  <button
+                    type="button"
+                    onClick={() => showModal({ view: "signin" })}
+                    className="hidden rounded-full px-3.5 py-2.5 text-[14px] leading-[1.3] font-semibold whitespace-nowrap text-ink transition-colors duration-300 hover:bg-surface lg:inline-flex"
+                  >
+                    {nav.login.label}
+                  </button>
+                  <Button size="sm" onClick={() => showModal({ view: "signup" })}>
+                    {nav.cta.label}
+                  </Button>
+                </div>
               )}
             </div>
 
             <button
               type="button"
+              ref={menuButtonRef}
               aria-label={open ? "Close menu" : "Open menu"}
               aria-expanded={open}
+              aria-controls="mobile-menu"
               onClick={() => setOpen((v) => !v)}
               className="ml-auto grid size-9 place-items-center rounded-full bg-surface lg:hidden"
             >
@@ -231,6 +318,8 @@ export function Navbar() {
           <AnimatePresence>
             {open && (
               <motion.nav
+                ref={mobileMenuRef}
+                id="mobile-menu"
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
@@ -273,24 +362,34 @@ export function Navbar() {
                     </button>
                   </>
                 ) : (
-                  <div className="pt-1.5">
+                  <div className="flex flex-col gap-1.5 pt-1.5">
                     <button
                       type="button"
                       onClick={() => {
                         setOpen(false);
+                        showModal({ view: "signin" });
+                      }}
+                      className="inline-flex w-full items-center justify-center rounded-full bg-surface py-3 px-6 text-[14px] font-semibold leading-[1.3] text-ink"
+                    >
+                      {nav.login.label}
+                    </button>
+                    <Button
+                      size="sm"
+                      className="w-full"
+                      onClick={() => {
+                        setOpen(false);
                         showModal({ view: "signup" });
                       }}
-                      className="inline-flex w-full shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] py-2.5 px-6 text-[14px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)]"
                     >
                       {nav.cta.label}
-                    </button>
+                    </Button>
                   </div>
                 )}
               </motion.nav>
             )}
           </AnimatePresence>
         </div>
-      </motion.header>
+      </header>
 
       <AnimatePresence>
         {open && (

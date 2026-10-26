@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import { SecurityDiagram } from "@/components/site/sections/security-diagram";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
@@ -26,13 +26,7 @@ export function Security() {
               <h2 className="t-h2">{security.title}</h2>
               <p className="t-body-lg">{security.description}</p>
               <div className="pt-2.5">
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signup" })}
-                  className="inline-flex shrink-0 items-center justify-center rounded-full bg-[linear-gradient(110deg,#323232_0%,#000_100%)] px-9 py-3.5 text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(29,29,29,0.5)] transition-opacity hover:opacity-90"
-                >
-                  {security.cta.label}
-                </button>
+                <Button onClick={() => showModal({ view: "signup" })}>{security.cta.label}</Button>
               </div>
             </div>
 
