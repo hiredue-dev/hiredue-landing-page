@@ -2,6 +2,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { BlogHero } from "@/components/site/blog/BlogHero";
 import { BlogCard } from "@/components/site/blog/BlogCard";
+import { EndCta } from "@/components/site/sections/EndCta";
 import { PostAuthor } from "@/components/site/blog/PostAuthor";
 import { PostBody } from "@/components/site/blog/PostBody";
 import { JsonLd } from "@/components/site/seo/JsonLd";
@@ -105,7 +106,7 @@ export default async function BlogPostPage({ params }) {
         {post.author && <PostAuthor author={post.author} />}
       </BlogHero>
 
-      <article className="relative flex flex-col items-center pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]">
+      <article className="relative flex flex-col items-center pb-[60px] min-[810px]:pb-[100px]">
         <div className="container-page flex flex-col items-center gap-[50px]">
           <Reveal y={30} className="w-full">
             <Image
@@ -124,6 +125,9 @@ export default async function BlogPostPage({ params }) {
           </Reveal>
         </div>
       </article>
+
+      {/* posts are how most people find the site: end each on a next step */}
+      <EndCta />
 
       <section className="relative flex flex-col items-center pb-[30px] min-[810px]:pb-20 min-[1200px]:pb-[100px]">
         <div className="container-page flex flex-col gap-10 min-[1200px]:gap-[50px]">

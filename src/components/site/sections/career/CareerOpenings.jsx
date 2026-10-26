@@ -8,7 +8,7 @@ import { careerPage } from "@/lib/content";
 
 const { openings, apply } = careerPage;
 
-export function CareerOpenings({ items = openings.items }) {
+export function CareerOpenings({ items = [] }) {
   return (
     <section className="relative pb-[120px] md:pb-[200px]">
       <div className="mx-auto w-full max-w-[1060px] px-[30px]">
@@ -19,13 +19,29 @@ export function CareerOpenings({ items = openings.items }) {
             <p className="t-body-lg max-w-[520px] text-center">{openings.description}</p>
           </Reveal>
 
-          <RevealGroup step={0.08} className="grid w-full gap-5 md:grid-cols-3">
-            {items.map((role) => (
-              <RevealItem key={role.title}>
-                <RoleCard role={role} />
-              </RevealItem>
-            ))}
-          </RevealGroup>
+          {items.length ? (
+            <RevealGroup step={0.08} className="grid w-full gap-5 md:grid-cols-3">
+              {items.map((role) => (
+                <RevealItem key={role.title}>
+                  <RoleCard role={role} />
+                </RevealItem>
+              ))}
+            </RevealGroup>
+          ) : (
+            <div className="flex w-full max-w-[560px] flex-col items-center gap-2 rounded-[20px] bg-surface px-6 py-10 text-center">
+              <p className="t-h5">{openings.empty.title}</p>
+              <p className="t-body">{openings.empty.description}</p>
+              <a
+                href={apply.cta.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-3 inline-flex min-h-11 items-center rounded-full bg-ink px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90"
+              >
+                {openings.empty.cta}
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            </div>
+          )}
 
           {/* how to apply */}
           <div className="relative w-full overflow-hidden rounded-[30px] bg-[linear-gradient(#e2f5ff_0%,#fff_100%)] p-[30px]">

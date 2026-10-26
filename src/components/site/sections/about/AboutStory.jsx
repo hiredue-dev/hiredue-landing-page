@@ -70,7 +70,7 @@ export function AboutStory({
   body,
 }) {
   return (
-    <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
+    <section className="relative pt-[140px] pb-[60px] min-[810px]:pt-[170px] min-[810px]:pb-[100px] min-[1200px]:pt-[194px]">
       <div className="mx-auto w-full max-w-[760px] px-[30px]">
         <Reveal className="flex flex-col items-center gap-2.5 text-center">
           <Eyebrow>{eyebrow}</Eyebrow>

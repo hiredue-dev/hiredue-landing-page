@@ -662,6 +662,15 @@ export const featurePage = {
 /* ------------------------------------------------------------------ */
 /*  /ambassadors — the creator ambassador program                       */
 /* ------------------------------------------------------------------ */
+/* The band that closes the blog posts and the about page (EndCta). */
+export const endCta = {
+  title: "Let HireDue apply for you",
+  description:
+    "HireDue finds the right roles, tailors your resume and submits your applications, so you can focus on the interview.",
+  label: hero.primary.label,
+  signedIn: hero.signedIn,
+};
+
 export const ambassadorPage = {
   /* Every apply button on the page reads this one value — set
      NEXT_PUBLIC_AMBASSADOR_APPLY_URL and the whole page points at it. */
@@ -1045,31 +1054,15 @@ export const careerPage = {
   openings: {
     eyebrow: "Open roles",
     title: "Current openings",
-    description:
-      "We're currently hiring for focused internship roles across the founder's office and engineering.",
-    items: [
-      {
-        title: "Founder's Office Intern (Brand, Content & UI/UX)",
-        team: "Founder's Office",
-        location: "Remote",
-        type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/15xifbyFZcdl_-nRUENCMjUqrJzsuAkrz/view?usp=sharing",
-      },
-      {
-        title: "Founder's Office Intern (Management and Outreach)",
-        team: "Founder's Office",
-        location: "Remote",
-        type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/1FHu_9kPQB9FlngGlzwNkO6AAWi5hrusv/view?usp=sharing",
-      },
-      {
-        title: "SDE Intern",
-        team: "Engineering",
-        location: "Remote",
-        type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/1NbEbOi_vlQUe35a12WDeAgNYdqedLOsq/view?usp=sharing",
-      },
-    ],
+    description: "Focused roles across the founder's office and engineering.",
+    /* Roles come from the CMS only. With none published the page says so,
+       rather than showing roles that may have closed. */
+    empty: {
+      title: "No open roles right now",
+      description:
+        "We don't have an opening that's live today. Join the talent pool and we'll reach out when a relevant role opens.",
+      cta: "Join the talent pool",
+    },
   },
   apply: {
     title: "How to apply",
