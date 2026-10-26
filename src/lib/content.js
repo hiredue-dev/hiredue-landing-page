@@ -915,7 +915,7 @@ export const downloadPage = {
   title: "Download HireDue",
   description:
     "Install the desktop app to start automating your job search — it's free, and takes under a minute to set up.",
-  version: "Version 1.0.1",
+  versionLabel: "Version",
   freeNote: "Free to install",
   notice: {
     heading: "Already installed?",

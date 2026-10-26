@@ -6,7 +6,6 @@ export const metadata = createPageMetadata({
   description:
     "Install the HireDue desktop app for macOS or Windows — free to download.",
   path: "/download",
-  noIndex: true,
 });
 
 export default function DownloadPage() {
