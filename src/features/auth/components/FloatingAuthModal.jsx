@@ -114,6 +114,24 @@ const viewVariants = {
   exit: { opacity: 0, y: -6, transition: { duration: 0.13 } },
 };
 
+/** The form's one message slot: an error (announced at once) and/or a notice (announced politely). */
+function FormAlert({ error, notice }) {
+  return (
+    <>
+      {error && (
+        <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
+          {error}
+        </p>
+      )}
+      {notice && (
+        <p role="status" className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
+          {notice}
+        </p>
+      )}
+    </>
+  );
+}
+
 function GoogleIcon() {
   return (
     <svg className="size-[18px] shrink-0" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden>
@@ -350,11 +368,7 @@ function SigninView({ onClose, onSwitch, onForgot, redirectTo, router }) {
           Forgot password?
         </button>
 
-        {error && (
-          <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-            {error}
-          </p>
-        )}
+        <FormAlert error={error} />
 
         <button type="submit" disabled={loading} className={btnPrimary}>
           <Busy busy={loading} label="Signing in…">Sign in</Busy>
@@ -610,16 +624,7 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
               {passwordError && <span id="signup-password-error" className="text-[12px] font-medium text-[#c0382b]">{passwordError}</span>}
             </label>
 
-            {notice && (
-              <p role="status" className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-                {notice}
-              </p>
-            )}
-            {error && !notice && (
-              <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-                {error}
-              </p>
-            )}
+            <FormAlert error={notice ? null : error} notice={notice} />
 
             <button type="submit" disabled={loading} className={btnPrimary}>
               <Busy busy={loading} label="Creating account…">Create account</Busy>
@@ -641,16 +646,7 @@ function SignupView({ onClose, onSwitch, redirectTo, router }) {
             className="h-[56px] w-full rounded-[14px] border border-line bg-white px-4 text-center font-display text-[28px] font-semibold tracking-[0.5em] text-ink outline-none transition-colors placeholder:text-dim/30 focus:border-brand focus:ring-[3px] focus:ring-brand/20"
           />
 
-          {error && (
-            <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-              {error}
-            </p>
-          )}
-          {notice && !error && (
-            <p role="status" className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-              {notice}
-            </p>
-          )}
+          <FormAlert error={error} notice={error ? null : notice} />
 
           <button
             type="submit"
@@ -781,16 +777,7 @@ function ForgotView({ onBack }) {
             />
           </label>
 
-          {error && (
-            <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-              {error}
-            </p>
-          )}
-          {success && (
-            <p role="status" className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-              {success}
-            </p>
-          )}
+          <FormAlert error={error} notice={success} />
 
           <button type="submit" disabled={loading} className={btnPrimary}>
             <Busy busy={loading} label="Sending code…">Send code</Busy>
@@ -834,16 +821,7 @@ function ForgotView({ onBack }) {
             </span>
           </label>
 
-          {error && (
-            <p role="alert" className="rounded-[12px] bg-[rgba(245,28,35,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#b91c1c] border border-[rgba(245,28,35,0.12)]">
-              {error}
-            </p>
-          )}
-          {success && (
-            <p role="status" className="rounded-[12px] bg-[rgba(16,185,129,0.06)] px-4 py-3 text-[13px] leading-[1.45] font-medium text-[#087a57] border border-[rgba(16,185,129,0.12)]">
-              {success}
-            </p>
-          )}
+          <FormAlert error={error} notice={success} />
 
           <button type="submit" disabled={loading} className={btnPrimary}>
             <Busy busy={loading} label="Resetting…">Reset password</Busy>

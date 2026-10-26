@@ -1,7 +1,11 @@
 "use client";
 
 import { Children, cloneElement, isValidElement, useId } from "react";
+import Image from "next/image";
 import clsx from "clsx";
+import { Busy } from "@/components/site/ui/Spinner";
+import { assets } from "@/lib/assets";
+import getFieldError from "@/utils/getFieldError";
 
 /*
  * Labelled field for the marketing-site forms (contact, onboarding call).
@@ -63,5 +67,57 @@ export function FormStatus({ status, message }) {
     >
       {message}
     </p>
+  );
+}
+
+/**
+ * A text input bound to one of the marketing forms' hooks (useContactForm,
+ * useOnboardingCallForm): value, change handler and error all come from
+ * `form` by `name`. Anything else goes on the <input>.
+ */
+export function FormInput({ form, name, label, required, hint, ...inputProps }) {
+  return (
+    <Field label={label} required={required} error={getFieldError(form.errors, name)} hint={hint}>
+      <Input name={name} value={form.values[name]} onChange={form.handleChange} {...inputProps} />
+    </Field>
+  );
+}
+
+/**
+ * The card the contact and onboarding-call forms sit in: grey panel, the
+ * fields, a submit button that spins while sending, the result line, and
+ * the hills along the bottom.
+ */
+export function FormCard({ form, submitLabel, submittingLabel, children }) {
+  const submitting = form.status === "submitting";
+  return (
+    <div className="relative w-full overflow-hidden rounded-[30px] bg-surface shadow-[0_24px_60px_rgba(29,29,29,0.12)]">
+      <form
+        onSubmit={form.handleSubmit}
+        className="relative z-10 flex flex-col gap-5 p-[26px] pb-[150px] min-[810px]:p-10 min-[810px]:pb-[170px]"
+      >
+        {children}
+
+        <button
+          type="submit"
+          disabled={submitting}
+          className="inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-4 text-[16px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:opacity-60 sm:w-auto"
+        >
+          <Busy busy={submitting} label={submittingLabel}>
+            {submitLabel}
+          </Busy>
+        </button>
+
+        <FormStatus status={form.status} message={form.message} />
+      </form>
+
+      <Image
+        src={assets.hero.hills}
+        alt=""
+        width={1040}
+        height={260}
+        className="pointer-events-none absolute right-0 bottom-0 left-0 z-0 h-[140px] w-full object-cover object-top min-[810px]:h-[170px]"
+      />
+    </div>
   );
 }

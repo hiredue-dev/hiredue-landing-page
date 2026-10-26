@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Eyebrow } from "@/components/site/ui/Primitives";
-import { Field, FormStatus, Input } from "@/components/site/ui/FormField";
+import { FormCard, FormInput } from "@/components/site/ui/FormField";
 import { assets } from "@/lib/assets";
 import { onboardingCallPage } from "@/lib/content";
 import { appear } from "@/lib/motion";
 import useOnboardingCallForm from "@/features/onboarding-call/hooks/useOnboardingCallForm";
-import getFieldError from "@/utils/getFieldError";
-import { Busy } from "@/components/site/ui/Spinner";
 
 const { hero } = onboardingCallPage;
 
@@ -92,78 +90,16 @@ function OnboardingCallForm({ form }) {
   useEffect(() => setTimeHint(localCallTime(form.values.preferredDate)), [form.values.preferredDate]);
 
   return (
-    <div className="relative w-full overflow-hidden rounded-[30px] bg-surface shadow-[0_24px_60px_rgba(29,29,29,0.12)]">
-      <form
-        onSubmit={form.handleSubmit}
-        className="relative z-10 flex flex-col gap-5 p-[26px] pb-[150px] min-[810px]:p-10 min-[810px]:pb-[170px]"
-      >
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label={copy.nameLabel} required error={getFieldError(form.errors, "name")}>
-            <Input
-              name="name"
-              autoComplete="name"
-              placeholder={copy.namePlaceholder}
-              value={form.values.name}
-              onChange={form.handleChange}
-            />
-          </Field>
-          <Field label={copy.phoneLabel} required error={getFieldError(form.errors, "phone")}>
-            <Input
-              type="tel"
-              name="phone"
-              autoComplete="tel"
-              placeholder={copy.phonePlaceholder}
-              value={form.values.phone}
-              onChange={form.handleChange}
-            />
-          </Field>
-        </div>
+    <FormCard form={form} submitLabel={copy.submitLabel} submittingLabel={copy.submittingLabel}>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <FormInput form={form} name="name" label={copy.nameLabel} required autoComplete="name" placeholder={copy.namePlaceholder} />
+        <FormInput form={form} name="phone" label={copy.phoneLabel} required type="tel" autoComplete="tel" placeholder={copy.phonePlaceholder} />
+      </div>
 
-        <div className="grid gap-5 sm:grid-cols-2">
-          <Field label={copy.emailLabel} required error={getFieldError(form.errors, "email")}>
-            <Input
-              type="email"
-              name="email"
-              autoComplete="email"
-              placeholder={copy.emailPlaceholder}
-              value={form.values.email}
-              onChange={form.handleChange}
-            />
-          </Field>
-          <Field
-            label={copy.dateLabel}
-            required
-            error={getFieldError(form.errors, "preferredDate")}
-            hint={timeHint}
-          >
-            <Input
-              type="date"
-              name="preferredDate"
-              min={minDate}
-              value={form.values.preferredDate}
-              onChange={form.handleChange}
-            />
-          </Field>
-        </div>
-
-        <button
-          type="submit"
-          disabled={form.status === "submitting"}
-          className="inline-flex w-full items-center justify-center rounded-full bg-ink px-8 py-4 text-[16px] font-semibold text-white transition-opacity duration-200 hover:opacity-90 disabled:opacity-60 sm:w-auto"
-        >
-          <Busy busy={form.status === "submitting"} label={copy.submittingLabel}>{copy.submitLabel}</Busy>
-        </button>
-
-        <FormStatus status={form.status} message={form.message} />
-      </form>
-
-      <Image
-        src={assets.hero.hills}
-        alt=""
-        width={1040}
-        height={260}
-        className="pointer-events-none absolute right-0 bottom-0 left-0 z-0 h-[140px] w-full object-cover object-top min-[810px]:h-[170px]"
-      />
-    </div>
+      <div className="grid gap-5 sm:grid-cols-2">
+        <FormInput form={form} name="email" label={copy.emailLabel} required type="email" autoComplete="email" placeholder={copy.emailPlaceholder} />
+        <FormInput form={form} name="preferredDate" label={copy.dateLabel} required hint={timeHint} type="date" min={minDate} />
+      </div>
+    </FormCard>
   );
 }
