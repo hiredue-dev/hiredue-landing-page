@@ -2,22 +2,16 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { SlideButton } from "@/components/site/ui/Button";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { Button } from "@/components/site/ui/Button";
 import { CloudStage } from "@/components/site/ui/Cloud";
 import { RotatingWord } from "@/components/site/ui/RotatingWord";
+import { WithLiveBadge } from "@/components/site/ui/LiveBadge";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { hero } from "@/lib/content";
-import { spring } from "@/lib/motion";
+import { appear } from "@/lib/motion";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
-
-/** Load-in: fade up, with the same delay ladder the original uses. */
-const appear = (delay, y = 20, duration = 1) => ({
-  initial: { opacity: 0.001, y },
-  animate: { opacity: 1, y: 0 },
-  transition: spring(duration, delay),
-});
 
 /*
  * Scroll ranges measured off the original at a 1440 viewport:
@@ -43,8 +37,12 @@ const HILL_FADE = [250, 820];
 const COPY_BLOCK = 420;
 
 export function Hero() {
-  /* Both effects belong to the desktop layout only, same as the original. */
+  /* Both effects belong to the desktop layout only, same as the original.
+     With reduced motion the dashboard sits at full size and the hills only
+     fade — no scroll-linked zoom or slide. */
   const desktop = useMediaQuery("(min-width: 1200px)");
+  const reduced = useReducedMotion();
+  const zoom = desktop && !reduced;
   const { isAuthenticated } = useAuth();
 
   const { showModal } = useAuthModal();
@@ -53,14 +51,18 @@ export function Hero() {
   const dashScale = useTransform(
     scrollY,
     [DASH_FROM, DASH_TO],
-    desktop ? [0.64, 1] : [1, 1],
+    zoom ? [0.64, 1] : [1, 1],
     { clamp: true },
   );
-  const dashY = useTransform(scrollY, [DASH_FROM, DASH_TO], desktop ? [-190, 0] : [0, 0], {
+  const dashY = useTransform(scrollY, [DASH_FROM, DASH_TO], zoom ? [-190, 0] : [0, 0], {
     clamp: true,
   });
-  const hillScale = useTransform(scrollY, [0, HILL_RANGE], [1, 2], { clamp: true });
-  const hillY = useTransform(scrollY, [0, HILL_RANGE], [0, 1400], { clamp: true });
+  const hillScale = useTransform(scrollY, [0, HILL_RANGE], reduced ? [1, 1] : [1, 2], {
+    clamp: true,
+  });
+  const hillY = useTransform(scrollY, [0, HILL_RANGE], reduced ? [0, 0] : [0, 1400], {
+    clamp: true,
+  });
   const hillOpacity = useTransform(scrollY, HILL_FADE, [1, 0], { clamp: true });
 
   return (
@@ -96,94 +98,66 @@ export function Hero() {
             >
               <div className="flex flex-col items-center gap-5">
                 <div className="flex flex-col items-center gap-2.5">
-                  <motion.h1 {...appear(0.3)} className="t-h1 max-w-[1200px] text-center">
+                  <h1 style={appear(0.3)} className="appear t-h1 max-w-[1200px] text-center">
                     HireDue{" "}
+                    {/* a white chip with brand text: white type straight on the
+                        pale sky read as the faintest word in the headline */}
                     <RotatingWord
                       words={hero.rotatingWords}
-                      className="text-white drop-shadow-[0_4px_20px_rgba(29,29,29,0.25)]"
+                      className="rounded-[0.2em] bg-white px-[0.16em] pt-[0.06em] pb-[0.1em] text-brand shadow-[0_8px_24px_rgba(29,29,29,0.08)]"
                     />{" "}
-                    {hero.tagline}
-                  </motion.h1>
+                    {/* its own line, always: left inline, the chip's width
+                        change would pull "while" up onto the first line for
+                        short words and push it back down for long ones */}
+                    <span className="block">{hero.tagline}</span>
+                  </h1>
                 </div>
 
-                <motion.p
-                  {...appear(0.4)}
-                  className="max-w-[600px] text-center text-[20px] leading-[1.3] font-medium text-dim"
+                <p
+                  style={appear(0.4)}
+                  className="appear max-w-[600px] text-center text-[20px] leading-[1.3] font-medium text-dim"
                 >
                   {hero.description}
-                </motion.p>
+                </p>
               </div>
 
-    <div className="flex flex-wrap items-center justify-center gap-5">
-                <motion.div {...appear(0.5)}>
-    {
-      !isAuthenticated && (
-                  <button
-                    type="button"
-                    onClick={() => showModal({ view: "signup" })}
-                    className="inline-flex shrink-0 rounded-full bg-white/10 p-1.5"
-                  >
-                    <span className="relative flex items-center justify-center overflow-hidden rounded-full bg-[linear-gradient(110deg,#3b82f6_0%,#406ae4_100%)] py-3 px-[30px] text-[18px] font-semibold leading-[1.3] text-white shadow-[inset_4px_4px_8px_0_rgba(255,255,255,0.3),inset_-4px_-4px_8px_0_rgba(255,255,255,0.3),0_8px_16px_0_rgba(58,119,229,0.5)]">
+              <div className="flex flex-wrap items-center justify-center gap-5">
+                <div style={appear(0.5)} className="appear">
+                  {/* signed in, sign-up is moot — the next step is the app */}
+                  {isAuthenticated ? (
+                    <Button effect="arrow" ring href={hero.signedIn.href}>{hero.signedIn.label}</Button>
+                  ) : (
+                    <Button ring onClick={() => showModal({ view: "signup" })}>
                       {hero.primary.label}
-                    </span>
-                  </button>
-      )
-    }
-                </motion.div>
-                <motion.div {...appear(0.6)}>
-                  <SlideButton
-                    label={hero.secondary.label}
-                    href={hero.secondary.href}
-                    tone="white"
-                  />
-                </motion.div>
+                    </Button>
+                  )}
+                </div>
+                <div style={appear(0.6)} className="appear">
+                  {/* "Live" gets a broadcast badge: it's a real session, not a video */}
+                  <Button effect="slide" variant="white" href={hero.secondary.href}><WithLiveBadge label={hero.secondary.label} /></Button>
+                </div>
               </div>
 
-              <motion.ul
-                {...appear(0.7)}
-                className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2.5"
-              >
-                {hero.proof.map((item, i) => (
-                  <li key={item.label} className="flex items-center gap-x-5">
-                    {i > 0 && <span className="hidden h-[22px] w-px bg-ink sm:block" />}
-                    <span className="flex items-center gap-1.5">
-                      <Image
-                        src={item.icon}
-                        alt=""
-                        width={19}
-                        height={18}
-                        className="h-[18px] w-auto"
-                      />
-                      <span className="t-body">{item.label}</span>
-                    </span>
-                  </li>
-                ))}
-              </motion.ul>
+              {!isAuthenticated && (
+                <p
+                  style={appear(0.65)}
+                  className="appear -mt-2 rounded-full px-4 py-1.5 text-center text-[14px] leading-[1.3] font-medium text-dim max-md:bg-white/80 max-md:text-ink max-md:backdrop-blur-sm"
+                >
+                  {hero.reassurance}
+                </p>
+              )}
+
             </div>
 
             {/* product shot */}
-            <motion.div
-              initial={{ opacity: 0.001, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={spring(1, 1.2)}
-              className="mx-auto w-full max-w-[1060px]"
-            >
+            <div style={appear(1.2, 50)} className="appear mx-auto w-full max-w-[1060px]">
               <motion.div
                 style={{ scale: dashScale, y: dashY }}
                 className="origin-center will-change-transform"
               >
-                <Image
-                  src={assets.hero.dashboard}
-                  alt="HireDue dashboard"
-                  width={1920}
-                  height={1080}
-                  priority
-                  unoptimized
-                  sizes="(max-width: 1100px) 100vw, 1060px"
-                  className="w-full rounded-[20px]"
-                />
+                <DashboardShot />
               </motion.div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>
@@ -209,6 +183,56 @@ export function Hero() {
       <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[4] h-[100px] bg-[linear-gradient(rgba(255,255,255,0)_0%,rgba(255,255,255,0.7)_25%,#fff_50%)] min-[810px]:h-[160px] min-[1200px]:h-[200px]" />
 
     </section>
+  );
+}
+
+/*
+ * The product shot is an ~840 KB animated WebP, too heavy to be the page's
+ * first big paint. Its first frame (~30 KB) loads with priority instead, and
+ * the animation fades in over it once the page has finished loading. Reduced
+ * motion and Data Saver keep the still.
+ */
+function DashboardShot() {
+  const reduced = useReducedMotion();
+  const [animate, setAnimate] = useState(false);
+  const [animationReady, setAnimationReady] = useState(false);
+
+  useEffect(() => {
+    if (reduced || navigator.connection?.saveData) return undefined;
+    const start = () => setAnimate(true);
+    if (document.readyState === "complete") {
+      start();
+      return undefined;
+    }
+    window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, [reduced]);
+
+  return (
+    <div className="relative">
+      <Image
+        src={assets.hero.dashboardPoster}
+        alt="HireDue dashboard"
+        width={1200}
+        height={675}
+        priority
+        unoptimized
+        sizes="(max-width: 1100px) 100vw, 1060px"
+        className="w-full rounded-[20px]"
+      />
+      {animate && (
+        <Image
+          src={assets.hero.dashboard}
+          alt=""
+          width={1200}
+          height={675}
+          unoptimized
+          onLoad={() => setAnimationReady(true)}
+          sizes="(max-width: 1100px) 100vw, 1060px"
+          className={`absolute inset-0 w-full rounded-[20px] transition-opacity duration-500 ${animationReady ? "opacity-100" : "opacity-0"}`}
+        />
+      )}
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView, useReducedMotion } from "framer-motion";
 import clsx from "clsx";
 import { ApplyForm, OutreachDesk, SourceGraph } from "@/components/site/sections/feature-cards";
 import { spring } from "@/lib/motion";
@@ -20,31 +20,53 @@ const DWELL = 4200;
 
 export function FeatureHeroVisual() {
   const [index, setIndex] = useState(0);
+  /* hover or keyboard focus inside the panel holds the current slide */
+  const [held, setHeld] = useState(false);
+  const ref = useRef(null);
+  const visible = useInView(ref);
+  /* reduced motion: no auto-advance at all — the dots still switch slides */
+  const reduced = useReducedMotion();
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), DWELL);
-    return () => clearInterval(id);
-  }, []);
+    if (held || reduced || !visible) return;
+    const id = setTimeout(() => setIndex((i) => (i + 1) % SLIDES.length), DWELL);
+    return () => clearTimeout(id);
+  }, [index, held, reduced, visible]);
 
   const slide = SLIDES[index];
 
   return (
     <motion.div
+      ref={ref}
+      onMouseEnter={() => setHeld(true)}
+      onMouseLeave={() => setHeld(false)}
+      onFocus={() => setHeld(true)}
+      onBlur={() => setHeld(false)}
       layout
       animate={{ backgroundColor: slide.dark ? "#000000" : "#edf1f4" }}
       transition={{ duration: 0.5 }}
       className="relative flex min-h-[460px] w-full flex-col items-center overflow-hidden rounded-[20px] p-8"
     >
       {/* progress dots */}
-      <div className="flex shrink-0 items-center gap-2 pb-7">
+      <div className="flex shrink-0 items-center gap-0.5 pb-4">
         {SLIDES.map((s, i) => (
-          <span
+          /* the visible dot stays small; the button around it is the
+             44px hit area */
+          <button
             key={s.key}
-            className={clsx(
-              "h-1.5 rounded-full transition-all duration-300",
-              i === index ? "w-6 bg-brand" : slide.dark ? "w-1.5 bg-white/20" : "w-1.5 bg-line",
-            )}
-          />
+            type="button"
+            aria-label={`Show slide ${i + 1}: ${s.label}`}
+            aria-current={i === index}
+            onClick={() => setIndex(i)}
+            className="grid h-11 min-w-6 place-items-center rounded-full px-1 focus-visible:outline-2 focus-visible:outline-brand"
+          >
+            <span
+              className={clsx(
+                "block h-1.5 rounded-full transition-all duration-300",
+                i === index ? "w-6 bg-brand" : slide.dark ? "w-1.5 bg-white/40" : "w-1.5 bg-line",
+              )}
+            />
+          </button>
         ))}
       </div>
 
@@ -61,7 +83,10 @@ export function FeatureHeroVisual() {
             <p className={clsx("t-h5 text-center", slide.dark ? "text-white" : "text-ink")}>
               {slide.label}
             </p>
-            <slide.Visual />
+            {/* a miniature mockup: one image to assistive tech, its label above */}
+            <div role="img" aria-label={`Animated mockup: ${slide.label}`} className="w-full">
+              <slide.Visual />
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>

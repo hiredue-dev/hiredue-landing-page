@@ -19,7 +19,7 @@ export function Progress({ stages, current }) {
         const done = index < at;
         const active = index === at;
         return (
-          <li key={stage.id} className={clsx("flex items-center gap-3 text-[15px] font-medium", done || active ? "text-ink" : "text-dim/60")}>
+          <li key={stage.id} className={clsx("flex items-center gap-3 text-[15px] font-medium", done || active ? "text-ink" : "text-dim")}>
             <span className="grid size-6 shrink-0 place-items-center">
               {done ? (
                 <Check size={18} className="text-success" aria-hidden />

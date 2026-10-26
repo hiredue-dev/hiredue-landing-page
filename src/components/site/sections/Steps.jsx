@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import clsx from "clsx";
-import { ArrowButton } from "@/components/site/ui/Button";
+import { Button } from "@/components/site/ui/Button";
 import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
 import {
   ConnectVisual,
@@ -21,11 +21,14 @@ export function Steps() {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
 
+  /* no auto-advance under reduced motion — the tabs still switch on click */
+  const reduced = useReducedMotion();
+
   useEffect(() => {
-    if (paused) return;
+    if (paused || reduced) return;
     const id = setTimeout(() => setIndex((v) => (v + 1) % steps.items.length), DWELL);
     return () => clearTimeout(id);
-  }, [index, paused]);
+  }, [index, paused, reduced]);
 
   const step = steps.items[index];
   const Visual = VISUALS[index];
@@ -50,7 +53,7 @@ export function Steps() {
                 </div>
               ))}
             </div>
-            <ArrowButton label={steps.cta.label} href={steps.cta.href} tone="dark" />
+            <Button effect="arrow" ring variant="dark" href={steps.cta.href}>{steps.cta.label}</Button>
           </Reveal>
 
           <Reveal

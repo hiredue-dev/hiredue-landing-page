@@ -1,10 +1,14 @@
+import { COUNTRY_BY_ISO } from "@/features/auth/countries.js";
+
 const WAITLIST_APPS_SCRIPT_URL =
   process.env.NEXT_PUBLIC_GOOGLE_SHEET_ENDPOINT ||
   "https://script.google.com/macros/s/AKfycbz38tTutZS7MefU3XBAFlEkDlhks2MsMcz3pK1igv3CUyVEus_MWvU-_pnDT8K58DVFWw/exec";
 
 const waitlistService = {
   submit: async (payload) => {
-    const phone = payload.phone ? `+91${payload.phone}` : payload.phone;
+    // The sheet has always stored "+<dial><number>"; it used to assume +91.
+    const dial = COUNTRY_BY_ISO[payload.countryCode]?.dial ?? "91";
+    const phone = payload.phone ? `+${dial}${payload.phone}` : payload.phone;
     const formBody = new URLSearchParams({
       email: payload.email,
       name: payload.name,

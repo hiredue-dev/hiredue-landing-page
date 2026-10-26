@@ -20,7 +20,7 @@ export default async function BlogIndexPage() {
         bg={assets.hero.sky}
         className="pb-[60px] min-[810px]:pb-20 min-[1200px]:pb-[100px]"
       >
-        <h1 className="t-blog-title text-center">{blog.title}</h1>
+        <h1 className="t-page-title text-center">{blog.title}</h1>
       </BlogHero>
 
       <section className="relative flex flex-col items-center pb-[30px] min-[810px]:pb-20 min-[1200px]:pb-[100px]">

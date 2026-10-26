@@ -101,10 +101,12 @@ export function HiringPostsStrip({ filters, authKey, onUnlock, onSeeAll, onOpen 
             ))}
         </div>
 
-        <div className="grid gap-2.5 sm:grid-cols-3">
+        {/* Phones: one swipeable row instead of three stacked cards, which
+            pushed the job list a third of a screen further down. */}
+        <div className="-mx-4 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-4 pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden">
           {state.status === "loading"
             ? [0, 1, 2].map((i) => (
-                <div key={i} aria-hidden className="h-[76px] animate-pulse rounded-[14px] bg-white/15" />
+                <div key={i} aria-hidden className="h-[76px] w-[78%] shrink-0 animate-pulse rounded-[14px] bg-white/15 sm:w-auto" />
               ))
             : state.jobs.map((job) => (
                 <CompactPostRow
@@ -131,7 +133,7 @@ function CompactPostRow({ job, locked, onClick }) {
     <button
       type="button"
       onClick={onClick}
-      className="flex min-w-0 items-center gap-3 rounded-[14px] border border-white/40 bg-white/95 px-3.5 py-3 text-left transition-[background-color,box-shadow] duration-200 hover:bg-white hover:shadow-[0_4px_14px_rgba(0,0,0,0.12)]"
+      className="flex w-[78%] min-w-0 shrink-0 snap-start items-center gap-3 rounded-[14px] border border-white/40 bg-white/95 px-3.5 py-3 text-left sm:w-auto transition-[background-color,box-shadow] duration-200 hover:bg-white hover:shadow-[0_4px_14px_rgba(0,0,0,0.12)]"
     >
       <CompanyLogo src={null} name={job.hiringCompany || job.jobTitle} size={34} />
       <span className="min-w-0 flex-1">

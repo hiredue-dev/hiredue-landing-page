@@ -29,3 +29,15 @@ export const inView = {
   whileInView: "visible",
   viewport: { once: true, amount: 0.1, margin: "0px 0px -40px 0px" },
 };
+
+/**
+ * Above-the-fold load-in as CSS custom properties, for an element carrying
+ * the `appear` class (globals.css). CSS rather than a motion `initial`: that
+ * would ship the hero in the server HTML at opacity 0.001, blank until the
+ * JS bundle hydrates. Same defaults as the template: y 20 → 0 over 1s.
+ */
+export const appear = (delay, y = 20, duration = 1) => ({
+  "--appear-delay": `${delay}s`,
+  "--appear-y": `${y}px`,
+  "--appear-duration": `${duration}s`,
+});

@@ -1,29 +1,16 @@
 import { assets, marks } from "@/lib/assets";
 
-export const nav = {
-  brand: "HireDue",
-  links: [
-    { label: "Features", href: "#features" },
-    { label: "Get Started", href: "#how-it-works" },
-    { label: "Platform Overview", href: "#overview" },
-    { label: "Pricing", href: "#pricing" },
-  ],
-  cta: { label: "Get Started Free", href: "/signup" },
-};
-
 export const hero = {
   title: "Discover, Outreach, Apply. While you sleep.",
   rotatingWords: ["Auto Applies", "Discovers", "Outreaches"],
   tagline: "while you sleep",
   description:
     "HireDue scours 50,000+ career pages and top job boards, pitches the right decision-makers, and auto-submits your applications. You just focus on the interview.",
-  primary: { label: "Sign Up Free", href: "/signup" },
+  primary: { label: "Get Started Free", href: "/signup" },
+  signedIn: { label: "Download the App", href: "/download" },
   secondary: { label: "Join Live Onboarding", href: "/onboarding-call" },
-  proof: [
-    { icon: assets.icons.star, label: "1000+ active users" },
-    { icon: assets.icons.shield, label: "Privacy-first, data store locally" },
-    { icon: assets.icons.bolt, label: "Be the first one to apply" },
-  ],
+  // under the CTAs, signed-out only: the questions that stop a first click
+  reassurance: "Free to install · Mac & Windows · No credit card",
 };
 
 export const clients = {
@@ -68,7 +55,7 @@ export const features = {
   title: "Everything you need to land your next role",
   description:
     "Built for job seekers who are done doing this manually — students, career switchers, and experienced professionals alike.",
-  cta: { label: "Explore Features", href: "/feature" },
+  cta: { label: "See all features", href: "/feature" },
   findJobs: {
     title: "Find Relevant Jobs",
     description: "Find relevant jobs 24x7 automatically",
@@ -95,7 +82,6 @@ export const overview = {
   title: "See your job search running in real time",
   description:
     "A live dashboard that brings job discovery, applications, and recruiter outreach together in one clear view.",
-  primary: { label: "Explore Features", href: "/feature" },
   secondary: { label: "Download the App", href: "/download" },
   cards: [
     {
@@ -222,7 +208,6 @@ export const integrations = {
   title: "Connect with the job boards and ATS you already use",
   description:
     "HireDue searches every major job board — LinkedIn, Indeed, and more — and submits through 6+ ATS providers, with new ones added all the time.",
-  cta: { label: "Explore all integrations", href: "/feature" },
   footnote: "All major job boards, plus 6+ ATS providers — and growing",
 };
 
@@ -673,6 +658,15 @@ export const featurePage = {
 /* ------------------------------------------------------------------ */
 /*  /ambassadors — the creator ambassador program                       */
 /* ------------------------------------------------------------------ */
+/* The band that closes the blog posts and the about page (EndCta). */
+export const endCta = {
+  title: "Let HireDue apply for you",
+  description:
+    "HireDue finds the right roles, tailors your resume and submits your applications, so you can focus on the interview.",
+  label: hero.primary.label,
+  signedIn: hero.signedIn,
+};
+
 export const ambassadorPage = {
   /* Every apply button on the page reads this one value — set
      NEXT_PUBLIC_AMBASSADOR_APPLY_URL and the whole page points at it. */
@@ -1056,31 +1050,15 @@ export const careerPage = {
   openings: {
     eyebrow: "Open roles",
     title: "Current openings",
-    description:
-      "We're currently hiring for focused internship roles across the founder's office and engineering.",
-    items: [
-      {
-        title: "Founder's Office Intern (Brand, Content & UI/UX)",
-        team: "Founder's Office",
-        location: "Remote",
-        type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/15xifbyFZcdl_-nRUENCMjUqrJzsuAkrz/view?usp=sharing",
-      },
-      {
-        title: "Founder's Office Intern (Management and Outreach)",
-        team: "Founder's Office",
-        location: "Remote",
-        type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/1FHu_9kPQB9FlngGlzwNkO6AAWi5hrusv/view?usp=sharing",
-      },
-      {
-        title: "SDE Intern",
-        team: "Engineering",
-        location: "Remote",
-        type: "Internship",
-        jdUrl: "https://drive.google.com/file/d/1NbEbOi_vlQUe35a12WDeAgNYdqedLOsq/view?usp=sharing",
-      },
-    ],
+    description: "Focused roles across the founder's office and engineering.",
+    /* Roles come from the CMS only. With none published the page says so,
+       rather than showing roles that may have closed. */
+    empty: {
+      title: "No open roles right now",
+      description:
+        "We don't have an opening that's live today. Join the talent pool and we'll reach out when a relevant role opens.",
+      cta: "Join the talent pool",
+    },
   },
   apply: {
     title: "How to apply",

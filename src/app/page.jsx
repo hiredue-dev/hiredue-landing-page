@@ -38,13 +38,14 @@ export default async function Home() {
       <Features />
       <Overview />
       <Steps />
+      {/* proof straight after "how it works", before security and pricing */}
+      <Testimonials
+        items={testimonialItems?.length ? testimonialItems : undefined}
+      />
       <Security />
       <UseCases />
       <Integrations />
       <Stats />
-      <Testimonials
-        items={testimonialItems?.length ? testimonialItems : undefined}
-      />
       <Pricing />
       <Faq items={faqItems?.length ? faqItems : undefined} />
     </>

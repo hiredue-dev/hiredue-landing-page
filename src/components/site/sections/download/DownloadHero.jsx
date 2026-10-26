@@ -1,17 +1,20 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 import { motion } from "framer-motion";
-import { Eyebrow, Reveal } from "@/components/site/ui/Primitives";
+import { PageHero } from "@/components/site/ui/PageHero";
+import { Reveal } from "@/components/site/ui/Primitives";
 import { useAuthModal } from "@/features/auth/components/FloatingAuthModal.jsx";
 import { assets } from "@/lib/assets";
 import { downloadPage } from "@/lib/content";
+import { detectPlatform, PLATFORMS } from "@/features/jobs/downloads.js";
 
-const MAC_ARM_URL = process.env.NEXT_PUBLIC_DOWNLOAD_MAC_ARM || "";
-const MAC_INTEL_URL = process.env.NEXT_PUBLIC_DOWNLOAD_MAC_INTEL || "";
-const WINDOWS_URL = process.env.NEXT_PUBLIC_DOWNLOAD_WINDOWS || "";
+/* Build URLs and availability come from the shared list in
+   features/jobs/downloads.js; this page only adds how each card looks. */
+const build = (key) => PLATFORMS.find((p) => p.key === key);
 
 const platforms = [
   {
@@ -20,7 +23,7 @@ const platforms = [
     name: "macOS",
     variant: "Apple Silicon",
     note: "For newer Macs",
-    url: MAC_ARM_URL,
+    url: build("mac-arm").url,
     fileLabel: ".dmg",
     bg: assets.useCases[2].card,
   },
@@ -30,7 +33,7 @@ const platforms = [
     name: "Windows",
     variant: "Windows 10 & 11 (64-bit)",
     note: "Installer for PC",
-    url: WINDOWS_URL,
+    url: build("windows").url,
     fileLabel: ".exe",
     bg: assets.useCases[1].card,
   },
@@ -39,82 +42,110 @@ const platforms = [
     Icon: AppleIcon,
     name: "macOS",
     variant: "Intel-based Macs",
-    note: "We're polishing this build",
-    url: MAC_INTEL_URL,
+    note: build("mac-intel").comingSoon ? "We're polishing this build" : "For older Macs",
+    url: build("mac-intel").url,
     fileLabel: ".dmg",
-    comingSoon: true,
+    comingSoon: build("mac-intel").comingSoon,
     bg: assets.useCases[2].card,
   },
 ];
 
 export function DownloadHero() {
   const { showModal } = useAuthModal();
+  /* The build for this computer, known only in the browser. Its card moves
+     first and its button goes through /download/started, which starts the
+     same installer and explains what to do next. */
+  const [recommended, setRecommended] = useState(null);
+  useEffect(() => setRecommended(detectPlatform()), []);
   return (
-    <section className="relative pt-[140px] pb-[100px] min-[810px]:pt-[170px] min-[810px]:pb-[160px] min-[1200px]:pt-[194px] min-[1200px]:pb-[200px]">
-      <div className="mx-auto w-full max-w-[1100px] px-[30px]">
-        <div className="flex flex-col items-center gap-[50px]">
-          <Reveal className="flex flex-col items-center gap-2.5">
-            <Eyebrow>{downloadPage.eyebrow}</Eyebrow>
-            <h1 className="t-h2 text-center">{downloadPage.title}</h1>
-            <p className="t-body-lg max-w-[520px] text-center">{downloadPage.description}</p>
-          </Reveal>
+    <PageHero
+      eyebrow={downloadPage.eyebrow}
+      title={downloadPage.title}
+      description={downloadPage.description}
+      width="wide"
+      className="pb-[100px] min-[810px]:pb-[160px] min-[1200px]:pb-[200px]"
+    >
+      <Reveal y={30} className="grid w-full gap-5 md:grid-cols-3">
+        {platforms.map((platform) => (
+          <PlatformCard key={platform.key} platform={platform} recommended={platform.key === recommended} />
+        ))}
+      </Reveal>
 
-          <Reveal y={30} className="grid w-full gap-5 md:grid-cols-3">
-            {platforms.map((platform) => (
-              <PlatformCard key={platform.key} platform={platform} />
-            ))}
-          </Reveal>
-
-          <Reveal delay={0.1} className="flex flex-col items-center gap-5">
-            <div className="flex flex-wrap items-center justify-center gap-3">
-              <span className="t-body-sm">{downloadPage.version}</span>
-              <span className="size-1 rounded-full bg-dim" />
-              <span className="flex items-center gap-1.5 text-[14px] leading-[1.3] font-medium text-dim">
-                <Image src={assets.icons.checkGreen} alt="" width={14} height={14} className="size-3.5" />
-                {downloadPage.freeNote}
-              </span>
-            </div>
-
-            <div className="max-w-[620px] rounded-[20px] bg-surface px-6 py-5 text-center">
-              <p className="t-body">
-                <strong className="font-semibold text-ink">{downloadPage.notice.heading}</strong>{" "}
-                {downloadPage.notice.body} Need an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signup" })}
-                  className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
-                >
-                  {downloadPage.notice.cta.label}
-                </button>{" "}
-                or{" "}
-                <button
-                  type="button"
-                  onClick={() => showModal({ view: "signin" })}
-                  className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
-                >
-                  {downloadPage.notice.altCta.label}
-                </button>
-                .
-              </p>
-            </div>
-          </Reveal>
+      <Reveal delay={0.1} className="flex flex-col items-center gap-5 self-center">
+        <div className="flex flex-wrap items-center justify-center gap-3">
+          <span className="t-body-sm">{downloadPage.version}</span>
+          <span className="size-1 rounded-full bg-dim" />
+          <span className="flex items-center gap-1.5 text-[14px] leading-[1.3] font-medium text-dim">
+            <Image src={assets.icons.checkGreen} alt="" width={14} height={14} className="size-3.5" />
+            {downloadPage.freeNote}
+          </span>
         </div>
-      </div>
-    </section>
+
+        <div className="max-w-[620px] rounded-[20px] bg-surface px-6 py-5 text-center">
+          <p className="t-body">
+            <strong className="font-semibold text-ink">{downloadPage.notice.heading}</strong>{" "}
+            {downloadPage.notice.body} Need an account?{" "}
+            <button
+              type="button"
+              onClick={() => showModal({ view: "signup" })}
+              className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
+            >
+              {downloadPage.notice.cta.label}
+            </button>{" "}
+            or{" "}
+            <button
+              type="button"
+              onClick={() => showModal({ view: "signin" })}
+              className="font-semibold text-brand underline decoration-brand/30 underline-offset-2"
+            >
+              {downloadPage.notice.altCta.label}
+            </button>
+            .
+          </p>
+        </div>
+      </Reveal>
+    </PageHero>
   );
 }
 
 /* ------------------------------------------------------------------ */
 
-function PlatformCard({ platform }) {
+function PlatformCard({ platform, recommended }) {
   const { Icon, name, variant, note, url, fileLabel, comingSoon, bg } = platform;
   const available = !comingSoon && Boolean(url);
+
+  /* A live build with no URL is a missing env var, not a coming-soon build —
+     never let it read as "this platform isn't supported". */
+  useEffect(() => {
+    if (!comingSoon && !url) console.warn(`[download] no installer URL configured for ${platform.key}`);
+  }, [comingSoon, url, platform.key]);
+
+  const buttonClass =
+    "inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition-opacity duration-200 hover:opacity-90";
+  const buttonContent = (
+    <>
+      <motion.span
+        className="inline-flex"
+        variants={{
+          rest: { y: 0 },
+          hover: {
+            y: [0, 3, 0],
+            transition: { duration: 1.4, repeat: Infinity, ease: "easeInOut" },
+          },
+        }}
+      >
+        <DownloadIcon className="size-4" />
+      </motion.span>
+      Download {fileLabel}
+    </>
+  );
 
   return (
     <div
       className={clsx(
-        "relative h-[420px] w-full overflow-hidden rounded-[30px] p-2.5",
+        "relative min-h-[260px] w-full overflow-hidden rounded-[30px] p-2.5 md:h-[420px]",
         comingSoon && "opacity-70",
+        recommended && "order-first ring-2 ring-brand ring-offset-2",
       )}
     >
       <Image
@@ -128,6 +159,11 @@ function PlatformCard({ platform }) {
       <div className="relative flex h-full flex-col justify-between rounded-[20px] bg-white/30 p-[26px] backdrop-blur-[2px]">
         <div className="flex items-start justify-between gap-3">
           <div className="flex flex-col gap-1">
+            {recommended && (
+              <span className="mb-1 self-start rounded-full bg-brand px-3 py-1 text-[12px] leading-[1.3] font-semibold text-white">
+                Recommended for this computer
+              </span>
+            )}
             <h3 className="t-h4">{name}</h3>
             <p className="t-body-lg">{variant}</p>
           </div>
@@ -139,34 +175,28 @@ function PlatformCard({ platform }) {
         <div className="flex flex-col gap-3">
           <p className="t-body">{note}</p>
 
-          {available ? (
-            <motion.a
-              href={url}
-              download
-              rel="noopener noreferrer"
-              initial="rest"
-              whileHover="hover"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-3.5 text-[15px] font-semibold text-white transition-opacity duration-200 hover:opacity-90"
-            >
-              <motion.span
-                className="inline-flex"
-                variants={{
-                  rest: { y: 0 },
-                  hover: {
-                    y: [0, 3, 0],
-                    transition: { duration: 1.4, repeat: Infinity, ease: "easeInOut" },
-                  },
-                }}
-              >
-                <DownloadIcon className="size-4" />
-              </motion.span>
-              Download {fileLabel}
+          {available && recommended ? (
+            <motion.div initial="rest" whileHover="hover">
+              <Link href="/download/started" className={buttonClass}>
+                {buttonContent}
+              </Link>
+            </motion.div>
+          ) : available ? (
+            <motion.a href={url} download rel="noopener noreferrer" initial="rest" whileHover="hover" className={buttonClass}>
+              {buttonContent}
             </motion.a>
-          ) : (
+          ) : comingSoon ? (
             <span className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white/70 px-6 py-3.5 text-[15px] font-semibold text-dim">
               <ClockIcon className="size-4" />
               Coming soon
             </span>
+          ) : (
+            <Link
+              href="/contact"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white/70 px-6 py-3.5 text-[15px] font-semibold text-ink"
+            >
+              Unavailable right now — contact us
+            </Link>
           )}
         </div>
       </div>

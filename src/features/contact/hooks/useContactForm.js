@@ -2,6 +2,7 @@
 
 
 import { useState } from "react";
+import focusFirstInvalid from "@/utils/focusFirstInvalid.js";
 import { contactSchema, formatZodErrors } from "@/lib/shared.js";
 import contactService from "../services/contactService.js";
 
@@ -30,7 +31,9 @@ const useContactForm = () => {
 
     const parsed = contactSchema.safeParse(values);
     if (!parsed.success) {
-      setErrors(formatZodErrors(parsed.error));
+      const fieldErrors = formatZodErrors(parsed.error);
+      setErrors(fieldErrors);
+      focusFirstInvalid(event.currentTarget, fieldErrors);
       setStatus("error");
       setMessage("Please fix the highlighted fields.");
       return;

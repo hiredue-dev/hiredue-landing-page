@@ -71,6 +71,12 @@ export function SearchBar({ filters, facets, onSearch }) {
     onSearch({ location: value });
   };
 
+  /* A chip typed but not yet searched looks the same as an applied one, and
+     picking a location or date (which search at once) leaves it out — so
+     mark the ones that aren't in the live search as pending. */
+  const applied = new Set(parseKeywords(filters.q).map((k) => k.toLowerCase()));
+  const isPending = (keyword) => !applied.has(keyword.toLowerCase());
+
   const postedLabel =
     POSTED_WITHIN_OPTIONS.find((option) => option.value === postedWithin && option.value)?.label ?? "";
 
@@ -86,14 +92,19 @@ export function SearchBar({ filters, facets, onSearch }) {
           {keywords.map((keyword) => (
             <span
               key={keyword}
-              className="inline-flex max-w-full items-center gap-1.5 rounded-full bg-surface py-1.5 pr-2 pl-3 text-[14px] leading-none font-semibold text-ink"
+              title={isPending(keyword) ? "Not searched yet — press Start searching" : undefined}
+              className={clsx(
+                "inline-flex max-w-full items-center gap-1.5 rounded-full py-1.5 pr-2 pl-3 text-[14px] leading-none font-semibold text-ink",
+                isPending(keyword) ? "border border-dashed border-dim bg-white" : "border border-transparent bg-surface",
+              )}
             >
               <span className="truncate">{keyword}</span>
+              {isPending(keyword) && <span className="sr-only"> (not searched yet)</span>}
               <button
                 type="button"
                 onClick={() => removeKeyword(keyword)}
                 aria-label={`Remove ${keyword}`}
-                className="grid size-4 place-items-center rounded-full text-dim hover:bg-white hover:text-ink"
+                className="relative grid size-4 place-items-center rounded-full text-dim after:absolute after:-inset-[14px] after:content-[''] hover:bg-white hover:text-ink"
               >
                 <X size={12} strokeWidth={2.5} />
               </button>
@@ -113,74 +124,80 @@ export function SearchBar({ filters, facets, onSearch }) {
         </div>
       </div>
 
-      {/* Location */}
-      <Dropdown
-        icon={MapPin}
-        label={location}
-        placeholder="All locations"
-        open={open === "location"}
-        onOpenChange={(next) => setOpen(next ? "location" : null)}
-        className="border-t border-line lg:w-[230px] lg:border-t-0 lg:border-l"
-      >
-        <input
-          type="text"
-          value={locationDraft}
-          onChange={(event) => setLocationDraft(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              event.preventDefault();
-              if (locationDraft.trim()) pickLocation(locationDraft.trim().slice(0, 100));
-            }
-          }}
-          placeholder="Type a city or country…"
-          aria-label="Location"
-          autoFocus
-          className="mb-1 h-11 w-full rounded-[10px] bg-surface px-3.5 text-[15px] font-medium text-ink outline-none placeholder:text-dim/70"
-        />
-        <div role="listbox" className="max-h-[260px] overflow-y-auto">
-          <DropdownOption selected={!location} onSelect={() => pickLocation("")}>
-            All locations
-          </DropdownOption>
-          {(facets?.locations ?? [])
-            .filter((loc) => loc.toLowerCase().includes(locationDraft.trim().toLowerCase()))
-            .map((loc) => (
-              <DropdownOption key={loc} selected={location === loc} onSelect={() => pickLocation(loc)}>
-                {loc}
+      {/* Location and date share one row on phones (two stacked rows pushed
+          the results down); `lg:contents` drops the wrapper on desktop so they
+          sit in the bar's own row as before. */}
+      <div className="grid grid-cols-2 border-t border-line lg:contents">
+        {/* Location */}
+        <Dropdown
+          icon={MapPin}
+          label={location}
+          placeholder="All locations"
+          open={open === "location"}
+          onOpenChange={(next) => setOpen(next ? "location" : null)}
+          className="min-w-0 lg:w-[230px] lg:border-l lg:border-line"
+        >
+          <input
+            type="text"
+            value={locationDraft}
+            onChange={(event) => setLocationDraft(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+                if (locationDraft.trim()) pickLocation(locationDraft.trim().slice(0, 100));
+              }
+            }}
+            placeholder="Type a city or country…"
+            aria-label="Location"
+            autoFocus
+            className="mb-1 h-11 w-full rounded-[10px] bg-surface px-3.5 text-[15px] font-medium text-ink outline-none placeholder:text-dim/70"
+          />
+          <div role="listbox" className="max-h-[260px] overflow-y-auto">
+            <DropdownOption selected={!location} onSelect={() => pickLocation("")}>
+              All locations
+            </DropdownOption>
+            {(facets?.locations ?? [])
+              .filter((loc) => loc.toLowerCase().includes(locationDraft.trim().toLowerCase()))
+              .map((loc) => (
+                <DropdownOption key={loc} selected={location === loc} onSelect={() => pickLocation(loc)}>
+                  {loc}
+                </DropdownOption>
+              ))}
+            {locationDraft.trim() && (
+              <DropdownOption selected={false} onSelect={() => pickLocation(locationDraft.trim().slice(0, 100))}>
+                Search &ldquo;{locationDraft.trim()}&rdquo;
+              </DropdownOption>
+            )}
+          </div>
+        </Dropdown>
+
+        {/* Date posted */}
+        <Dropdown
+          icon={CalendarDays}
+          label={postedLabel}
+          placeholder="Date posted"
+          open={open === "posted"}
+          onOpenChange={(next) => setOpen(next ? "posted" : null)}
+          align="end"
+          className="min-w-0 border-l border-line lg:w-[210px]"
+        >
+          <div role="listbox">
+            {POSTED_WITHIN_OPTIONS.map((option) => (
+              <DropdownOption
+                key={option.value}
+                selected={postedWithin === option.value}
+                onSelect={() => {
+                  setPostedWithin(option.value);
+                  setOpen(null);
+                  onSearch({ postedWithin: option.value });
+                }}
+              >
+                {option.label}
               </DropdownOption>
             ))}
-          {locationDraft.trim() && (
-            <DropdownOption selected={false} onSelect={() => pickLocation(locationDraft.trim().slice(0, 100))}>
-              Search &ldquo;{locationDraft.trim()}&rdquo;
-            </DropdownOption>
-          )}
-        </div>
-      </Dropdown>
-
-      {/* Date posted */}
-      <Dropdown
-        icon={CalendarDays}
-        label={postedLabel}
-        placeholder="Date posted"
-        open={open === "posted"}
-        onOpenChange={(next) => setOpen(next ? "posted" : null)}
-        className="border-t border-line lg:w-[210px] lg:border-t-0 lg:border-l"
-      >
-        <div role="listbox">
-          {POSTED_WITHIN_OPTIONS.map((option) => (
-            <DropdownOption
-              key={option.value}
-              selected={postedWithin === option.value}
-              onSelect={() => {
-                setPostedWithin(option.value);
-                setOpen(null);
-                onSearch({ postedWithin: option.value });
-              }}
-            >
-              {option.label}
-            </DropdownOption>
-          ))}
-        </div>
-      </Dropdown>
+          </div>
+        </Dropdown>
+      </div>
 
       <div className="border-t border-line p-1.5 lg:border-t-0 lg:pl-0">
         <button type="submit" className={clsx(darkButton, "h-11 w-full px-6 text-[14.5px] lg:h-full lg:min-h-12")}>

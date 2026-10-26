@@ -1,13 +1,25 @@
 import { z } from "zod";
 
-export const waitlistSchema = z.object({
-  email: z.string().trim().email("Enter a valid email address."),
-  name: z.string().trim().min(2, "Enter your name."),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^[6-9]\d{9}$/, "Enter a valid 10-digit mobile number."),
-});
+/* Any country: Indian numbers keep the strict mobile check (10 digits,
+   starting 6-9); elsewhere, 5-14 digits — E.164 caps the whole number at 15,
+   and the country code takes at least one. */
+export const waitlistSchema = z
+  .object({
+    email: z.string().trim().email("Enter a valid email address."),
+    name: z.string().trim().min(2, "Enter your name."),
+    countryCode: z.string().trim().min(2),
+    phone: z.string().trim(),
+  })
+  .superRefine(({ countryCode, phone }, ctx) => {
+    const valid = countryCode === "IN" ? /^[6-9]\d{9}$/.test(phone) : /^\d{5,14}$/.test(phone);
+    if (!valid) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ["phone"],
+        message: countryCode === "IN" ? "Enter a valid 10-digit mobile number." : "Enter a valid phone number, digits only.",
+      });
+    }
+  });
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, "Enter your name."),

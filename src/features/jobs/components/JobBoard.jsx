@@ -4,6 +4,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Linkedin, Loader2, SearchX, SlidersHorizontal } from "lucide-react";
 import clsx from "clsx";
+import { BrandLoader, PageLoader } from "@/components/site/ui/PageLoader";
 import { useJobBoard } from "../hooks/useJobBoard.js";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
@@ -14,6 +15,7 @@ import {
   filtersToQuery,
   hasActiveFilters,
   readFilters,
+  sidebarFilterCount,
 } from "../filters.js";
 import { roleLabel } from "../format.js";
 import { clearApplyTimer, readApplyTimer, timerVerdict } from "../applyTimer.js";
@@ -32,6 +34,8 @@ import { SourceCircles } from "./Sources.jsx";
 import { LockedPostCard, PostCard, UnlockPostsPanel } from "./PostCard.jsx";
 import { SearchBar } from "./SearchBar.jsx";
 import { Dialog, primaryButton, secondaryButton } from "./ui.jsx";
+import { Busy } from "@/components/site/ui/Spinner";
+import { buttonClass } from "@/components/site/ui/Button";
 
 // Fixed navbar height plus breathing room: where scrolled-to content should land.
 const NAV_OFFSET = 100;
@@ -280,6 +284,7 @@ export function JobBoard() {
   const refreshing = board.status === "refreshing";
   const failed = board.status === "error" && !board.jobs.length;
   const trendingRoles = (facets?.roles ?? []).slice(0, 6);
+  const filterCount = sidebarFilterCount(filters);
 
   const sidebar = (
     <FilterSidebar
@@ -292,6 +297,7 @@ export function JobBoard() {
 
   return (
     <JobDialogsContext.Provider value={dialogs}>
+    <PageLoader ready={board.status !== "loading"} label="Finding fresh jobs…" />
     <section className="relative pt-[104px] pb-[120px] min-[810px]:pt-[116px] min-[1200px]:pb-[160px]">
       <div className="mx-auto w-full max-w-[1380px] px-[20px] sm:px-[30px]">
         <JobsHero facets={facets} />
@@ -383,6 +389,7 @@ export function JobBoard() {
                   className={clsx(secondaryButton, "lg:hidden")}
                 >
                   <SlidersHorizontal size={16} aria-hidden /> Filters
+                  {filterCount > 0 && <FilterCount count={filterCount} />}
                 </button>
                 {!postsLocked && (
                   <label className="flex items-center gap-1.5 text-[16px] font-medium text-dim">
@@ -423,12 +430,31 @@ export function JobBoard() {
             ) : !board.jobs.length ? (
               <EmptyState
                   title={`No ${showPosts ? "hiring posts" : "jobs"} match these filters`}
-                  body="Try other keywords, another location, or reset the filters."
+                  body="Loosen one of these to see more, or start over."
                   action={
                     hasActiveFilters(filters) ? (
-                      <button type="button" onClick={resetFilters} className={secondaryButton}>
-                        Reset filters
-                      </button>
+                      /* one-tap ways to widen the search, narrowest-first,
+                         before the all-or-nothing reset */
+                      <div className="flex flex-wrap justify-center gap-2">
+                        {filters.q && (
+                          <button type="button" onClick={() => updateFilters({ q: "" })} className={secondaryButton}>
+                            Search without keywords
+                          </button>
+                        )}
+                        {filters.location && (
+                          <button type="button" onClick={() => updateFilters({ location: "" })} className={secondaryButton}>
+                            Any location
+                          </button>
+                        )}
+                        {filters.postedWithin && (
+                          <button type="button" onClick={() => updateFilters({ postedWithin: "" })} className={secondaryButton}>
+                            Any time
+                          </button>
+                        )}
+                        <button type="button" onClick={resetFilters} className={secondaryButton}>
+                          Reset all filters
+                        </button>
+                      </div>
                     ) : null
                   }
                 />
@@ -458,11 +484,9 @@ export function JobBoard() {
                       disabled={board.status === "loadingMore"}
                       className={clsx(secondaryButton, "h-12 px-8")}
                     >
-                      {board.status === "loadingMore"
-                        ? "Loading…"
-                        : board.status === "error"
-                          ? "Try again"
-                          : `Load more ${noun}s`}
+                      <Busy busy={board.status === "loadingMore"} label="Loading…">
+                        {board.status === "error" ? "Try again" : `Load more ${noun}s`}
+                      </Busy>
                     </button>
                   </div>
                 )}
@@ -472,6 +496,18 @@ export function JobBoard() {
           </div>
         </div>
       </div>
+
+      {/* Phones and tablets: the in-flow Filters button scrolls away under the
+          search, tabs and hiring posts, so a pinned one stays in reach and
+          shows how many filters are on. Bottom-centre, clear of WhatsApp. */}
+      <button
+        type="button"
+        onClick={() => setFiltersOpen(true)}
+        className={clsx(buttonClass({ variant: "ink", size: "tool" }), "fixed bottom-5 left-1/2 z-[55] -translate-x-1/2 py-3 shadow-[0_10px_30px_rgba(29,29,29,0.3)] lg:hidden")}
+      >
+        <SlidersHorizontal size={16} aria-hidden /> Filters
+        {filterCount > 0 && <FilterCount count={filterCount} inverted />}
+      </button>
 
       {/* Phones and tablets: the sidebar lives in a sheet. */}
       <Dialog open={filtersOpen} onClose={() => setFiltersOpen(false)} labelledBy="job-filters-title">
@@ -483,7 +519,10 @@ export function JobBoard() {
         <div className="flex-1 overflow-y-auto p-6">{sidebar}</div>
         <div className="border-t border-line p-4">
           <button type="button" onClick={() => setFiltersOpen(false)} className={clsx(primaryButton, "h-12 w-full")}>
-            Show {board.total.toLocaleString()} {board.total === 1 ? noun : `${noun}s`}
+            {/* board.total is the previous search's until the new one lands */}
+            {loading || refreshing
+              ? "Updating…"
+              : `Show ${board.total.toLocaleString()} ${board.total === 1 ? noun : `${noun}s`}`}
           </button>
         </div>
       </Dialog>
@@ -584,6 +623,10 @@ function EmptyState({ title, body, action }) {
 export function JobBoardFallback() {
   return (
     <section className="relative pt-[104px] pb-[120px] min-[810px]:pt-[116px]">
+      {/* the board's own PageLoader takes over, looking the same, once it mounts */}
+      <div className="page-loader" aria-hidden>
+        <BrandLoader label="Finding fresh jobs…" />
+      </div>
       <div className="mx-auto w-full max-w-[1380px] px-[20px] sm:px-[30px]">
         {/* The real header (with the page's h1) is in the static HTML. */}
         <JobsHero facets={null} />
@@ -607,5 +650,21 @@ export function JobBoardFallback() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** The number badge on a Filters button; `inverted` for the dark pinned one. */
+function FilterCount({ count, inverted }) {
+  return (
+    <span
+      className={clsx(
+        "grid h-5 min-w-5 place-items-center rounded-full px-1.5 text-[12px] leading-none font-semibold",
+        inverted ? "bg-white text-ink" : "bg-ink text-white",
+      )}
+    >
+      <span className="sr-only">, </span>
+      {count}
+      <span className="sr-only"> active</span>
+    </span>
   );
 }
