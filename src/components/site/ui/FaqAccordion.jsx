@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import { motion } from "framer-motion";
 import clsx from "clsx";
 import { spring } from "@/lib/motion";
 
@@ -64,22 +64,22 @@ export function FaqAccordion({ items, answerClassName }) {
           </motion.span>
         </button>
 
-        <AnimatePresence initial={false}>
-          {isOpen && item.answer && (
-            <motion.div
-              id={panelId}
-              role="region"
-              aria-labelledby={buttonId}
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={spring(0.4)}
-              className="overflow-hidden"
-            >
-              <p className={clsx("t-body pr-[60px] pb-5 pl-5", answerClassName)}>{item.answer}</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* every answer stays in the server HTML, closed ones collapsed to
+            zero height, so crawlers and the FAQPage schema see all of them */}
+        {item.answer && (
+          <motion.div
+            id={panelId}
+            role="region"
+            aria-labelledby={buttonId}
+            aria-hidden={!isOpen}
+            initial={false}
+            animate={isOpen ? { height: "auto", opacity: 1 } : { height: 0, opacity: 0 }}
+            transition={spring(0.4)}
+            className="overflow-hidden"
+          >
+            <p className={clsx("t-body pr-[60px] pb-5 pl-5", answerClassName)}>{item.answer}</p>
+          </motion.div>
+        )}
       </div>
     );
   });
