@@ -25,6 +25,15 @@ export const testimonial = defineType({
       description: 'Shown under the name, e.g. "Got interview call from Amazon".',
       validation: (Rule) => Rule.required(),
     }),
+    // change_v4 : added an optional Photo field so editors can upload the person's picture;
+    // the testimonial card shows it instead of the initials (initials stay when it's empty)
+    defineField({
+      name: 'photo',
+      title: 'Photo',
+      type: 'image',
+      description: 'Optional. Shown in the circle instead of the initials. Square images work best.',
+      options: {hotspot: true},
+    }),
     defineField({
       name: 'order',
       title: 'Order',

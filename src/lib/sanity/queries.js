@@ -66,7 +66,9 @@ export const TESTIMONIALS_QUERY = defineQuery(`
   *[_type == "testimonial"] | order(order asc) {
     quote,
     name,
-    role
+    role,
+    // change_v5 : also fetch the photo's image URL so the card can show it (null when no photo is uploaded)
+    "photo": photo.asset->url
   }
 `);
 
