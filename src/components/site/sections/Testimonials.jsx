@@ -66,7 +66,19 @@ export function Testimonials({ items = testimonials.items }) {
                     <blockquote className="t-body-lg text-ink">{item.quote}</blockquote>
                   </div>
                   <figcaption className="flex items-center gap-4">
-                    <Avatar name={item.name} size={50} />
+                    {/* change_v6 : show the person's photo from Sanity when one is uploaded,
+                        otherwise keep the initials avatar exactly as before */}
+                    {item.photo ? (
+                      <Image
+                        src={item.photo}
+                        alt=""
+                        width={50}
+                        height={50}
+                        className="size-[50px] shrink-0 rounded-full object-cover"
+                      />
+                    ) : (
+                      <Avatar name={item.name} size={50} />
+                    )}
                     <span className="flex flex-col gap-0.5">
                       <span className="text-[18px] leading-[1.3] font-medium text-ink">{item.name}</span>
                       <span className="t-body-sm">{item.role}</span>
