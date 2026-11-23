@@ -26,6 +26,16 @@ const REASONS = {
       job ? `Get the application link for ${job.jobTitle}${job.hiringCompany ? ` at ${job.hiringCompany}` : ""}.` : "Get the application link in one step.",
     finish: "Show the application link",
   },
+  // A job a company posted on HireDue (/apply/<id>): the application happens right here, on the page.
+  hiredueApply: {
+    icon: Lock,
+    title: "Create a free account to apply",
+    body: (job) =>
+      job
+        ? `Apply to ${job.jobTitle}${job.hiringCompany ? ` at ${job.hiringCompany}` : ""} in a minute with your HireDue account.`
+        : "Apply in a minute with your HireDue account.",
+    finish: "Continue to application",
+  },
   install: {
     icon: MonitorDown,
     title: "Create a free account to install HireDue",
