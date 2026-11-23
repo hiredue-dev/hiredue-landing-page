@@ -14,6 +14,7 @@ import { EMPTY_FILTERS, filtersToQuery } from "@/features/jobs/filters.js";
 import { useJobBoard } from "@/features/jobs/hooks/useJobBoard.js";
 import { getJobFilters } from "@/features/jobs/services/jobBoardService.js";
 import { roleLabel } from "@/features/jobs/format.js";
+import { hiredueApplyPath } from "@/features/apply/routing.js";
 import { EVENTS, jobProps, trackEvent } from "@/lib/analytics";
 import { atsChecker } from "@/lib/content";
 import { keywordsToQuery, resumeKeywords } from "../jobQuery.js";
@@ -104,8 +105,10 @@ function Matches({ terms }) {
     (job) => {
       setDetail(null);
       trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "ats_checker"), signed_in: isAuthenticated });
-      const href = `${boardHref}&apply=${encodeURIComponent(job.id)}`;
-      if (isAuthenticated) {
+      // A job a company posted on HireDue has its own apply page, which handles sign-in itself.
+      const hiredue = hiredueApplyPath(job);
+      const href = hiredue ?? `${boardHref}&apply=${encodeURIComponent(job.id)}`;
+      if (isAuthenticated || hiredue) {
         router.push(href);
         return;
       }

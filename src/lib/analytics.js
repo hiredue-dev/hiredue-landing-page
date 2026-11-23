@@ -23,6 +23,11 @@ export const EVENTS = {
   jobReturnShown: "job_return_shown",
   jobReturnAction: "job_return_action",
   downloadStarted: "download_started",
+  // Jobs companies post on HireDue, applied to on /apply/<id>.
+  companyJobViewed: "company_job_viewed",
+  companyJobApplyStarted: "company_job_apply_started",
+  companyJobApplySucceeded: "company_job_apply_succeeded",
+  companyJobApplyFailed: "company_job_apply_failed",
   resumeUploaded: "ats_resume_uploaded",
   resumeUploadFailed: "ats_resume_upload_failed",
   atsActionRequested: "ats_action_requested",

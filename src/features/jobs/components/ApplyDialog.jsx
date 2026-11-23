@@ -1,9 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { ExternalLink } from "lucide-react";
 import { useAuth } from "@/features/auth/context/AuthContext.jsx";
 import { jobFormErrors } from "@/features/ats/hooks/useAtsChecker.js";
+import { hiredueApplyPath } from "@/features/apply/routing.js";
 import { EVENTS, trackEvent } from "@/lib/analytics";
 import { startApplyTimer } from "../applyTimer.js";
 import { getApplyLink, getJob } from "../services/jobBoardService.js";
@@ -41,6 +43,7 @@ export function ApplyDialog({ jobId, onClose, path = "desktop", tailored = false
 }
 
 function UnlockedApply({ jobId, path, tailored }) {
+  const router = useRouter();
   const [state, setState] = useState({ status: "loading", data: null, error: null });
   // The full posting, for the description tailoring works from; the apply link alone does not carry it.
   const [detail, setDetail] = useState(null);
@@ -57,6 +60,11 @@ function UnlockedApply({ jobId, path, tailored }) {
     };
   }, [jobId]);
   const onTailored = useCallback(() => setTailoredHere(true), []);
+  // A job a company posted on HireDue (reached here through ?apply=, e.g. from the ATS checker or the download page) is applied to on its own page.
+  const hiredue = hiredueApplyPath(detail);
+  useEffect(() => {
+    if (hiredue) router.replace(hiredue);
+  }, [hiredue, router]);
 
   const load = useCallback(async () => {
     setState({ status: "loading", data: null, error: null });
@@ -83,6 +91,7 @@ function UnlockedApply({ jobId, path, tailored }) {
     load();
   }, [load]);
 
+  if (hiredue) return <Pending label="Opening the application…" />;
   if (state.status === "loading") return <Pending label="Getting your application link…" />;
 
   if (state.status === "error") {

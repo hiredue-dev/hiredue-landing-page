@@ -21,6 +21,7 @@ import { roleLabel } from "../format.js";
 import { clearApplyTimer, readApplyTimer, timerVerdict } from "../applyTimer.js";
 import { canInstall, clearIntent, loadIntent, saveIntent } from "../funnel.js";
 import { JobDialogsContext } from "../jobDialogs.js";
+import { hiredueApplyPath } from "@/features/apply/routing.js";
 import { AccountDialog } from "./AccountDialog.jsx";
 import { ApplyDialog } from "./ApplyDialog.jsx";
 import { DownloadDialog } from "./DownloadDialog.jsx";
@@ -208,7 +209,13 @@ export function JobBoard() {
 
   const openApply = useCallback(
     (job) => {
-      trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated, path: install ? "desktop" : "mobile" });
+      const hiredue = hiredueApplyPath(job);
+      trackEvent(EVENTS.jobApplyClicked, { ...jobProps(job, "jobs"), signed_in: isAuthenticated, path: install ? "desktop" : "mobile", hiredue: !!hiredue });
+      // A job a company posted on HireDue is applied to on its own page, which handles sign-in itself.
+      if (hiredue) {
+        router.push(hiredue);
+        return;
+      }
       if (isAuthenticated) {
         setParams({ job: null, apply: job.id });
         return;
@@ -224,7 +231,7 @@ export function JobBoard() {
         },
       });
     },
-    [isAuthenticated, install, setParams, openAccount],
+    [isAuthenticated, install, setParams, openAccount, router],
   );
   const openAutoApply = useCallback(
     (job) => {

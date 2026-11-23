@@ -20,8 +20,10 @@ async function doFetch(path, options, withAuth) {
   // Content-Type only when there is a body: on a GET it serves no purpose and
   // makes the cross-origin request "non-simple", costing a CORS preflight
   // round trip before every call.
+  // A FormData body sets its own multipart Content-Type (with the boundary).
+  const isForm = typeof FormData !== "undefined" && options.body instanceof FormData;
   const headers = {
-    ...(options.body ? { "Content-Type": "application/json" } : {}),
+    ...(options.body && !isForm ? { "Content-Type": "application/json" } : {}),
     ...(options.headers || {}),
   };
 
@@ -84,6 +86,10 @@ export const apiClient = {
       { method: "PATCH", body: JSON.stringify(body ?? {}) },
       opts,
     );
+  },
+  /** multipart/form-data POST (file uploads). */
+  postForm(path, formData, opts) {
+    return request(path, { method: "POST", body: formData }, opts);
   },
   delete(path, opts) {
     return request(path, { method: "DELETE" }, opts);
